@@ -19,18 +19,19 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <!-- Form chọn kỳ học -->
-                        <form action="{{ route('admin.schedules.select.semester') }}" method="GET">
-                            <!-- Input hidden để giữ năm học đã chọn -->
-                            <input type="hidden" name="year" value="{{ $year }}">
+                        <form action="{{ route('admin.schedules.select.semester') }}" method="GET" id="selectSemesterForm">
+                            <div class="form-group">
 
-                            <!-- Dropdown chọn kỳ học -->
-                            <select name="semesterId" onchange="this.form.submit()">
-                                <option value="">Chọn kỳ học</option>
-                                @foreach ($semesters as $semester)
-                                    <option value="{{ $semester->id }}">{{ $semester->block }}</option>
-                                @endforeach
-                            </select>
+                                <input type="hidden" name="year" value="{{ $year }}">
+
+                                <label for="semesterId">Chọn Kỳ Học:</label>
+                                <select name="semesterId" id="semesterId" class="form-select" onchange="this.form.submit()">
+                                    <option value="">Chọn kỳ học</option>
+                                    @foreach ($semesters as $semester)
+                                        <option value="{{ $semester->id }}">{{ $semester->block }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </form>
                     </div>
                 </div>

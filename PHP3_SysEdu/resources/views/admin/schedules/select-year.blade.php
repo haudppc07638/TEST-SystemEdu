@@ -19,8 +19,9 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{ route('admin.schedules.select.semester') }}" method="GET">
-                            <select name="year" onchange="this.form.submit()">
+                        <form action="{{ route('admin.schedules.select.semester') }}" method="GET" id="selectSemesterForm">
+                            <label for="semesterId">Chọn năm học:</label>
+                            <select name="year" id="semesterId" class="form-select" onchange="this.form.submit()">
                                 <option value="">Chọn năm học</option>
                                 @foreach ($years as $year)
                                     <option value="{{ $year }}">{{ $year }}</option>
