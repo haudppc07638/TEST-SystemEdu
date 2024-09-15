@@ -122,12 +122,14 @@ Route::prefix('students')->name('admin.students.')->group(function () {
 
 Route::prefix('schedules')->name('admin.schedules.')->group(function () {
     Route::get('/', [AdminScheduleController::class, 'index'])->name('index');
-    Route::get('select-semester', [AdminScheduleController::class, 'selectSemester'])->name('select.semester');
+    Route::get('select-year', [AdminScheduleController::class, 'selectYear'])->name('select.year');
+    Route::get('select-semester', [AdminScheduleController::class, 'selectSemester'])->name('select.semester');    
     Route::get('create/{semesterId?}', [AdminScheduleController::class, 'create'])->name('create');
     Route::post('create', [AdminScheduleController::class, 'store'])->name('create.post');
     Route::get('edit/{id}', [AdminScheduleController::class, 'edit'])->name('edit');
     Route::put('{id}', [AdminScheduleController::class, 'update'])->name('update');
     Route::delete('{id}', [AdminScheduleController::class, 'destroy'])->name('destroy');
+    Route::get('/export-schedules-pdf', [AdminScheduleController::class, 'exportPdf'])->name('export-pdf');
 });
 
 Route::prefix('semesters')->name('admin.semesters.')->group(function () {

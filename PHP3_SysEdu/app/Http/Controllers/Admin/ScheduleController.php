@@ -12,6 +12,7 @@ use App\Models\TimeSlot;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
 
 class ScheduleController extends Controller
 {
@@ -44,15 +45,16 @@ class ScheduleController extends Controller
     {
         if (!$semesterId) {
             toastr()->warning('Bạn cần chọn kỳ học trước khi thêm lịch.');
-            return redirect()->route('admin.schedules.select.semester');
+            return redirect()->route('admin.schedules.select.year');
         }
-    
+        
+        $semester = Semester::find($semesterId);
         $semesters = Semester::all();
         $subject_classes = SubjectClass::where('semester_id', $semesterId)->get();
         $classrooms = Classroom::all();
         $time_slots = TimeSlot::all();
     
-        return view('admin.schedules.create', compact('semesters', 'subject_classes', 'classrooms', 'time_slots', 'semesterId'));
+        return view('admin.schedules.create', compact('semesters', 'subject_classes', 'classrooms', 'time_slots', 'semesterId', 'semester'));
     }
     
 
@@ -153,9 +155,22 @@ class ScheduleController extends Controller
         toastr()->success('Xoá lịch học thành công');
         return redirect()->route('admin.schedules.index');
     }
-    public function selectSemester()
+
+    public function selectYear()
     {
-        $semesters = Semester::whereHas('subjectClasses')->get();
-        return view('admin.schedules.select-semester', compact('semesters'));
+        $years = Semester::select(DB::raw('YEAR(year) as year'))->distinct()->pluck('year');
+        return view('admin.schedules.select-year', compact('years'));
+    }
+
+    public function selectSemester(Request $request)
+    {
+        $year = $request->input('year');
+        $semesters = Semester::whereYear('year', $year)->get();
+        if ($request->has('semesterId')) {
+            $semesterId = $request->input('semesterId');
+            return redirect()->route('admin.schedules.create', ['semesterId' => $semesterId]);
+        }
+
+        return view('admin.schedules.select-semester', compact('semesters', 'year'));
     }
 }

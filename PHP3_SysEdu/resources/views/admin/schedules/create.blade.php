@@ -36,7 +36,7 @@
                                     @foreach ($subject_classes as $subject_class)
                                         <option value="{{ $subject_class->id }}"
                                                 {{ old('subject_class_id') == $subject_class->id ? 'selected' : '' }}>
-                                            {{ $subject_class->subject->name }}
+                                            {{ $subject_class->name }}
                                         </option>
                                     @endforeach
                                 </select>
