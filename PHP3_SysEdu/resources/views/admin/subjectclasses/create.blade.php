@@ -18,22 +18,11 @@
 
     <section class="section">
         <div class="row">
-            @if (session('success'))
-                <div class="col-12">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <i class="bi bi-check-circle me-1"></i>
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                </div>
-            @endif
-
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <form method="POST" action="{{ route('admin.subjectclasses.create.post') }}">
+                        <form method="POST" action="{{ route('admin.subjectclasses.create.post') }}" class="mt-3">
                             @csrf
-
                             <div class="row mb-3">
                                 <label for="quantity" class="col-sm-2 col-form-label">Số lượng</label>
                                 <div class="col-sm-10">

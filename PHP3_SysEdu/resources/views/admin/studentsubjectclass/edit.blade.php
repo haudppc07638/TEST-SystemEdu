@@ -10,7 +10,7 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('admin.studentsubjectclass.index') }}">Sinh viên</a></li>
+                <li class="breadcrumb-item">>Sinh viên</li>
                 <li class="breadcrumb-item active">Thêm, Sửa Điểm Sinh Viên</li>
             </ol>
         </nav>

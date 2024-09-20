@@ -45,9 +45,7 @@ class SubjectClass extends Model
     {
         return $this->hasMany(StudentSubjectClass::class);
     }
-    public function studentsubjectclass(): hasMany{
-        return $this->hasMany(StudentSubjectClass::class);
-    }
+    
     public static function validate($data, $request)
     {
         $rules = $request->rules();

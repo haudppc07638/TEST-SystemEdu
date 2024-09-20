@@ -90,9 +90,9 @@ class StudentSubjectClass extends Model
 
         return Validator::make($data, $rules, $messages);
     }
-    protected static function getAllStudentSubClass()
+    protected static function getStudentSubClass($id)
     {
-        return self::with('student', 'subjectClass')->get();
+        return self::with('student', 'subjectClass')->where('subject_class_id', $id)->get();
     }
     protected static function editStudentSubClass($id)
     {

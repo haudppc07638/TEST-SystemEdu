@@ -187,11 +187,11 @@ Route::prefix('subjects')->name('admin.subjects.')->group(function () {
 });
 
 Route::prefix('studentsubjectclass')->name('admin.studentsubjectclass.')->group(function () {
-    Route::get('/', [StudentSubjectClassController::class, 'index'])->name('index');
-    // Route::get('create', [StudentSubClassController::class, 'create'])->name('create');
-    // Route::post('create', [StudentSubClassController::class, 'store'])->name('create.post');
+    Route::get('{id}', [StudentSubjectClassController::class, 'index'])->name('index');
     Route::get('edit/{id}', [StudentSubjectClassController::class, 'edit'])->name('edit');
     Route::put('{id}', [StudentSubjectClassController::class, 'update'])->name('update');
+    Route::post('import/{id}', [StudentSubjectClassController::class, 'import'])->name('import');
+    Route::get('export/{id}', [StudentSubjectClassController::class, 'export'])->name('export');
 });
 
 Route::prefix('subjectclasses')->name('admin.subjectclasses.')->group(function () {
@@ -201,7 +201,6 @@ Route::prefix('subjectclasses')->name('admin.subjectclasses.')->group(function (
     Route::get('edit/{id}', [SubjectClassController::class, 'edit'])->name('edit');
     Route::put('{id}', [SubjectClassController::class, 'update'])->name('update');
     Route::delete('{id}', [SubjectClassController::class, 'destroy'])->name('destroy');
-
 });
 
 //end admin route ==============================================================================
