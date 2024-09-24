@@ -282,87 +282,87 @@
    * Initiate Datatables
    */
 
-  function initializeDataTable(tableId, title, fileNamePrefix) {
-    $(tableId).DataTable({
-      dom: '<"top"lfB>rt<"bottom"ip><"clear">',
-      buttons: [
-        {
-          extend: 'excelHtml5',
-          exportOptions: {
-            columns: function (idx) {
-              return idx !== -1 && idx !== $(tableId).DataTable().columns().count() - 1;
-            }
-          },
-          title: function () {
-            var date = new Date();
-            var day = String(date.getDate()).padStart(2, '0');
-            var month = String(date.getMonth() + 1).padStart(2, '0');
-            var year = date.getFullYear();
-            var formattedDate = day + '/' + month + '/' + year;
-            var optionData = exportOptions(tableId);
-            if (optionData){
-              return 'System Education' + '_' + title + ' ' + optionData + '_' + formattedDate;
-            }
-            return 'System Education' + '_' + title + '_' + formattedDate;
-          },
-          filename: function () {
-            var date = new Date();
-            var day = String(date.getDate()).padStart(2, '0');
-            var month = String(date.getMonth() + 1).padStart(2, '0');
-            var year = date.getFullYear();
-            var formattedDate = day + '-' + month + '-' + year;
-            var optionData = exportOptions(tableId);
+  // function initializeDataTable(tableId, title, fileNamePrefix) {
+  //   $(tableId).DataTable({
+  //     dom: '<"top"lfB>rt<"bottom"ip><"clear">',
+  //     buttons: [
+  //       {
+  //         extend: 'excelHtml5',
+  //         exportOptions: {
+  //           columns: function (idx) {
+  //             return idx !== -1 && idx !== $(tableId).DataTable().columns().count() - 1;
+  //           }
+  //         },
+  //         title: function () {
+  //           var date = new Date();
+  //           var day = String(date.getDate()).padStart(2, '0');
+  //           var month = String(date.getMonth() + 1).padStart(2, '0');
+  //           var year = date.getFullYear();
+  //           var formattedDate = day + '/' + month + '/' + year;
+  //           var optionData = exportOptions(tableId);
+  //           if (optionData){
+  //             return 'System Education' + '_' + title + ' ' + optionData + '_' + formattedDate;
+  //           }
+  //           return 'System Education' + '_' + title + '_' + formattedDate;
+  //         },
+  //         filename: function () {
+  //           var date = new Date();
+  //           var day = String(date.getDate()).padStart(2, '0');
+  //           var month = String(date.getMonth() + 1).padStart(2, '0');
+  //           var year = date.getFullYear();
+  //           var formattedDate = day + '-' + month + '-' + year;
+  //           var optionData = exportOptions(tableId);
 
-            if (optionData){
-              return 'System Education' + '_' + fileNamePrefix + ' ' + optionData + '_' + formattedDate;
-            }
-            return 'System Education' + '_' + fileNamePrefix + '_' + formattedDate;
-          }
-        }
-      ],
-      language: {
-        emptyTable: "Không có dữ liệu",
-        info: "",
-        infoEmpty: "Hiển thị 0 đến 0 trong tổng số 0 bản ghi",
-        infoFiltered: "(lọc từ _MAX_ tổng số bản ghi)",
-        lengthMenu: "Hiển thị _MENU_",
-        loadingRecords: "Đang tải...",
-        processing: "Đang xử lý...",
-        search: "",
-        zeroRecords: "Không tìm thấy kết quả",
-      }
-    });
-  }
+  //           if (optionData){
+  //             return 'System Education' + '_' + fileNamePrefix + ' ' + optionData + '_' + formattedDate;
+  //           }
+  //           return 'System Education' + '_' + fileNamePrefix + '_' + formattedDate;
+  //         }
+  //       }
+  //     ],
+  //     language: {
+  //       emptyTable: "Không có dữ liệu",
+  //       info: "",
+  //       infoEmpty: "Hiển thị 0 đến 0 trong tổng số 0 bản ghi",
+  //       infoFiltered: "(lọc từ _MAX_ tổng số bản ghi)",
+  //       lengthMenu: "Hiển thị _MENU_",
+  //       loadingRecords: "Đang tải...",
+  //       processing: "Đang xử lý...",
+  //       search: "",
+  //       zeroRecords: "Không tìm thấy kết quả",
+  //     }
+  //   });
+  // }
 
-  function exportOptions(tableId) {
-    var table = $(tableId).DataTable();
+  // function exportOptions(tableId) {
+  //   var table = $(tableId).DataTable();
 
-    switch (tableId) {
-      case '#tableClass':
-        var data = table.cell({ row: 0, column: 4 }).data();
-        break;
+  //   switch (tableId) {
+  //     case '#tableClass':
+  //       var data = table.cell({ row: 0, column: 4 }).data();
+  //       break;
 
-      default:
-        data = '';
-    }
-    return data;
-  }
+  //     default:
+  //       data = '';
+  //   }
+  //   return data;
+  // }
 
-  $(document).ready(function () {
-    initializeDataTable('#tableClassroom', 'Danh sách các phòng học', 'Danh sách các phòng học');
-    initializeDataTable('#tableClass', 'Danh sách các lớp chuyên ngành', 'Danh sách các lớp chuyên ngành');
-    initializeDataTable('#tableDepartment', '- Danh sách các phòng ban', 'Danh sách các phòng ban');
-    initializeDataTable('#tableFaculty', 'Danh sách các khoa', '- Danh sách các khoa');
-    initializeDataTable('#tableMajor', 'Danh sách các chuyên ngành', 'Danh sách các chuyên ngành');
-    initializeDataTable('#tableNotification', 'Danh sách các thông báo đã gửi', 'Danh sách các thông báo đã gửi');
-    initializeDataTable('#tableSemester', 'Danh sách các kỳ học', 'Danh sách các kỳ học');
-    initializeDataTable('#tableStudent', 'Danh sách tổng sinh viên', 'Danh sách tổng sinh viên');
-    initializeDataTable('#tableEmployee', 'Danh sách nhân sự', 'Danh sách nhân sự');
-    initializeDataTable('#tableTimeSlot', 'Các ca học', 'các ca học');
-    initializeDataTable('#tableSubject', 'Danh sách các môn học', 'Danh sách các môn học');
-    initializeDataTable('#tableSubjectClass', 'Danh sách các lớp môn', 'Danh sách các lớp môn');
-    initializeDataTable('#tableSchedule', 'Danh sách lịch học', 'Danh sách lịch học');
-  });
+  // $(document).ready(function () {
+  //   initializeDataTable('#tableClassroom', 'Danh sách các phòng học', 'Danh sách các phòng học');
+  //   initializeDataTable('#tableClass', 'Danh sách các lớp chuyên ngành', 'Danh sách các lớp chuyên ngành');
+  //   initializeDataTable('#tableDepartment', '- Danh sách các phòng ban', 'Danh sách các phòng ban');
+  //   initializeDataTable('#tableFaculty', 'Danh sách các khoa', '- Danh sách các khoa');
+  //   initializeDataTable('#tableMajor', 'Danh sách các chuyên ngành', 'Danh sách các chuyên ngành');
+  //   initializeDataTable('#tableNotification', 'Danh sách các thông báo đã gửi', 'Danh sách các thông báo đã gửi');
+  //   initializeDataTable('#tableSemester', 'Danh sách các kỳ học', 'Danh sách các kỳ học');
+  //   initializeDataTable('#tableStudent', 'Danh sách tổng sinh viên', 'Danh sách tổng sinh viên');
+  //   initializeDataTable('#tableEmployee', 'Danh sách nhân sự', 'Danh sách nhân sự');
+  //   initializeDataTable('#tableTimeSlot', 'Các ca học', 'các ca học');
+  //   initializeDataTable('#tableSubject', 'Danh sách các môn học', 'Danh sách các môn học');
+  //   initializeDataTable('#tableSubjectClass', 'Danh sách các lớp môn', 'Danh sách các lớp môn');
+  //   initializeDataTable('#tableSchedule', 'Danh sách lịch học', 'Danh sách lịch học');
+  // });
 
   /**
    * Autoresize echart charts

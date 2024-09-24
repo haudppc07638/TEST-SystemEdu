@@ -29,15 +29,35 @@
 
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title">
+                        <div class="card-title d-flex">
                             <a href="{{ route('admin.faculties.create') }}" type="submit" class="btn btn-primary m-2">Thêm mới</a>
+
+                            <div class="col-lg-4">
+                                <form action="{{ route('admin.faculties.index') }}" method="GET">
+                                <div class="input-group m-3">
+                                    <input type="text" name="search" class="form-control" placeholder="Tìm kiếm khoa" value="{{ request('search') }}">
+                                    <button class="btn btn-outline-secondary" type="submit">Tìm kiếm</button>
+                                </div>
+                            </form>
+                            </div>
+                            @if($facultiesView)
+                            <ul>
+                                @if(request('search') > 0 )
+                                @foreach($facultiesView as $faculty)
+                                   
+                                @endforeach
+                                @endif
+                            </ul>
+                        @else
+                            <p>Không tìm thấy kết quả nào.</p>
+                        @endif
                         </div>
-                        
+
                         <!-- Table with stripped rows -->
-                        <table id="tableFaculty" class="table datatable">
+                        <table id="tableFaculty" class="table">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>STT</th>
                                     <th>Tên khoa</th>
                                     <th>Mã</th>
                                     <th>Trưởng khoa</th>
@@ -74,6 +94,9 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <div class="d-flex justify-content-center">
+                            {{ $facultiesView->links() }}
+                        </div>
                         <!-- End Table with stripped rows -->
 
                     </div>

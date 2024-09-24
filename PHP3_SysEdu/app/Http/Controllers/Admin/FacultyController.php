@@ -12,9 +12,10 @@ class FacultyController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $faculty = Faculty::getAllFaculty();
+        $search = $request->input('search');
+        $faculty = Faculty::getAllFaculty($search);
         return view('admin.faculties.index',['facultiesView' => $faculty]);
     }
 

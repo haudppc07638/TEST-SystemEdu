@@ -40,11 +40,17 @@ class Faculty extends Model
 
         return Validator::make($data, $rules, $messages);
     }
-    protected static function getAllFaculty(){
-        return self::select('id', 'name', 'code', 'description')
-        ->orderBy('id', 'desc')
-        ->get();
+    protected static function getAllFaculty($search = null)
+    {
+    $query = self::select('id', 'name', 'code', 'description')->orderByDesc('id');
+
+    if ($search) {
+        $query->where('name', 'like', "%{$search}%")
+              ->orWhere('code', 'like', "%{$search}%");
     }
+    return $query->paginate(5);
+    }
+
     protected static function createFaculty($data){
         return self::create($data);
     }

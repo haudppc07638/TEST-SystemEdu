@@ -1240,7 +1240,7 @@ h6 {
 /*--------------------------------------------------------------
 # DataTable
 --------------------------------------------------------------*/
-.top {
+/* .top {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1299,14 +1299,14 @@ nav .dt-paging-button.disabled {
 }
 
 /* Thay đổi kích thước chữ trong các ô dữ liệu */
-.table td, .table th {
+/* .table td, .table th {
     font-size: 0.875rem !important;
     text-align: center !important;
 }
 
 .table td {
   text-align: left !important;    
-}
+} */
 
 .text-limited {
   max-width: 150px !important;
