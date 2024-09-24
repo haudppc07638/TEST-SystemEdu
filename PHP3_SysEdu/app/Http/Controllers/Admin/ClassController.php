@@ -15,7 +15,7 @@ class ClassController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function showFaculties()
+    public function showFaculties() 
     {
         $faculties = Faculty::getNameFaculties();
         return view('admin.classes.faculties', [

@@ -49,7 +49,7 @@
         </a>
         <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="{{ route('admin.schedules.index')}}">
+            <a href="{{ route('admin.schedules.select.faculty')}}">
               <i class="bi bi-circle"></i><span>Lịch học</span>
             </a>
           </li>
