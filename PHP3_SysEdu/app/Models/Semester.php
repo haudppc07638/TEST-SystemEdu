@@ -15,6 +15,8 @@ class Semester extends Model
         'id',
         'block',
         'year',
+        'start_day', 
+        'end_day'
     ];
     public function subjectClasses(): HasMany{
         return $this->hasMany(SubjectClass::class);

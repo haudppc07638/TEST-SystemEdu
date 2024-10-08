@@ -137,7 +137,7 @@
                             $.each(data, function(index, major) {
                                 majorSelect.append('<option value="' + major.id + '">' +
                                     major.name + '</option>');
-                            });
+                            }); 
                         }
                     });
                 } else {

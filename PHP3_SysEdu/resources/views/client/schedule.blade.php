@@ -29,9 +29,9 @@
                     </select>
                 </label>
             </form>            
-            <div class="flex justify-end mb-4">
+            {{-- <div class="flex justify-end mb-4">
                 <a href="{{ route('schedules.export-pdf', ['time_range' => request('time_range')]) }}" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">PDF</a>
-            </div>
+            </div> --}}
                        
             <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
                 <div class="w-full overflow-x-auto">

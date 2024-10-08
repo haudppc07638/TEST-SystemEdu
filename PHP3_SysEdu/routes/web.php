@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\StudentSubjectClassController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Admin\SubjectClassController;
+use App\Http\Controllers\Client\ScoreController;
 
 // auth route ==============================================================================
 Route::get('/', function () {
@@ -225,3 +226,5 @@ Route::post('tham-gia-lop/{id}', [RegisterSubjectController::class, 'joinClass']
 Route::post('/lop-mon/huy-dang-ky/{id}', [RegisterSubjectController::class, 'cancelClass'])->name('cancelClass');
 
 Route::get('lich-su-hoc', [EducationalHistoryController::class, 'index'])->name('educational-history');
+
+Route::get('/bang-diem-theo-ky', [ScoreController::class, 'index'])->name('scores');

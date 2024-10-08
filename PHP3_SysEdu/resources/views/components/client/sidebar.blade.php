@@ -79,7 +79,7 @@
                         class="p-2 mt-2 space-y-2 overflow-hidden text-sm font-medium rounded-md shadow-inner bg-gray-50 dark:text-gray-400"
                         aria-label="submenu">
                         <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800">
-                            <a class="w-full" href="{{ route('grades') }}">Bảng Điểm</a>
+                            <a class="w-full" href="{{ route('scores') }}">Bảng Điểm</a>
                         </li>
                         <li class="px-2 py-1 transition-colors duration-150 hover:text-gray-800">
                             <a class="w-full" href="{{ route('educational-history') }}">Lịch Sử Học</a>

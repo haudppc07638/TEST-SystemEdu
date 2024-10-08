@@ -1,8 +1,8 @@
-@extends('layouts.app')
+    @extends('layouts.app')
 
-@section('title', 'Đăng ký lớp học | SysEdu')
+    @section('title', 'Đăng ký lớp học | SysEdu')
 
-@section('main')
+    @section('main')
     <main class="h-full pb-16 overflow-y-auto">
         <div class="container px-6 mx-auto">
             <h2 class="my-6 text-2xl font-semibold text-gray-700">
