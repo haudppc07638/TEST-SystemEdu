@@ -53,6 +53,11 @@ class Employee extends Authenticatable
         return $this->hasMany(SubjectClass::class);
     }
 
+    public function feedbacks()
+    {
+        return $this->hasMany(Feedback::class);
+    }
+
     public static function getAvailableTeachers($faculty_id){
         return self::where('position', 'Giáo viên')
         ->where('faculty_id', $faculty_id)

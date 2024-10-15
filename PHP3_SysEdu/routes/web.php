@@ -27,6 +27,7 @@ use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Admin\SubjectClassController;
 use App\Http\Controllers\Client\ScoreController;
+use App\Http\Controllers\Admin\FeedbackController;
 
 // auth route ==============================================================================
 Route::get('/', function () {
@@ -128,7 +129,7 @@ Route::prefix('schedules')->name('admin.schedules.')->group(function () {
     Route::get('select-subject/{facultyId}/{majorId}', [AdminScheduleController::class, 'selectSubject'])->name('select.subject');
     Route::get('select-teacher/{facultyId}/{majorId}/{subjectId}', [AdminScheduleController::class, 'selectTeacher'])->name('select.teacher');
     Route::get('select-year', [AdminScheduleController::class, 'selectYear'])->name('select.year');
-    Route::get('select-semester', [AdminScheduleController::class, 'selectSemester'])->name('select.semester');    
+    Route::get('select-semester', [AdminScheduleController::class, 'selectSemester'])->name('select.semester');
     Route::get('create/{semesterId?}', [AdminScheduleController::class, 'create'])->name('create');
     Route::post('create', [AdminScheduleController::class, 'store'])->name('create.post');
     Route::get('edit/{id}', [AdminScheduleController::class, 'edit'])->name('edit');
@@ -208,6 +209,15 @@ Route::prefix('subjectclasses')->name('admin.subjectclasses.')->group(function (
     Route::delete('{id}', [SubjectClassController::class, 'destroy'])->name('destroy');
 });
 
+Route::prefix('feedbacks')->name('admin.feedbacks.')->group(function () {
+    Route::get('/', [FeedbackController::class, 'index'])->name('index');
+    Route::get('create', [FeedbackController::class, 'create'])->name('create');
+    Route::post('create', [FeedbackController::class, 'store'])->name('store');
+    Route::get('show/{studentId}', [FeedbackController::class, 'showForStudent'])->name('show'); 
+    Route::post('submit/{id}', [FeedbackController::class, 'submitStudentFeedback'])->name('submit');
+});
+
+
 //end admin route ==============================================================================
 
 
@@ -228,3 +238,6 @@ Route::post('/lop-mon/huy-dang-ky/{id}', [RegisterSubjectController::class, 'can
 Route::get('lich-su-hoc', [EducationalHistoryController::class, 'index'])->name('educational-history');
 
 Route::get('/bang-diem-theo-ky', [ScoreController::class, 'index'])->name('scores');
+
+Route::get('feedback', [FeedbackController::class, 'showForStudent'])->name('showForStudent');
+Route::post('feedback/{id}', [FeedbackController::class, 'submitStudentFeedback'])->name('submitStudentFeedback');

@@ -46,6 +46,11 @@ class SubjectClass extends Model
         return $this->hasMany(StudentSubjectClass::class);
     }
     
+    public function feedbacks()
+    {
+        return $this->hasMany(Feedback::class, 'subject_class_id');
+    }
+
     public static function validate($data, $request)
     {
         $rules = $request->rules();

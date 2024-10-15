@@ -111,6 +111,12 @@
           <span>Lớp Môn </span>
         </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ route('admin.feedbacks.index')}}"> 
+          <i class="bi bi-folder2-open"></i>
+          <span>feedback </span>
+        </a>  
+      </li>
     </ul>
 
   </aside><!-- End Sidebar-->

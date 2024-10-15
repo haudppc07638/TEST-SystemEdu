@@ -44,6 +44,10 @@ class Student extends Authenticatable
         return $this->belongsTo(SubjectClass::class);
     }
 
+    public function feedbacks()
+    {
+        return $this->hasMany(Feedback::class);
+    }
     
     public static function getStudentsByMajors($id)
     {
