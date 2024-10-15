@@ -13,7 +13,7 @@ class SubjectController extends Controller
 {
     public function index()
     {
-        $subjects = Subject::with('major')->get();
+        $subjects = Subject::getAllSubjects();
         return view('admin.subjects.index', ['subjectView' => $subjects]);
     }
 
@@ -25,17 +25,10 @@ class SubjectController extends Controller
 
     public function store(SubjectRequest $request)
     {
-        $rules = $request->rules();
-        $messages = $request->messages();
-        $data = $request->only(['code', 'name', 'description', 'major_id']);
-        $validator = Validator::make($data, $rules, $messages);
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-        $validatedData = $validator->validated();
-        $subject = Subject::create($validatedData);
+        $data = $request->only(['code', 'name','credit', 'description', 'major_id']);
+        
+        $data['price'] = 0;
+        $subject = Subject::createSubject($data);
         toastr()->success('Thêm thành công môn học: ' . $subject->name);
         return redirect()->route('admin.subjects.index');
     }
@@ -58,19 +51,11 @@ class SubjectController extends Controller
 
     public function update(SubjectRequest $request, string $id)
     {
-        $rules = $request->rules(); 
-        $messages = $request->messages();
-        $data = $request->only(['code', 'name', 'description', 'major_id']);
-        $validator = Validator::make($data, $rules, $messages);
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-        $validatedData = $validator->validated();
-
-        $subject = Subject::findOrFail($id);
-        $subject->update($validatedData);
+        
+        $data = $request->only(['code', 'name','credit', 'description', 'major_id']);
+        $data['price'] = 0;
+        $subject = Subject::updateSubject($id,$data);
+        $subject->update($data);
         toastr('Cập nhật thông tin môn học thành công: ' . $subject->name);
         return redirect()->route('admin.subjects.index');
     }

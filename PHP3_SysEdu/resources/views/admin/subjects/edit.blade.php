@@ -43,16 +43,6 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label for="description" class="col-sm-2 col-form-label">Mô tả</label>
-                                <div class="col-sm-10">
-                                    <textarea name="description" class="form-control" id="description">{{ old('description', $subject->description) }}</textarea>
-                                    @error('description')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
                                 <label for="major_id" class="col-sm-2 col-form-label">Chuyên ngành</label>
                                 <div class="col-sm-10">
                                     <select name="major_id" class="form-select" id="major_id" >
@@ -64,6 +54,24 @@
                                         @endforeach
                                     </select>
                                     @error('major_id')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="credit" class="col-sm-2 col-form-label">Tín Chỉ</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="credit" class="form-control" id="credit" value="{{ old('credit') }}" >
+                                    @error('credit')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label for="description" class="col-sm-2 col-form-label">Mô tả</label>
+                                <div class="col-sm-10">
+                                    <textarea name="description" class="form-control" id="description">{{ old('description', $subject->description) }}</textarea>
+                                    @error('description')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>

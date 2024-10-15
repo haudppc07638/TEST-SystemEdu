@@ -28,9 +28,11 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Mã môn học</th>
-                                    <th>Tên môn học </th>
+                                    <th>Tên môn học</th>
+                                    <th>Mã môn học </th>
                                     <th>Chuyên ngành </th>
+                                    <th>Tín Chỉ </th>
+                                    <th>Giá Môn</th>
                                     <th>Mô tả</th>
                                     <th>Tác vụ</th>
                                 </tr>
@@ -39,9 +41,11 @@
                                 @foreach($subjectView as $index => $subject)
                                 <tr>
                                     <td>{{ $index +1 }}</td>
-                                    <td>{{ $subject->code }}</td>
                                     <td>{{ $subject->name }}</td>
+                                    <td>{{ $subject->code }}</td>
                                     <td>{{ $subject->major->name ?? 'N/A' }}</td>
+                                    <td>{{ $subject->credit }}</td>
+                                    <td>{{ number_format($subject->price)}} VNĐ</td>
                                     <td class="text-limited">{{ $subject->description }}</td>
                                     <td>
                                         <div class="dropdown">

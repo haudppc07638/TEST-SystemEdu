@@ -16,6 +16,8 @@ class Subject extends Model
         'id',
         'code',
         'name',
+        'credit',
+        'price',
         'description',
         'major_id',
     ];
@@ -33,6 +35,14 @@ class Subject extends Model
     public static function getAllSubjects()
     {
         return self::with('major')->get();
+    }
+    public function setCreditAttribute($value){
+        $this->attributes['credit'] = $value;
+    }
+    public function setPriceAttribute(){
+        $credit = $this->attributes['credit'];
+        $this->attributes['price'] = $credit * 250000; 
+        $this->save();
     }
 
     public static function validate($data, $request)

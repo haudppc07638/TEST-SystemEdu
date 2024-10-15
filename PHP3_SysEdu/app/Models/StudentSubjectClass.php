@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class StudentSubjectClass extends Model
 {
@@ -24,33 +27,46 @@ class StudentSubjectClass extends Model
     ];
     public function student(): BeLongsTo
     {
-        return $this->belongsTo(Student::class);
+        return $this->belongsTo(Student::class,'student_id');
     }
     public function subjectClass(): BeLongsTo
     {
         return $this->belongsTo(SubjectClass::class);
     }
-    public function setMidtermScoreAttribute($value)
-    {
-        $this->attributes['midterm_score'] = $value;
-        $this->calculateTotalScore();
+    public function tuition(): HasOne{
+        return $this->hasOne(Tuition::class,'student_subject_class_id');
     }
+    public function subject(): HasManyThrough{
+        return $this->hasManyThrough(
+            Subject::class,
+            SubjectClass::class,
+            'subject_id',
+            'subject_class_id',
+            'id',
+            'id',
+        );
+    }
+    // public function setMidtermScoreAttribute($value)
+    // {
+    //     $this->attributes['midterm_score'] = $value;
+    //     $this->calculateTotalScore();
+    // }
 
-    public function setFinalScoreAttribute($value)
-    {
-        $this->attributes['final_score'] = $value;
-        $this->calculateTotalScore();
-    }
+    // public function setFinalScoreAttribute($value)
+    // {
+    //     $this->attributes['final_score'] = $value;
+    //     $this->calculateTotalScore();
+    // }
 
-    protected function calculateTotalScore()
-    {
-        $midtermScore = $this->attributes['midterm_score'] ?? 0;
-        $finalScore = $this->attributes['final_score'] ?? 0;
-        $this->attributes['total_score'] = ($midtermScore * 0.4) + ($finalScore * 0.6);
-        $this->updateClassfication();
-        $this->updateStatusBasedOnTotalScore();
-        $this->save();
-    }
+    // protected function calculateTotalScore()
+    // {
+    //     $midtermScore = $this->attributes['midterm_score'] ?? 0;
+    //     $finalScore = $this->attributes['final_score'] ?? 0;
+    //     $this->attributes['total_score'] = ($midtermScore * 0.4) + ($finalScore * 0.6);
+    //     $this->updateClassfication();
+    //     $this->updateStatusBasedOnTotalScore();
+    //     $this->save();
+    // }
     public function getClassficationAttribute()
     {
         $totalScore = $this->attributes['total_score'];
@@ -107,20 +123,30 @@ class StudentSubjectClass extends Model
 
     public static function cancelStudentSubjectClass($studentId, $subjectClassId)
     {
-        return self::where('student_id', $studentId)
+           $studentSubjectClass = self::where('student_id', $studentId)
             ->where('subject_class_id', $subjectClassId)
-            ->delete();
-    }
+            ->first();
+            if ($studentSubjectClass) {
+                $subjectClass = $studentSubjectClass->subjectClass;
+        
+                if ($subjectClass && $subjectClass->subject) {
+          
+                    return $studentSubjectClass->delete();
+                }
+            }
+            return false;
+        }
 
     public static function insertStudentSubjectClass($studentId, $subjectClassId)
     {
-        return self::insert([
+        return self::create([
             'student_id' => $studentId,
             'subject_class_id' => $subjectClassId,
-            'midterm_score' => 0,
-            'final_score' => 0,
-            'total_score' => 0,
-            'classification' => 'Chưa phân loại'
+            'midterm_score' => 1,
+            'final_score' => 1,
+            'total_score' => 1,
+            'classification' => 'Chưa phân loại',
+            'status' => 'fail'
         ]);
     }
 
@@ -156,4 +182,29 @@ class StudentSubjectClass extends Model
 
         return $chartData;
     }
+    public static function booted(): void
+    {
+        static::deleting(function (StudentSubjectClass $studentSubjectClass) {
+            $studentId = $studentSubjectClass->student_id;
+            $subjectClass = $studentSubjectClass->subjectClass;
+            $subject = $subjectClass->subject;
+    
+            if ($studentId && $subject) {
+                $totalTuition = TotalTuition::where('student_id', $studentId)->first();
+                
+                if ($totalTuition) {
+                    $totalTuition->total_amount -= $subject->price;
+                    $totalTuition->total_credit -= $subject->credit;
+    
+                    if ($totalTuition->total_amount <= 0 && $totalTuition->total_credit <= 0) {
+                        $totalTuition->delete();
+                    } else {
+                        $totalTuition->save();
+                    }
+                }
+            }
+        });
+    }
+    
+
 }

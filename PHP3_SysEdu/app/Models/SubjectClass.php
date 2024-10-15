@@ -41,9 +41,9 @@ class SubjectClass extends Model
     {
         return $this->belongsto(Employee::class);
     }
-    public function studentSubjectClasses()
+    public function studentSubjectClasses(): HasMany
     {
-        return $this->hasMany(StudentSubjectClass::class);
+        return $this->hasMany(StudentSubjectClass::class, 'subject_class_id');
     }
     
     public function feedbacks()

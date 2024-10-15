@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOneOrManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Student extends Authenticatable
 {
@@ -42,6 +45,22 @@ class Student extends Authenticatable
     public function subjectClass(): BelongsTo
     {
         return $this->belongsTo(SubjectClass::class);
+    }
+    public function totalTuition(): HasMany{
+        return $this->hasMany(TotalTuition::class);
+    }
+    public function studentSubjectClasses(): HasMany{
+        return $this->hasMany(StudentSubjectClass::class, 'student_id');
+    }
+    public function tuition(): HasOneOrManyThrough{
+        return $this->hasOneThrough(
+            Tuition::class,
+            StudentSubjectClass::class,
+            'student_id',
+            'student_subject_class_id',
+            'id',
+            'id',
+        );
     }
 
     public function feedbacks()
@@ -133,4 +152,13 @@ class Student extends Authenticatable
         return self::select('id', 'fullname', 'email', 'phone', 'image', 'code', 'major_id', 'class_id')
         ->get();
     }
+
+    public static function getCredits(){
+        return self::with('subject_class', 'student')
+        ->where('student_id', 'credit', 'subject_class_id')
+        ->get();
+    }
+    // public static function getTuiTionStudent(){
+    //     return static::
+    // }
 }

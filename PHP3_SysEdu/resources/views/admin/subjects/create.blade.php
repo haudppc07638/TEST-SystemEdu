@@ -43,6 +43,15 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
+                                <label for="code" class="col-sm-2 col-form-label">Tín Chỉ</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="credit" class="form-control" id="credit" value="{{ old('credit') }}" >
+                                    @error('credit')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row mb-3">
                                 <label for="major_id" class="col-sm-2 col-form-label">Chuyên ngành</label>
                                 <div class="col-sm-10">
                                     <select name="major_id" class="form-select" id="major_id" >

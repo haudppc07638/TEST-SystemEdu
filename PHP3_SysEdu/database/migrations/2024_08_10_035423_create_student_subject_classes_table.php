@@ -19,7 +19,7 @@ return new class extends Migration
             $table->decimal('total_score', 4,2);
             $table->string('classification', 50);
             $table->foreignId('student_id')->nullable()->constrained('students')->onDelete('set null');
-            $table->foreignId('subject_class_id')->nullable()->constrained('subject_classes')->onDelete('set null');
+            $table->foreignId('subject_class_id')->nullable()->constrained(table: 'subject_classes')->onDelete('set null');
             $table->timestamps();
         });
     }
