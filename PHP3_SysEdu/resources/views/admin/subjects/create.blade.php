@@ -25,39 +25,13 @@
                             @csrf
                             <br>
                             <div class="row mb-3">
-                                <label for="name" class="col-sm-2 col-form-label">Tên môn học</label>
-                                <div class="col-sm-10">
-                                    <input type="text" name="name" class="form-control" id="name" value="{{ old('name') }}" >
-                                    @error('name')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <label for="code" class="col-sm-2 col-form-label">Mã môn học</label>
-                                <div class="col-sm-10">
-                                    <input type="text" name="code" class="form-control" id="code" value="{{ old('code') }}" >
-                                    @error('code')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <label for="code" class="col-sm-2 col-form-label">Tín Chỉ</label>
-                                <div class="col-sm-10">
-                                    <input type="text" name="credit" class="form-control" id="credit" value="{{ old('credit') }}" >
-                                    @error('credit')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="row mb-3">
                                 <label for="major_id" class="col-sm-2 col-form-label">Chuyên ngành</label>
                                 <div class="col-sm-10">
-                                    <select name="major_id" class="form-select" id="major_id" >
+                                    <select name="major_id" class="form-select" id="major_id">
                                         <option value="">Chọn chuyên ngành</option>
-                                        @foreach($majors as $major)
-                                            <option value="{{ $major->id }}" {{ old('major_id') == $major->id ? 'selected' : '' }}>
+                                        @foreach ($majors as $major)
+                                            <option value="{{ $major->id }}"
+                                                {{ old('major_id') == $major->id ? 'selected' : '' }}>
                                                 {{ $major->name }}
                                             </option>
                                         @endforeach
@@ -67,6 +41,56 @@
                                     @enderror
                                 </div>
                             </div>
+
+                            <div class="row mb-3">
+                                <label for="name" class="col-sm-2 col-form-label">Tên môn học</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="name" class="form-control" id="name"
+                                        value="{{ old('name') }}">
+                                    @error('name')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="code" class="col-sm-2 col-form-label">Mã môn học</label>
+                                <div class="col-sm-10">
+                                    <input type="text" name="code" class="form-control" id="code"
+                                        value="{{ old('code') }}">
+                                    @error('code')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="credit" class="col-sm-2 col-form-label">Tín Chỉ</label>
+                                <div class="col-sm-10">
+                                    <input type="number" name="credit" class="form-control" id="credit"
+                                        value="{{ old('credit') }}" min="1" step="1">
+                                    @error('credit')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <label for="prerequisites" class="col-sm-2 col-form-label">Môn tiên quyết</label>
+                                <div class="col-sm-10">
+                                    <select name="prerequisites[]" class="form-select" id="prerequisites" multiple>
+                                        @foreach($subjects as $subject)
+                                            <option value="{{ $subject->id }}" {{ in_array($subject->id, old('prerequisites', [])) ? 'selected' : '' }}>
+                                                {{ $subject->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('prerequisites')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+
                             <div class="row mb-3">
                                 <label for="description" class="col-sm-2 col-form-label">Mô tả</label>
                                 <div class="col-sm-10">
@@ -76,6 +100,7 @@
                                     @enderror
                                 </div>
                             </div>
+
                             <button type="submit" class="btn btn-primary">Thêm mới</button>
                         </form>
                     </div>
@@ -91,4 +116,12 @@
 @endpush
 
 @push('script')
+<script>
+    $(document).ready(function() {
+        $('#prerequisites').select2({
+            placeholder: "Chọn môn tiên quyết",
+            allowClear: true
+        });
+    });
+</script>
 @endpush

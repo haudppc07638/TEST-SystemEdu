@@ -31,7 +31,9 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Khoa</th>
-                                        <th>Têm chuyên ngành</th>
+                                        <th>Chuyên ngành</th>
+                                        <th>Mã</th>
+                                        <th>Số tín chỉ</th>
                                         <th>Tác vụ</th>
                                     </tr>
                                 </thead>
@@ -41,6 +43,8 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $major->faculty->name ?? 'Chưa sắp' }}</td>
                                             <td>{{ $major->name }}</td>
+                                            <td>{{ $major->code }}</td>
+                                            <td>{{ $major->total_credits }}</td>
                                             <td>
                                                 <div class="dropdown">
                                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow"

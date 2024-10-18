@@ -15,6 +15,7 @@ class MajorController extends Controller
      */
     public function index()
     {
+        Major::updateTotalCreditsForAllMajors();
         $majors = Major::getAllMajor();
         return view('admin.majors.index', ['majorsView' => $majors]);
     }
@@ -33,7 +34,7 @@ class MajorController extends Controller
      */
     public function store(MajorRequest $request)
     {
-        $data = $request->only(['name', 'faculty_id']);
+        $data = $request->only(['name', 'faculty_id', 'code']);
         $validator = Major::validate($data, $request);
 
         if ($validator->fails()) {
@@ -63,7 +64,7 @@ class MajorController extends Controller
      */
     public function update(MajorRequest $request, string $id)
     {
-        $data = $request->only(['name', 'faculty_id']);
+        $data = $request->only(['name', 'faculty_id', 'code']);
         $validator = Major::validate($data, $request);
 
         if ($validator->fails()) {
@@ -72,7 +73,7 @@ class MajorController extends Controller
                 ->withInput();
         }
         $validatedData = $validator->validate();
-        $major = Major::updateMajor($id,$validatedData);
+        $major = Major::updateMajor($id, $validatedData);
         toastr()->success('Cập nhật thành công chuyên ngành: ' . $major->name);
         return redirect()->route('admin.majors.index');
     }
@@ -83,15 +84,14 @@ class MajorController extends Controller
     public function destroy(string $id)
     {
         try {
-        Major::deleteMajor($id);
-        toastr()->success('Xoá thành công');
-        return redirect()->route('admin.majors.index');
-    }
-    catch (QueryException $e) {
-        if ($e->getCode()) {
+            Major::deleteMajor($id);
+            toastr()->success('Xoá thành công');
+            return redirect()->route('admin.majors.index');
+        } catch (QueryException $e) {
+            if ($e->getCode()) {
+                return redirect()->route('admin.majors.index');
+            }
             return redirect()->route('admin.majors.index');
         }
-        return redirect()->route('admin.majors.index');
     }
-}
 }

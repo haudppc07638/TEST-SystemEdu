@@ -86,6 +86,7 @@ Route::prefix('subjects')->name('admin.subjects.')->group(function () {
     Route::get('edit/{id}', [SubjectController::class, 'edit'])->name('edit');
 });
 
+
 Route::name('admin.')->group(function () {
     Route::get('Faculties', [ClassController::class, 'showFaculties'])->name('faculties');
     Route::get('Faculty/Majors/{id}', [ClassController::class, 'showMajors'])->name('majors');

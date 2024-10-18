@@ -25,8 +25,9 @@ class MajorRequest extends FormRequest
         $majorId = $this->route('id');
 
         return [
-            'name' => ['required', 'string', 'max:100', Rule::unique('majors')->ignore($majorId)],
+            'name' => 'required|string|max:100',
             'faculty_id' => 'required|exists:faculties,id',
+            'code' => ['required', 'string', 'max:15', Rule::unique('majors')->ignore($majorId)],
         ];
     }
 
@@ -40,10 +41,15 @@ class MajorRequest extends FormRequest
         return [
             'name.required' => 'Tên chuyên ngành không được để trống',
             'name.string' => 'Tên chuyên ngành phải là 1 chuỗi ký tự',
-            'name.unique' => 'Tên chuyên ngành đã tồn tại!',
             'name.max' => 'Tên chuyên ngành không được nhập quá 100 ký tự',
+
             'faculty_id.required' => 'Khoa không được để trống',
             'faculty_id.exists' => 'Khoa không hợp lệ',
+
+            'code.required' => 'Mã chuyên ngành không được để trống',
+            'code.string' => 'Mã chuyên ngành phải là 1 chuỗi ký tự',
+            'code.unique' => 'Mã chuyên ngành đã tồn tại',
+            'code.max' => 'Mã chuyên ngành không được quá 15 ký tự',
         ];
     }
 }

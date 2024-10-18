@@ -47,6 +47,15 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label">Mã chuyên ngành</label>
+                        <input type="text" class="form-control @error('name') is-invalid @enderror" name="code"
+                            value="{{ old('code',  $major->code) }}">
+                        @error('code')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                 
                     <div class="col-12">
                         <div class="col-sm-10">

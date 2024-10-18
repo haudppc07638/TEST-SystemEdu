@@ -16,6 +16,8 @@ class Major extends Model
 
     protected $fillable = [
         'name',
+        'code',
+        'total_credits',
         'faculty_id',
     ];
 
@@ -112,6 +114,16 @@ class Major extends Model
     {
         return self::with('students')
         ->get();
+    }
+
+    public static function updateTotalCreditsForAllMajors()
+    {
+        self::with('subjects')->each(function ($major) {
+            $totalCreditsNoMajor = Subject::whereNull('major_id')->sum('credit');
+            $totalCreditsForMajor = $major->subjects->sum('credit');
+            $totalCredits = $totalCreditsNoMajor + $totalCreditsForMajor;
+            $major->update(['total_credits' => $totalCredits]);
+        });
     }
 
 }

@@ -32,9 +32,14 @@ class Subject extends Model
         return $this->hasMany(SubjectClass::class);
     }
 
+    public function prerequisites()
+    {
+        return $this->belongsToMany(Subject::class, 'prerequisite_subjects', 'subject_id', 'prerequisite_id');
+    }
+
     public static function getAllSubjects()
     {
-        return self::with('major')->get();
+        return self::with('major')->latest()->get();
     }
     public function setCreditAttribute($value){
         $this->attributes['credit'] = $value;
@@ -65,6 +70,10 @@ class Subject extends Model
     public static function getAllSubject()
     {
         return self::all();
+    }
+
+    public function getQrerequisitesSubject($id){
+        return self::with('prerequisites')->findOrFail($id);
     }
 
     public static function updateSubject($id, $data)
@@ -101,5 +110,9 @@ class Subject extends Model
                 $query->where('registration_deadline', '>=', $today);
             })
             ->get();
+    }
+
+    public function getSubjectByMajor($major_id){
+        return self::where('major_id', $major_id)->get();
     }
 }
