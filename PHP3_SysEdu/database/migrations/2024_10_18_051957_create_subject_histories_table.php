@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('majors', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 100);
+        Schema::create('subject_histories', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->foreignId('student_subject_class_id')->constrained('student_subject_classes');
+            $table->string('status');
             $table->timestamps();
-            
-            $table->foreignId('faculty_id')->nullable()->constrained('faculties')->onDelete('set null');
+            $table->softDeletes();
         });
     }
 
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('majors');
+        Schema::dropIfExists('subject_histories');
     }
 };

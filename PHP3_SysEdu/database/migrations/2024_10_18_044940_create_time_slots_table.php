@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('subjects', function (Blueprint $table) {
-            $table->integer('credit');
-            $table->float('price');
+        Schema::create('time_slots', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string( 'slot', 15);
+            $table->time('start_time');
+            $table->time('end_time');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -22,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('subjects', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('time_slots');
     }
 };

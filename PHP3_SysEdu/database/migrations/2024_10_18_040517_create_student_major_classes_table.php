@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('tuitions', function (Blueprint $table) {
-                $table->dropColumn(['total_amount','total_credit', 'tuition_status']);
+        Schema::create('student_major_classes', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->foreignId('major_class_id')->constrained('major_classes');
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('tuitions', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('student_major_classes');
     }
 };

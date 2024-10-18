@@ -12,13 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tuitions', function (Blueprint $table) {
-            $table->id();
-            $table->float('total_amount');
-            $table->integer('total_credit');
-            $table->enum('tuition_status',['unpaid', 'paid', 'late'])->default('unpaid');
-
-            $table->foreignId('student_subject_class_id')->nullable()->constrained('student_subject_classes');
+            $table->bigIncrements('id');
+            $table->foreignId('student_subject_class_id')->constrained('student_subject_classes');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

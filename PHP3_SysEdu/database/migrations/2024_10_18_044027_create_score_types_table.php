@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('student_subject_classes', function (Blueprint $table) {
-            $table->string('status')->default('fail');
+        Schema::create('score_types', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string("name", 100)->unique();
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('student_subject_classes', function (Blueprint $table) {
-            $table->dropColumn('status'); 
-        });
+        Schema::dropIfExists('score_types');
     }
 };

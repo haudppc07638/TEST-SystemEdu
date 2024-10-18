@@ -11,16 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->id();
-
-            $table->string('name')->comment('Ghi chú ở đây');
-
-            $table->bigInteger('parent_id');
-            
-            $table->tinyInteger('status')->default(0);
-
+        Schema::create('credits', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->decimal('price', 10, 2);
+            $table->decimal('vat', 5, 2);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -29,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
+        Schema::dropIfExists('credits');
     }
 };

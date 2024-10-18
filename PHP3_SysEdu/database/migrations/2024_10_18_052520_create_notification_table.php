@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notifications', function (Blueprint $table) {
-            $table->id();
+        Schema::create('notification', function (Blueprint $table) {
+            $table->bigIncrements('id');
             $table->string('title');
             $table->text('content');
-            $table->string('type'); 
-            $table->dateTimeTz('date_sent')->nullable();;
-            $table->foreignId('employee_id')->nullable()->constrained('employees')->onDelete('set null');
-            $table->json('recipient');
-            
+            $table->enum('type', ['email','system']);
+            $table->dateTime('date_sent');
+            $table->json('recipients');
+            $table->foreignId('employee_id')->constrained('employees');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notifications');
+        Schema::dropIfExists('notification');
     }
 };

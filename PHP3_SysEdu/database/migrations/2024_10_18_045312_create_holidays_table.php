@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('semesters', function (Blueprint $table) {
-            $table->date('start_day')->nullable();
-            $table->date('end_day')->nullable();
+        Schema::create('holidays', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->date( 'date')->unique();
+            $table->text('description')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -22,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('semesters', function (Blueprint $table) {
-            $table->dropColumn(['start_day', 'end_day']);
-        });
+        Schema::dropIfExists('holidays');
     }
 };

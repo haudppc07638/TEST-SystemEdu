@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('time_slots', function (Blueprint $table) {
-            $table->id();
-            $table->string('slot', 10);
-            $table->time('start_time');
-            $table->time('end_time');
+        Schema::create('semesters', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('block', 50);
+            $table->unsignedInteger('year');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -25,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('time_slots');
+        Schema::dropIfExists('semesters');
     }
 };

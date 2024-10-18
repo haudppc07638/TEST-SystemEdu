@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('semesters', function (Blueprint $table) {
-            $table->id();
-            $table->string('block', 10);
-            $table->date('year');
+        Schema::create('majors', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('name', 100);
+            $table->string('code', 15)->unique();
+            $table->unsignedSmallInteger('total_credits');
+            $table->foreignId('faculty_id')->constrained('faculties');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('semesters');
+        Schema::dropIfExists('majors');
     }
 };
