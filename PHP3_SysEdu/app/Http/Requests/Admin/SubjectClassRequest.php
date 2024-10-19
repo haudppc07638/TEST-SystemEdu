@@ -31,6 +31,8 @@ class SubjectClassRequest extends FormRequest
             'employee_id' => 'required',
             'subject_id' => 'required',
             'semester_id' => 'required',
+            'major_class_id' => 'required',
+            'credit_id' => 'required',
             
         ];
     }

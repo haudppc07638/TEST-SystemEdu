@@ -31,6 +31,11 @@
             </a>
           </li>
           <li>
+            <a href="{{ route('admin.credits.index')}}">
+              <i class="bi bi-circle"></i><span>Tín Chỉ</span>
+            </a>
+          </li>
+          <li>
             <a href="{{ route('admin.departments.index')}}">
               <i class="bi bi-circle"></i><span>Phòng Ban</span>
             </a>

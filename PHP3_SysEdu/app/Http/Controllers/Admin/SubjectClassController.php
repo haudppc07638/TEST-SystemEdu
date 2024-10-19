@@ -8,6 +8,8 @@ use App\Models\SubjectClass;
 use App\Models\Subject;
 use App\Models\Employee;
 use App\Models\Semester;
+use App\Models\Credit;
+use App\Models\StuClass;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\QueryException;
 
@@ -28,11 +30,15 @@ class SubjectClassController extends Controller
         $subjects = Subject::getCodeSubject();
         $semesters = Semester::getSemester(); 
         $employees = Employee::getNameEmployees();
+        $credits = Credit::getAllCredit();
+        $majorClass = StuClass::getNameClasses();
        
         return view('admin.subjectclasses.create',[
             'subjects'  =>$subjects,
             'semesters'=>$semesters,
             'employees' =>$employees,
+            'credits' => $credits,
+            'majorClasses' => $majorClass,
         ]);
     }
     
@@ -49,6 +55,8 @@ class SubjectClassController extends Controller
             'employee_id',
             'subject_id',
             'semester_id',
+            'major_class_id',
+            'credit_id'
         ]);
         $validator = Validator::make($data, $rules, $messages);
         if ($validator->stopOnFirstFailure()->fails()) {
@@ -58,6 +66,7 @@ class SubjectClassController extends Controller
         }
         $validatedData = $validator->validated();
         SubjectClass::create($validatedData);
+
         toastr()->success('Lớp học được tạo thành công');
         return redirect()->route('admin.subjectclasses.index');
     }
@@ -69,12 +78,16 @@ class SubjectClassController extends Controller
         $subjects = Subject::getCodeSubject();
         $semesters = Semester::getSemester();
         $employees = Employee::getNameEmployees();
+        $credits = Credit::getAllCredit();
+        $majorClass = StuClass::getNameClasses();
     
         return view('admin.subjectclasses.edit', [
             'subjectClass' => $subjectClass,
             'subjects' => $subjects,
             'semesters' => $semesters,
             'employees' => $employees,
+            'credits' => $credits,
+            'majorClasses' => $majorClass,
         ]);
     }
     
@@ -87,10 +100,12 @@ class SubjectClassController extends Controller
             'name',
             'start_date',
             'end_date',
+            'registration_deadline',
             'employee_id',
             'subject_id',
             'semester_id',
-            'registration_deadline',
+            'major_class_id',
+            'credit_id'
         ]);
         $validator = Validator::make($data, $rules, $messages);
         if ($validator->stopOnFirstFailure()->fails()) {

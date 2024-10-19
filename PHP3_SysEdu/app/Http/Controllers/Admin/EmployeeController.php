@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\EmployeeRequest;
 use App\Models\Department;
 use App\Models\Employee;
-use App\Models\Faculty;
+use App\Models\Major;
 use Illuminate\Support\Facades\Validator;
 use App\Services\ImageService;
 use App\Exports\EmployeesExport;
@@ -38,11 +38,11 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        $faculties = Faculty::getNameFaculties();
+        $major = Major::getNameMajors();
         $departments = Department::getNameDepartments();
 
         return view('admin.employees.create', [
-            'faculties' => $faculties,
+            'majors' => $major,
             'departments' => $departments
         ]);
     }
@@ -56,14 +56,27 @@ class EmployeeController extends Controller
         $messages = $request->messages();
 
         $data = $request->only([
-            'fullname',
+            'full_name',
             'email',
-            'password',
+            'code',
             'phone',
             'image',
             'position',
-            'faculty_id',
+            'gender',
+            'major_id',
             'department_id',
+            'nation',                  
+            'educational_level',   
+            'provice_city',
+            'district',
+            'commune_level',     
+            'identity_card',            
+            'card_issuance_date',       
+            'card_location',            
+            'house_number',             
+            'date_of_birth',            
+            'year_graduation',         
+            'graduate',
         ]);
 
         $validator = Validator::make($data, $rules, $messages);
@@ -74,10 +87,13 @@ class EmployeeController extends Controller
                 ->withInput();
         }
 
-        $data['image'] = $this->imageService->handleImageStore($request);
-
+        if ($request->hasFile('image')) {
+            $data['image'] = $this->imageService->handleImageStore($request);
+        }
+    
         $employee = Employee::create($data);
-        toastr()->success('Thêm thành công nhân sự: ' . $employee->fullname);
+    
+        toastr()->success('Thêm thành công nhân sự: ' . $employee->full_name);
         return redirect()->route('admin.employees.index');
     }
 
@@ -87,12 +103,12 @@ class EmployeeController extends Controller
     public function edit($id)
     {
         $employee = Employee::getEmployeeById($id);
-        $faculties = Faculty::getNameFaculties();
+        $major = Major::getNameMajors();
         $departments = Department::getNameDepartments();
 
         return view('admin.employees.edit', [
             'employee' => $employee,
-            'faculties' => $faculties,
+            'majors' => $major,
             'departments' => $departments,
         ]);
     }
@@ -106,13 +122,27 @@ class EmployeeController extends Controller
         $messages = $request->messages();
 
         $data = $request->only([
-            'fullname',
+            'full_name',
             'email',
+            'code',
             'phone',
             'image',
             'position',
-            'faculty_id',
+            'gender',
+            'major_id',
             'department_id',
+            'nation',                  
+            'educational_level',   
+            'provice_city',
+            'district',
+            'commune_level',     
+            'identity_card',            
+            'card_issuance_date',       
+            'card_location',            
+            'house_number',             
+            'date_of_birth',            
+            'year_graduation',         
+            'graduate',
         ]);
         $validator = Validator::make($data, $rules, $messages);
 
@@ -124,7 +154,7 @@ class EmployeeController extends Controller
         $employee = Employee::getEmployeeById($id);
         $data['image'] = $this->imageService->handleImageUpdate($request, $employee);
         $employee->update($data);
-        toastr()->success('Cập nhật thành công thông tin nhân sự: ' . $employee->fullname);
+        toastr()->success('Cập nhật thành công thông tin nhân sự: ' . $employee->full_name);
         return redirect()->route('admin.employees.index');
     }
 
