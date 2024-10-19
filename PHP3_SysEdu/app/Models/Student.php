@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Carbon\Carbon;
 
 class Student extends Authenticatable
 {
@@ -18,14 +19,25 @@ class Student extends Authenticatable
     protected $table = 'students';
 
     protected $fillable = [
-        'fullname', 
-        'email', 
-        'password', 
-        'code', 
-        'phone', 
-        'image', 
-        'major_id', 
-        'class_id',
+        'full_name',           // Tên đầy đủ
+        'date_of_birth',       // Ngày sinh
+        'gender',              // Giới tính (0 - nữ, 1 - nam)
+        'nation',              // Quốc tịch
+        'email',               // Email
+        'code',                // Mã sinh viên
+        'phone',               // Số điện thoại
+        'image',               // Ảnh đại diện
+        'identity_card',       // CMND/CCCD
+        'card_issuance_date',  // Ngày cấp CMND/CCCD
+        'card_location',       // Nơi cấp CMND/CCCD
+        'provice_city',        // Tỉnh/Thành phố
+        'district',            // Quận/Huyện
+        'commune_level',       // Xã/Phường
+        'house_number',        // Số nhà
+        'sponsor_name',        // Tên người bảo hộ
+        'sponsor_phone',       // Số điện thoại người bảo hộ
+        'major_id',            // ID chuyên ngành
+        'major_class_id',      // ID lớp chuyên ngành
     ];
     public function isStudent()
     {
@@ -39,7 +51,7 @@ class Student extends Authenticatable
 
     public function stuClass(): BelongsTo
     {
-        return $this->belongsTo(StuClass::class, 'class_id');
+        return $this->belongsTo(StuClass::class, 'major_class_id');
     }
 
     public function subjectClass(): BelongsTo
@@ -74,9 +86,9 @@ class Student extends Authenticatable
     ->get();
     }
 
-    public static function getAllStudents()
+    public static function getAllStudents($perPage = 20)
     {
-        return self::with(['major', 'stuClass'])->orderBy('id', 'desc')->get();
+        return self::with(['major', 'stuClass'])->orderBy('id', 'desc')->paginate($perPage);
     }
 
     public static function getStudentsForCreate()
@@ -106,6 +118,7 @@ class Student extends Authenticatable
 
     public static function createStudent($data)
     {
+        $data['code'] = self::generateStudentCode();
         return self::create($data);
     }
 
@@ -161,4 +174,24 @@ class Student extends Authenticatable
     // public static function getTuiTionStudent(){
     //     return static::
     // }
+    public function getDateOfBirthAttribute($value)
+    {
+        return Carbon::parse($value);
+    }
+
+    // Chuyển đổi card_issuance_date thành Carbon
+    public function getCardIssuanceDateAttribute($value)
+    {
+        return Carbon::parse($value);
+    }
+    public static function generateStudentCode()
+    {
+        $latestStudent = self::orderBy('id', 'desc')->first();
+        $newCode = 'STU' . str_pad((int)substr($latestStudent->code, 3) + 1, 5, '0', STR_PAD_LEFT);
+        while (self::where('code', $newCode)->exists()) {
+            $newCode = 'STU' . str_pad((int)substr($newCode, 3) + 1, 5, '0', STR_PAD_LEFT);
+        }
+
+        return $newCode;
+    }
 }

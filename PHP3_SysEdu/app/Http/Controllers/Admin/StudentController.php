@@ -55,19 +55,31 @@ class StudentController extends Controller
         $messages = $request->messages();
 
         $data = $request->only([
-            'fullname', 
-            'email',
-            'password',
-            'phone',
-            'image',
-            'code',
-            'major_id',
-            'class_id',
+            'full_name',           // Tên đầy đủ
+            'date_of_birth',       // Ngày sinh
+            'gender',              // Giới tính (0 - nữ, 1 - nam)
+            'nation',              // Quốc tịch
+            'email',               // Email
+            'code',                // Mã sinh viên
+            'phone',               // Số điện thoại
+            'image',               // Ảnh đại diện
+            'identity_card',       // CMND/CCCD
+            'card_issuance_date',  // Ngày cấp CMND/CCCD
+            'card_location',       // Nơi cấp CMND/CCCD
+            'provice_city',        // Tỉnh/Thành phố
+            'district',            // Quận/Huyện
+            'commune_level',       // Xã/Phường
+            'house_number',        // Số nhà
+            'sponsor_name',        // Tên người bảo hộ
+            'sponsor_phone',       // Số điện thoại người bảo hộ
+            'major_id',            // ID chuyên ngành
+            'major_class_id',
         ]);
 
         $validator = Validator::make($data, $rules, $messages);
 
         if ($validator->stopOnFirstFailure()->fails()) {
+            dd($validator);
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -75,7 +87,7 @@ class StudentController extends Controller
 
         $data['image'] = $this->imageService->handleImageStore($request);
 
-        $student = Student::create($data);
+        $student = Student::createStudent($data);
         toastr()->success('Thêm thành công học sinh: ' . $student->fullname);
         return redirect()->route('admin.students.index');
     }
@@ -104,13 +116,24 @@ class StudentController extends Controller
         $messages = $request->messages();
     
         $data = $request->only([
-            'fullname', 
-            'email',
-            'phone',
-            'image',
-            'code',
-            'major_id',
-            'class_id',
+            'full_name',           // Tên đầy đủ
+            'date_of_birth',       // Ngày sinh
+            'gender',              // Giới tính (0 - nữ, 1 - nam)
+            'nation',              // Quốc tịch
+            'email',               // Email
+            'phone',               // Số điện thoại
+            'image',               // Ảnh đại diện
+            'identity_card',       // CMND/CCCD
+            'card_issuance_date',  // Ngày cấp CMND/CCCD
+            'card_location',       // Nơi cấp CMND/CCCD
+            'provice_city',        // Tỉnh/Thành phố
+            'district',            // Quận/Huyện
+            'commune_level',       // Xã/Phường
+            'house_number',        // Số nhà
+            'sponsor_name',        // Tên người bảo hộ
+            'sponsor_phone',       // Số điện thoại người bảo hộ
+            'major_id',            // ID chuyên ngành
+            'major_class_id',
         ]);
         
         $validator = Validator::make($data, $rules, $messages);
@@ -122,9 +145,14 @@ class StudentController extends Controller
         }
 
         $student = Student::findStudentById($id);
-        $data['image'] = $this->imageService->handleImageUpdate($request, $student);
+        if ($request->hasFile('image')) {
+            $data['image'] = $this->imageService->handleImageUpdate($request, $student);
+        } else {
+            // Giữ nguyên ảnh cũ nếu không có ảnh mới
+            $data['image'] = $student->image;
+        }
         $student->update($data);
-        toastr()->success('Cập nhật thành công thông tin học sinh: ' . $student->fullname);
+        toastr()->success('Cập nhật thành công thông tin học sinh: ' . $student->full_name);
         return redirect()->route('admin.students.index');
     }
 
@@ -137,7 +165,7 @@ class StudentController extends Controller
         $student = Student::findStudentById($id);
         $this->imageService->handleImageDelete($student->image);
         $student->delete();
-        toastr()->success('Xoá thành công học sinh: '.$student->fullname);
+        toastr()->success('Xoá thành công học sinh: '.$student->full_name);
         return redirect()->route('admin.students.index');
     }
     catch (QueryException $e) {
