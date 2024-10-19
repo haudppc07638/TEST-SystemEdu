@@ -16,23 +16,36 @@ class Employee extends Authenticatable
     protected $table = 'employees';
     
     protected $fillable = [
-        'fullname',
-        'email',
-        'password',
-        'phone',
-        'image',
-        'position',
-        'faculty_id',
-        'department_id',
+            'full_name',
+            'email',
+            'code',
+            'phone',
+            'image',
+            'position',
+            'gender',
+            'major_id',
+            'department_id',
+            'nation',                  
+            'educational_level',   
+            'provice_city',
+            'district',
+            'commune_level',     
+            'identity_card',            
+            'card_issuance_date',       
+            'card_location',            
+            'house_number',             
+            'date_of_birth',            
+            'year_graduation',         
+            'graduate',
     ];
 
     public function isEmployee()
     {
         return true;
     }
-    public function faculty(): BelongsTo
+    public function major(): BelongsTo
     {
-        return $this->belongsTo(Faculty::class);
+        return $this->belongsTo(Major::class);
     }
 
     public function department(): BelongsTo
@@ -60,7 +73,7 @@ class Employee extends Authenticatable
 
     public static function getAvailableTeachers($faculty_id){
         return self::where('position', 'Giáo viên')
-        ->where('faculty_id', $faculty_id)
+        ->where('major_id', $faculty_id)
         ->whereDoesntHave('classes', function ($query){
             $query->where('status', 0);
         })
@@ -68,7 +81,7 @@ class Employee extends Authenticatable
     }
 
     public static function getAllEmployees(){
-        return self::with('faculty', 'department')
+        return self::with('major', 'department')
         ->orderBy('id', 'desc')
         ->get();
     }
@@ -83,11 +96,11 @@ class Employee extends Authenticatable
     }   
 
     public static function getAllForPdf(){
-        return self::select('id', 'fullname', 'email', 'phone', 'image', 'position', 'faculty_id', 'department_id')
+        return self::select('id', 'fullname', 'email', 'phone', 'image', 'position', 'major_id', 'department_id')
         ->get();
     }
     public static function getNameEmployees(){
-        return self::select('id', 'fullname')
+        return self::select('id', 'full_name')
         ->get();
     }
 }

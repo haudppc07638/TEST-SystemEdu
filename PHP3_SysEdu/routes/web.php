@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\FacultyController;
 use App\Http\Controllers\Admin\MajorController;
 use App\Http\Controllers\Admin\SubjectController;
 use App\Http\Controllers\Admin\ClassController;
+use App\Http\Controllers\Admin\CreditController;
 use App\Http\Controllers\Admin\ScheduleController as AdminScheduleController;
 use App\Http\Controllers\Client\ScheduleController as ClientScheduleController;
 use App\Http\Controllers\Admin\StudentController;
@@ -216,6 +217,16 @@ Route::prefix('feedbacks')->name('admin.feedbacks.')->group(function () {
     Route::get('show/{studentId}', [FeedbackController::class, 'showForStudent'])->name('show'); 
     Route::post('submit/{id}', [FeedbackController::class, 'submitStudentFeedback'])->name('submit');
 });
+
+Route::prefix('credits')->name('admin.credits.')->group(function(){
+    Route::get('/', [CreditController::class, 'index'])->name('index');
+    Route::get('create', [CreditController::class, 'create'])->name('create'); 
+    Route::post('create', [CreditController::class, 'store'])->name('store.post');
+    Route::get('edit/{id}', [CreditController::class, 'edit'])->name('edit');
+    Route::put('{id}', [CreditController::class, 'update'])->name('update'); 
+    Route::delete('{id}', [CreditController::class, 'destroy'])->name('delete');
+});
+
 
 
 //end admin route ==============================================================================

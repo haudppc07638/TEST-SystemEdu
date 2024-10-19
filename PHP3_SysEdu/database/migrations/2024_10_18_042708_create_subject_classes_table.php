@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('end_date');
             $table->date('registration_deadline');
             $table->boolean('status')->default(0);
-            $table->decimal('price', 10, 2);
+            $table->decimal('price', 10, 2)->default(0);
 
             $table->foreignId('employee_id')->constrained('employees');
             $table->foreignId('subject_id')->constrained('subjects');

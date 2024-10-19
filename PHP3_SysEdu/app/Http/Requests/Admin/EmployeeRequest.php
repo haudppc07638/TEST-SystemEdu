@@ -25,20 +25,13 @@ class EmployeeRequest extends FormRequest
         $employeeID = $this->route('id');
 
         return [
-            'fullname' => 'required|string|max:100',
+            'full_name' => 'required|string|max:100',
             'email' => [
                 'required',
                 'email',
                 'max:60',
                 Rule::unique('employees')->ignore($employeeID)
             ],
-            'password' => $this->isMethod('post') ? [ // If the request method is POST (creation), make password required
-                'required',
-                'string',
-                'min:8',
-                'max:60',
-                'regex:/^[A-Za-z0-9@]+$/'
-            ] : '',
             'phone' => [
                 'required',
                 'max:15',
@@ -49,12 +42,26 @@ class EmployeeRequest extends FormRequest
             'position' => [
                 'required',
                 'string',
-                'in:Giáo viên,Cán bộ đào tạo',
+                'in:admin,teacher',
                 'max:50'
             ],
-            'faculty_id' => 'required',
+            'code' => 'required|string|max:15|unique:employees,code,' . $employeeID,
+            'gender' => 'required|in:0,1',
+            'major_id' => 'required',
             'department_id' => 'required',
-        ];
+            'nation' => 'nullable|string|max:100',
+            'educational_level' => 'nullable|string|max:100',
+            'identity_card' => 'nullable|string|max:20|unique:employees,identity_card,' . $employeeID,
+            'card_issuance_date' => 'nullable|date',
+            'card_location' => 'nullable|string|max:100',
+            'house_number' => 'nullable|string|max:255',
+            'date_of_birth' => 'nullable|date',
+            'year_graduation' => 'nullable|integer|min:1900|max:' . date('Y'),
+            'graduate' => 'nullable|string|max:100',
+            'provice_city' => 'nullable|string|max:255',
+            'district' => 'nullable|string|max:255',
+            'commune_level' => 'nullable|string|max:255',
+        ];        
     }
 
     /**
@@ -65,19 +72,14 @@ class EmployeeRequest extends FormRequest
     public function messages()
     {
         return [
-            'fullname.required' => 'Họ và tên không được để trống',
-            'fullname.string' => 'Họ và tên phải là một chuỗi ký tự',
-            'fullname.max' => 'Họ và tên không được vượt quá 100 ký tự',
+            'full_name.required' => 'Họ và tên không được để trống',
+            'full_name.string' => 'Họ và tên phải là một chuỗi ký tự',
+            'full_name.max' => 'Họ và tên không được vượt quá 100 ký tự',
 
             'email.required' => 'Email không được để trống',
             'email.email' => 'Email phải là một địa chỉ email hợp lệ',
             'email.max' => 'Email không được vượt quá 60 ký tự',
             'email.unique' => 'Email đã tồn tại trong hệ thống',
-
-            'password.required' => 'Mật khẩu không được để trống',
-            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự',
-            'password.max' => 'Mật khẩu không được vượt quá 60 ký tự',
-            'password.regex' => 'Mật khẩu chỉ được chứa các ký tự từ A-Z, a-z, 0-9, và @',
 
             'phone.required' => 'Số điện thoại không được để trống',
             'phone.max' => 'Số điện thoại không được vượt quá 15 ký tự',
@@ -93,9 +95,22 @@ class EmployeeRequest extends FormRequest
             'position.in' => 'Chức vụ không hợp lệ',
             'position.max' => 'Chức vụ không được vượt quá 50 ký tự',
 
-            'faculty_id.required' => 'Khoa không được để trống',
-
+            'gender.required' => 'Giới tính không được để trống',
+            'gender.in' => 'Giới tính không hợp lệ',
             'department_id.required' => 'Phòng ban không được để trống',
+            'department_id.exists' => 'Phòng ban không tồn tại.',
+            'major_id.required' => 'Trường chuyên nghành là bắt buộc.',
+            'major_id.exists' => 'Chuyên ngành không tồn tại.',
+            'nation.max' => 'Trường quốc tịch không được vượt quá 100 ký tự.',
+            'educational_level.max' => 'Trường trình độ học vấn không được vượt quá 100 ký tự.',
+            'identity_card.max' => 'Số CMND không được vượt quá 20 ký tự.',
+            'identity_card.unique' => 'Số CMND đã tồn tại.',
+            'card_location.max' => 'Nơi cấp không được vượt quá 100 ký tự.',
+            'house_number.max' => 'Địa chỉ không được vượt quá 255 ký tự.',
+            'year_graduation.integer' => 'Năm tốt nghiệp phải là số nguyên.',
+            'year_graduation.min' => 'Năm tốt nghiệp không được nhỏ hơn 1900.',
+            'year_graduation.max' => 'Năm tốt nghiệp không được lớn hơn năm hiện tại.',
+            'graduate.max' => 'Trường tốt nghiệp không được vượt quá 100 ký tự.',
         ];
     }
 }

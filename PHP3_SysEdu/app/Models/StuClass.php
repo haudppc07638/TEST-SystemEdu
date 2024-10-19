@@ -10,10 +10,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class StuClass extends Model
 {
     use HasFactory;
-    protected $table = 'classes';
+    protected $table = 'major_classes';
     protected $fillable = [
         'id',
-        'trainingsystem',
+        'training_system',
         'name',
         'quantity',
         'status',
@@ -25,7 +25,9 @@ class StuClass extends Model
     {
         return $this->belongsTo(Major::class);
     }
-
+    public function subjectClass(){
+        return $this->belongsTo(SubjectClass::class);
+    }
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);
@@ -39,7 +41,7 @@ class StuClass extends Model
     {
         return self::with(['major'])
             ->where('major_id', $id)
-            ->select('id', 'trainingsystem', 'name', 'quantity', 'status', 'major_id', 'employee_id')
+            ->select('id', 'training_system', 'name', 'quantity', 'status', 'major_id', 'employee_id')
             ->orderBy('id', 'desc')
             ->get();
     }
@@ -69,7 +71,7 @@ class StuClass extends Model
 
     public static function getNameClasses()
     {
-        return self::get(['id', 'name']);
+        return self::select('id', 'name')->get();
     }
 
     public static function getAllClasses()

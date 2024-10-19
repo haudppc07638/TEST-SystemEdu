@@ -34,6 +34,7 @@
                                     <th>Giảng viên</th>
                                     <th>Môn học</th>
                                     <th>Học kỳ</th>
+                                    <th>Học Phí</th>
                                     <th>Tác vụ</th>
                                 </tr>
                             </thead>
@@ -46,9 +47,10 @@
                                     <td>{{ $subjectClass->start_date }}</td>
                                     <td>{{ $subjectClass->end_date }}</td>
                                     <td>{{ $subjectClass->registration_deadline }}</td>
-                                    <td>{{ $subjectClass->employee->fullname ?? 'Chưa có' }}</td>
+                                    <td>{{ $subjectClass->employee->full_name ?? 'Chưa có' }}</td>
                                     <td>{{ $subjectClass->subject->name ?? 'Chưa có' }}</td>
                                     <td>{{ $subjectClass->semester->block ?? 'Chưa có' }}</td>
+                                    <td>{{ $subjectClass->price }}</td>
                                     <td>
                                         <div class="dropdown">
                                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">

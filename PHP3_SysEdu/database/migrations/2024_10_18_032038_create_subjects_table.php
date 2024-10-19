@@ -18,7 +18,6 @@ return new class extends Migration
             $table->unsignedSmallInteger( 'credit');
             $table->text('description')->nullable();
             $table->foreignId('major_id')->nullable()->constrained('majors');
-            $table->foreignId('prerequisite_subject_id')->nullable()->constrained('subjects'); 
             $table->timestamps();
             $table->softDeletes();
         });

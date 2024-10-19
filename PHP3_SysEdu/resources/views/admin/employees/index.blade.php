@@ -32,7 +32,7 @@
                                     <th>Số điện thoại</th>
                                     <th>Hình ảnh</th>
                                     <th>Chức vụ</th>
-                                    <th>khoa</th>
+                                    <th>Chuyên Nghành</th>
                                     <th>Phòng ban</th>
                                     <th>Tác vụ</th>
                                 </tr>
@@ -41,7 +41,7 @@
                                 @foreach ($employees as $index => $employee)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
-                                        <td>{{ $employee->fullname }}</td>
+                                        <td>{{ $employee->full_name }}</td>
                                         <td>{{ $employee->email }}</td>
                                         <td>{{ $employee->phone }}</td>
 
@@ -51,7 +51,7 @@
                                         </td>
 
                                         <td>{{ $employee->position }}</td>
-                                        <td>{{ $employee->faculty->name }}</td>
+                                        <td>{{ $employee->major->name }}</td>
                                         <td>{{ $employee->department->name }}</td>
 
                                         <td>

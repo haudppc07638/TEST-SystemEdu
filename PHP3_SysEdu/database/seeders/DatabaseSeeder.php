@@ -21,12 +21,12 @@ class DatabaseSeeder extends Seeder
             // EmployeeSeeder::class,
             // SubjectSeeder::class,
             // SemesterSeeder::class,
-            // ClassroomSeeder::class,
-            // TimeSlotSeeder::class,
-            // MajorClassSeeder::class,
-            // SeedersStudentSeeder::class,
+            ClassroomSeeder::class,
+            TimeSlotSeeder::class,
+            MajorClassSeeder::class,
+            SeedersStudentSeeder::class,
 
-            SubjectLecturersSeeder::class,
+            // SubjectLecturersSeeder::class,
         ]);
     }
 }

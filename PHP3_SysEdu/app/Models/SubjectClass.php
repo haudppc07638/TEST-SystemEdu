@@ -20,15 +20,24 @@ class SubjectClass extends Model
         'name',
         'end_date',
         'registration_deadline',
+        'credit_id',
+        'price',
         'employee_id',
         'subject_id',
         'semester_id',
+        'major_class_id',
+        'status'
     ];
     public function subject(): BelongsTo
     {
         return $this->belongsto(Subject::class, 'subject_id');
     }
-
+    public function credit(): BelongsTo{
+        return $this->belongsTo(Credit::class, 'credit_id');
+    }
+    public function stuClass(){
+        return $this->hasMany(StuClass::class, 'major_class_id');
+    }
     public function semester(): BelongsTo
     {
         return $this->belongsto(Semester::class);
@@ -109,6 +118,13 @@ class SubjectClass extends Model
     }
     public static function getAllSubjectClass(){
         return self::all();
+    }
+    public function getPriceAttribute()
+    {
+        $subjectCredits = $this->subject->credit;  
+        $creditPrice = $this->credit->price;       
+
+        return $subjectCredits * $creditPrice;     
     }
     
 }
