@@ -33,9 +33,10 @@
                                         <th>#</th>
                                         <th>Hê đào tạo</th>
                                         <th>Tên</th>
-                                        <th>Số lượng</th>
                                         <th>Chuyên ngành</th>
-                                        <th>Chủ nhiệm</th>
+                                        <th>Cố vấn</th>
+                                        <th>Số lượng</th>
+                                        <th>Ngày mở</th>
                                         <th>Tình trạng</th>
                                         <th>Tác vụ</th>
                                     </tr>
@@ -44,11 +45,12 @@
                                     @foreach ($classes as $index => $class)
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
-                                            <td>{{ $class->trainingsystem }}</td>
+                                            <td>{{ $class->training_system }}</td>
                                             <td>{{ $class->name }}</td>
-                                            <td>{{ $class->quantity }}</td>
                                             <td>{{ $class->major->name }}</td>
-                                            <td>{{ $class->employee->fullname }}</td>
+                                            <td>{{ $class->employee->full_name }}</td>
+                                            <td>{{ $studentQuantities[$class->id] }} / {{ $class->quantity }}</td>
+                                            <td>{{ $class->start_date }}</td>
                                             <td>
                                                 @if ($class->status == 0)
                                                     <form action="{{ route('admin.updateStatus', $class->id) }}"
@@ -72,6 +74,8 @@
                                                         <i class="bx bx-dots-vertical-rounded"></i>
                                                     </button>
                                                     <div class="dropdown-menu">
+                                                        <a class="dropdown-item"
+                                                            href="{{ route('admin.detail', $class->id) }}"><i class='bx bx-id-card me-2'></i> Xem chi tiết</a>
                                                         <a class="dropdown-item"
                                                             href="{{ route('admin.edit', $class->id) }}"><i
                                                                 class="bx bx-edit-alt me-2"></i> Chỉnh sửa</a>

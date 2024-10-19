@@ -28,7 +28,8 @@
                                 <label for="major_id" class="col-sm-2 col-form-label">Chuyên ngành</label>
                                 <div class="col-sm-10">
                                     <select name="major_id" class="form-select" id="major_id">
-                                        <option value="">Chọn chuyên ngành</option>
+                                        <option value="">...Chọn chuyên ngành...</option>
+                                        <option value="">Môn cơ bản</option>
                                         @foreach ($majors as $major)
                                             <option value="{{ $major->id }}"
                                                 {{ old('major_id') == $major->id ? 'selected' : '' }}>

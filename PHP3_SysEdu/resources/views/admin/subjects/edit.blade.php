@@ -30,7 +30,7 @@
                                     <label for="major_id" class="col-sm-2 col-form-label">Chuyên ngành</label>
                                     <div class="col-sm-10">
                                         <select name="major_id" class="form-select" id="major_id">
-                                            <option value="">Chọn chuyên ngành</option>
+                                            <option value="">Môn cơ bản</option>
                                             @foreach ($majors as $major)
                                                 <option value="{{ $major->id }}"
                                                     {{ old('major_id', $subject->major_id) == $major->id ? 'selected' : '' }}>
@@ -97,7 +97,7 @@
                                 <div class="row mb-3">
                                     <label for="description" class="col-sm-2 col-form-label">Mô tả</label>
                                     <div class="col-sm-10">
-                                        <textarea name="description" class="form-control quill-editor-full" id="description">{{ old('description', $subject->description) }}</textarea>
+                                        <textarea name="description" class="form-control" rows="5" id="description">{{ old('description', $subject->description) }}</textarea>
                                         @error('description')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror

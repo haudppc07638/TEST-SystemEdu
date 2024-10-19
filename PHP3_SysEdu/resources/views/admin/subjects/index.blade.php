@@ -43,7 +43,7 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $subject->code }}</td>
                                             <td>{{ $subject->name }}</td>
-                                            <td>{{ $subject->major->name ?? 'N/A' }}</td>
+                                            <td>{{ $subject->major->name ?? 'Môn cơ bản' }}</td>
                                             <td>{{ $subject->credit }}</td>
                                             <td>
                                                 @if ($subject->prerequisites->isNotEmpty())

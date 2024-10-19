@@ -58,13 +58,16 @@ class Student extends Authenticatable
     {
         return $this->belongsTo(SubjectClass::class);
     }
-    public function totalTuition(): HasMany{
+    public function totalTuition(): HasMany
+    {
         return $this->hasMany(TotalTuition::class);
     }
-    public function studentSubjectClasses(): HasMany{
+    public function studentSubjectClasses(): HasMany
+    {
         return $this->hasMany(StudentSubjectClass::class, 'student_id');
     }
-    public function tuition(): HasOneOrManyThrough{
+    public function tuition(): HasOneOrManyThrough
+    {
         return $this->hasOneThrough(
             Tuition::class,
             StudentSubjectClass::class,
@@ -79,11 +82,11 @@ class Student extends Authenticatable
     {
         return $this->hasMany(Feedback::class);
     }
-    
+
     public static function getStudentsByMajors($id)
     {
-    return self::whereIn('major_id', $id)
-    ->get();
+        return self::whereIn('major_id', $id)
+            ->get();
     }
 
     public static function getAllStudents($perPage = 20)
@@ -158,18 +161,21 @@ class Student extends Authenticatable
             ->select('id', 'fullname')
             ->get();
     }
-    public static function getProfileStudent(){
+    public static function getProfileStudent()
+    {
         return self::all();
     }
-    public static function getAllForPdf(){
+    public static function getAllForPdf()
+    {
         return self::select('id', 'fullname', 'email', 'phone', 'image', 'code', 'major_id', 'class_id')
-        ->get();
+            ->get();
     }
 
-    public static function getCredits(){
+    public static function getCredits()
+    {
         return self::with('subject_class', 'student')
-        ->where('student_id', 'credit', 'subject_class_id')
-        ->get();
+            ->where('student_id', 'credit', 'subject_class_id')
+            ->get();
     }
     // public static function getTuiTionStudent(){
     //     return static::
@@ -187,11 +193,16 @@ class Student extends Authenticatable
     public static function generateStudentCode()
     {
         $latestStudent = self::orderBy('id', 'desc')->first();
-        $newCode = 'STU' . str_pad((int)substr($latestStudent->code, 3) + 1, 5, '0', STR_PAD_LEFT);
+        $newCode = 'STU' . str_pad((int) substr($latestStudent->code, 3) + 1, 5, '0', STR_PAD_LEFT);
         while (self::where('code', $newCode)->exists()) {
-            $newCode = 'STU' . str_pad((int)substr($newCode, 3) + 1, 5, '0', STR_PAD_LEFT);
+            $newCode = 'STU' . str_pad((int) substr($newCode, 3) + 1, 5, '0', STR_PAD_LEFT);
         }
 
         return $newCode;
+    }
+    public static function getStudentsByMajorClass($id)
+    {
+        return self::where('major_class_id', $id)
+            ->get();
     }
 }

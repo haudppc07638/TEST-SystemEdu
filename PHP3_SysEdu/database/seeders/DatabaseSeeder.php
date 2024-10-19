@@ -18,12 +18,15 @@ class DatabaseSeeder extends Seeder
             // DepartmentSeeder::class,
             // FacultySeeder::class,
             // MajorSeeder::class,
-            // EmployeeSeeder::class,
+            // EmployeeSeeder::class,  
             // SubjectSeeder::class,
             // SemesterSeeder::class,
-            ClassroomSeeder::class,
-            TimeSlotSeeder::class,
-            MajorClassSeeder::class,
+            // TimeSlotSeeder::class,
+
+            // MajorClassSeeder::class,
+
+            // ClassroomSeeder::class,
+
             SeedersStudentSeeder::class,
 
             // SubjectLecturersSeeder::class,

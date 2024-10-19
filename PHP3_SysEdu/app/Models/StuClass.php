@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,9 +16,11 @@ class StuClass extends Model
         'id',
         'training_system',
         'name',
-        'quantity',
+        'quantity', 
         'status',
         'major_id',
+        'start_date',
+        'end_date',
         'employee_id',
     ];
 
@@ -41,8 +44,8 @@ class StuClass extends Model
     {
         return self::with(['major'])
             ->where('major_id', $id)
-            ->select('id', 'training_system', 'name', 'quantity', 'status', 'major_id', 'employee_id')
-            ->orderBy('id', 'desc')
+            ->select('id', 'training_system', 'name', 'quantity', 'status', 'major_id', 'start_date', 'employee_id')
+            ->latest()
             ->get();
     }
 
@@ -82,15 +85,19 @@ class StuClass extends Model
 
     public static function getAllForPdf()
     {
-        return self::select('id', 'trainingsystem', 'name', 'quantity', 'major_id', 'employee_id')
+        return self::select('id', 'training_system', 'name', 'quantity', 'major_id', 'employee_id')
             ->get();
     }
 
-    public static function updateStudentCount($id)
+    public static function studentCount($id)
     {
-        $count = Student::where('class_id', $id)->count();
-        $class = self::find($id);
-        $class->quantity = $count;
-        $class->save();
+        $count = Student::where('major_class_id', $id)->count();
+        return $count;
+    }
+
+    public static function detailMajorClass($major_class_id)
+    {
+        return self::with('major', 'employee')
+            ->findOrFail($major_class_id);
     }
 }

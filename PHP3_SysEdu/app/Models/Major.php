@@ -100,7 +100,7 @@ class Major extends Model
     {
         return self::where('id', $id)
             ->select('id', 'name', 'faculty_id')
-            ->firstOrFail();
+            ->first();
     }
 
     public static function getMajorsWithFacultyId($id)

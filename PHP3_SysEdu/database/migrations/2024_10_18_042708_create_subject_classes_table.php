@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('subject_classes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name', 100);
-            $table->unsignedInteger('quantity');
+            $table->unsignedInteger('quantity')->comment('Max student');
             $table->date('start_date');
             $table->date('end_date');
             $table->date('registration_deadline');

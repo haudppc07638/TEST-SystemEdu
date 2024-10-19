@@ -71,9 +71,9 @@ class Employee extends Authenticatable
         return $this->hasMany(Feedback::class);
     }
 
-    public static function getAvailableTeachers($faculty_id){
-        return self::where('position', 'Giáo viên')
-        ->where('major_id', $faculty_id)
+    public static function getAvailableTeachers($major_id){
+        return self::where('position', 'teacher')
+        ->where('major_id', $major_id)
         ->whereDoesntHave('classes', function ($query){
             $query->where('status', 0);
         })

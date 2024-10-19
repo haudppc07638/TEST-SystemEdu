@@ -11,16 +11,20 @@ class SemesterSeeder extends Seeder
     {
         DB::table('semesters')->insert([
             [
-                'block' => 'Spring',
-                'year' => 2024,
-                'start_date' => '2024-01-15',
-                'end_date' => '2024-05-30',
-            ],
-            [
                 'block' => 'Fall',
                 'year' => 2024,
                 'start_date' => '2024-08-15',
                 'end_date' => '2024-12-30',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'block' => 'Spring',
+                'year' => 2025,
+                'start_date' => '2025-01-15',
+                'end_date' => '2025-05-30',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
         ]);
     }

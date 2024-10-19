@@ -81,17 +81,11 @@ Route::prefix('majors')->name('admin.majors.')->group(function () {
     Route::delete('{id}', [MajorController::class, 'destroy'])->name('destroy');
 });
 
-Route::prefix('subjects')->name('admin.subjects.')->group(function () {
-    Route::get('/', [SubjectController::class, 'index'])->name('index');
-    Route::get('create', [SubjectController::class, 'create'])->name('create');
-    Route::get('edit/{id}', [SubjectController::class, 'edit'])->name('edit');
-});
-
-
 Route::name('admin.')->group(function () {
     Route::get('Faculties', [ClassController::class, 'showFaculties'])->name('faculties');
     Route::get('Faculty/Majors/{id}', [ClassController::class, 'showMajors'])->name('majors');
     Route::get('Faculty/Major/Classes/{id}', [ClassController::class, 'showClasses'])->name('classes');
+    Route::get('Faculty/Major/Classes/detail/{majorClassId}', [ClassController::class, 'showClassDetail'])->name('detail');
     Route::get('Faculty/Major/Classes/create/{id}', [ClassController::class, 'create'])->name('create');
     Route::post('Faculty/Major/Classes/create', [ClassController::class, 'store'])->name('create.post');
     Route::get('Faculty/Major/Classes/edit/{id}', [ClassController::class, 'edit'])->name('edit');
