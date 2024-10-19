@@ -73,7 +73,6 @@ class Employee extends Authenticatable
 
     public static function getAvailableTeachers($major_id){
         return self::where('position', 'teacher')
-        ->where('major_id', $major_id)
         ->whereDoesntHave('classes', function ($query){
             $query->where('status', 0);
         })

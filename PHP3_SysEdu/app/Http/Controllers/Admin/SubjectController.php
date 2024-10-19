@@ -75,6 +75,8 @@ class SubjectController extends Controller
         $subject = Subject::updateSubject($id, $data);
         if ($request->has('prerequisites')) {
             $subject->prerequisites()->sync($request->prerequisites);
+        } else {
+            $subject->prerequisites()->sync([]);
         }
         toastr('Cập nhật thông tin môn học thành công: ' . $subject->name);
         return redirect()->route('admin.subjects.index');

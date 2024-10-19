@@ -37,7 +37,7 @@ class ClassController extends Controller
     public function showClasses($id)
     {
         $classes = StuClass::getClassesWithMajorId($id);
-
+        $studentQuantities = [];
         foreach ($classes as $class) {
             $studentQuantities[$class->id] = StuClass::studentCount($class->id);
         }
