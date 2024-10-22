@@ -61,6 +61,9 @@
                                                     </button>
                                                     <div class="dropdown-menu">
                                                         <a class="dropdown-item"
+                                                            href="{{ route('admin.subjects.detail', $subject->id) }}"><i
+                                                                class='bx bx-id-card me-2'></i> Xem chi tiết</a>
+                                                        <a class="dropdown-item"
                                                             href="{{ route('admin.subjects.edit', $subject->id) }}"><i
                                                                 class="bx bx-edit-alt me-2"></i> Chỉnh sửa</a>
                                                         <form action="{{ route('admin.subjects.destroy', $subject->id) }}"

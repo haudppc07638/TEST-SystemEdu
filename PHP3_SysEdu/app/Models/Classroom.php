@@ -18,5 +18,4 @@ class Classroom extends Model
     public function Schedule(): BelongsTo{
         return $this->belongsTo(Schedule::class);
     }
-    ///
 }

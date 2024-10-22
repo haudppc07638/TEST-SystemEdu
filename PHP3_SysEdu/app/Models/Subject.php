@@ -37,16 +37,24 @@ class Subject extends Model
         return $this->belongsToMany(Subject::class, 'prerequisite_subjects', 'subject_id', 'prerequisite_id');
     }
 
+    public function scoreTypes()
+    {
+        return $this->belongsToMany(ScoreType::class, 'subject_score_types', 'subject_id', 'score_type_id')
+            ->withPivot('weight');
+    }
+
     public static function getAllSubjects()
     {
         return self::with('major')->latest()->get();
     }
-    public function setCreditAttribute($value){
+    public function setCreditAttribute($value)
+    {
         $this->attributes['credit'] = $value;
     }
-    public function setPriceAttribute(){
+    public function setPriceAttribute()
+    {
         $credit = $this->attributes['credit'];
-        $this->attributes['price'] = $credit * 250000; 
+        $this->attributes['price'] = $credit * 250000;
         $this->save();
     }
 
@@ -55,11 +63,6 @@ class Subject extends Model
         $rules = $request->rules();
         $messages = $request->messages();
         return Validator::make($data, $rules, $messages);
-    }
-
-    public static function createSubject($data)
-    {
-        return self::create($data);
     }
 
     public static function findSubjectById($id)
@@ -72,15 +75,9 @@ class Subject extends Model
         return self::all();
     }
 
-    public function getQrerequisitesSubject($id){
-        return self::with('prerequisites')->findOrFail($id);
-    }
-
-    public static function updateSubject($id, $data)
+    public function getQrerequisitesSubject($id)
     {
-        $subject = self::findOrFail($id);
-        $subject->update($data);
-        return $subject;
+        return self::with('prerequisites')->findOrFail($id);
     }
 
     public static function deleteSubject($id)
@@ -93,12 +90,13 @@ class Subject extends Model
     public static function getCodeSubject()
     {
         return self::select('id', 'name')
-        ->get();
+            ->get();
     }
 
-    public static function getAllSubjectOfStudent($major_id){
+    public static function getAllSubjectOfStudent($major_id)
+    {
         return self::where('major_id', $major_id)
-        ->get();
+            ->get();
     }
 
     public static function getAvailableSubjectsForStudent($majorId)
@@ -106,13 +104,68 @@ class Subject extends Model
         $today = now()->toDateString();
         return self::where('major_id', $majorId)
             ->whereHas('subjectClasses', function ($query) use ($today) {
-                // Kiểm tra thời gian đăng ký và bắt đầu lớp học
                 $query->where('registration_deadline', '>=', $today);
             })
             ->get();
     }
 
-    public function getSubjectByMajor($major_id){
+    public function getSubjectByMajor($major_id)
+    {
         return self::where('major_id', $major_id)->get();
+    }
+
+    public static function createSubject(array $data){
+        $subject = self::create([
+            'code' => $data['code'],
+            'name' => $data['name'],
+            'credit' => $data['credit'],
+            'description' => $data['description'],
+            'major_id' => $data['major_id'] ?? null,
+        ]);
+    
+        if (isset($data['score_types'])) {
+            foreach ($data['score_types'] as $scoreTypeId) {
+                $weight = $data['weights'][$scoreTypeId] ?? 0; 
+                if ($weight > 0) {
+                    $subject->scoreTypes()->attach($scoreTypeId, ['weight' => $weight]);
+                }
+            }
+        }
+    
+        if (isset($data['prerequisites'])) {
+            $subject->prerequisites()->sync($data['prerequisites']);
+        }
+        return $subject;
+    }
+
+    public function updateSubject(array $data)
+    {
+        $this->update([
+            'code' => $data['code'],
+            'name' => $data['name'],
+            'credit' => $data['credit'],
+            'description' => $data['description'],
+            'major_id' => $data['major_id'] ?? null,
+        ]);
+
+        $this->scoreTypes()->detach();
+        if (isset($data['score_types'])) {
+            foreach ($data['score_types'] as $scoreTypeId) {
+                $weight = $data['weights'][$scoreTypeId] ?? 0;
+                if ($weight > 0) {
+                    $this->scoreTypes()->attach($scoreTypeId, ['weight' => $weight]);
+                }
+            }
+        }
+
+        if (isset($data['prerequisites'])) {
+            $this->prerequisites()->sync($data['prerequisites']);
+        } else {
+            $this->prerequisites()->detach();
+        }
+    }
+
+    public static function detailSubject($id){
+        return self::with('scoreTypes', 'prerequisites')->findOrFail($id);
     }
 }

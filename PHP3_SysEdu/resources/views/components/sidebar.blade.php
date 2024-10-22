@@ -31,6 +31,11 @@
             </a>
           </li>
           <li>
+            <a href="{{ route('admin.score_types.index')}}">
+              <i class="bi bi-circle"></i><span>Loại điểm</span>
+            </a>
+          </li>
+          <li>
             <a href="{{ route('admin.credits.index')}}">
               <i class="bi bi-circle"></i><span>Tín Chỉ</span>
             </a>

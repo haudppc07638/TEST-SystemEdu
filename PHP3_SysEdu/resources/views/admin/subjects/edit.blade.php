@@ -77,6 +77,37 @@
                                     </div>
                                 </div>
 
+                                <div class="mb-3" id="score_weights">
+                                    <label for="score_types" class="form-label">Chọn Loại Điểm và Trọng Số</label>
+                                    <div class="row">
+                                        @foreach ($scoreTypes as $scoreType)
+                                            <div class="col-md-4 mt-2">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input"
+                                                        id="score_type_{{ $scoreType->id }}" name="score_types[]"
+                                                        value="{{ $scoreType->id }}"
+                                                        {{ in_array($scoreType->id, old('score_types', [])) || $subject->scoreTypes->contains($scoreType->id) ? 'checked' : '' }}>
+                                                    <label class="form-check-label"
+                                                        for="score_type_{{ $scoreType->id }}">{{ $scoreType->name }}</label>
+                                                    <input type="text" name="weights[{{ $scoreType->id }}]"
+                                                        class="form-control mt-2" placeholder="Trọng số (%)" min="0"
+                                                        max="100"
+                                                        value="{{ old('weights.' . $scoreType->id, $subject->scoreTypes->find($scoreType->id)->pivot->weight ?? '') }}">
+                                                    @error('weights.' . $scoreType->id)
+                                                        <span class="text-danger">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                        @error('score_types')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                        @error('weights')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+
                                 <div class="row mb-3">
                                     <label for="prerequisites" class="col-sm-2 col-form-label">Môn tiên quyết</label>
                                     <div class="col-sm-10">
@@ -123,6 +154,11 @@
         $(document).ready(function() {
             $('#prerequisites').select2({
                 placeholder: "Chọn môn tiên quyết",
+                allowClear: true
+            });
+
+            $('#score_types').select2({
+                placeholder: "Chọn loại điểm",
                 allowClear: true
             });
         });

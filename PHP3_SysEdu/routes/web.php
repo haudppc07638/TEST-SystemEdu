@@ -29,6 +29,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Admin\SubjectClassController;
 use App\Http\Controllers\Client\ScoreController;
 use App\Http\Controllers\Admin\FeedbackController;
+use App\Http\Controllers\Admin\ScoreTypeController;
 
 // auth route ==============================================================================
 Route::get('/', function () {
@@ -185,7 +186,7 @@ Route::prefix('subjects')->name('admin.subjects.')->group(function () {
     Route::get('edit/{id}', [SubjectController::class, 'edit'])->name('edit');
     Route::put('{id}', [SubjectController::class, 'update'])->name('update');
     Route::delete('{id}', [SubjectController::class, 'destroy'])->name('destroy');
-
+    Route::get('{id}', [SubjectController::class, 'detail'])->name( 'detail');
 });
 
 Route::prefix('studentsubjectclass')->name('admin.studentsubjectclass.')->group(function () {
@@ -222,6 +223,14 @@ Route::prefix('credits')->name('admin.credits.')->group(function(){
     Route::delete('{id}', [CreditController::class, 'destroy'])->name('delete');
 });
 
+Route::prefix('scoreTypes')->name('admin.score_types.')->group(function () {
+    Route::get('/', [ScoreTypeController::class, 'index'])->name('index');
+    Route::get('create', [ScoreTypeController::class, 'create'])->name('create');
+    Route::post('create', [ScoreTypeController::class, 'store'])->name('store');
+    Route::get('edit/{id}', [ScoreTypeController::class, 'edit'])->name('edit');
+    Route::put('{id}', [ScoreTypeController::class, 'update'])->name('update');
+    Route::delete('{id}', [ScoreTypeController::class, 'destroy'])->name('delete');
+});
 
 
 //end admin route ==============================================================================

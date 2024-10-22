@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('subject_score_types', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('subject_id')->constrained('subjects');
-            $table->foreignId('score_type_id')->constrained('score_types');
+            $table->foreignId('subject_id')->constrained('subjects')->onDelete('cascade');
+            $table->foreignId('score_type_id')->constrained('score_types')->onDelete('cascade');
             $table->decimal('weight', 5, 2);
             $table->timestamps();
             $table->softDeletes();

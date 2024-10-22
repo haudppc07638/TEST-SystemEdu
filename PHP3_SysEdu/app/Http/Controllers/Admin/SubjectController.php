@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SubjectRequest;
 use App\Models\Subject;
 use App\Models\Major;
+use App\Models\ScoreType;
+use App\Models\SubjectScoreType;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\QueryException;
 
@@ -17,31 +19,35 @@ class SubjectController extends Controller
         return view('admin.subjects.index', ['subjectView' => $subjects]);
     }
 
+    public function detail(string $id)
+    {
+        $subject = Subject::detailSubject($id);
+        return view('admin.subjects.detail', ['subject' => $subject]);
+    }
+
     public function create()
     {
         $majors = Major::getAllMajor();
         $subjects = Subject::getAllSubjects();
-        return view('admin.subjects.create', ['majors' => $majors, 'subjects' => $subjects]);
+        $scoreTypes = ScoreType::all();
+        return view('admin.subjects.create', ['majors' => $majors, 'subjects' => $subjects, 'scoreTypes' => $scoreTypes]);
     }
 
     public function store(SubjectRequest $request)
     {
-        $rules = $request->rules();
-        $messages = $request->messages();
-        $data = $request->only(['code', 'name', 'credit', 'description', 'major_id']);
-        $validator = Validator::make($data, $rules, $messages);
+        $validated = $request->validated();
 
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+        $totalWeight = 0;
+        foreach ($request->score_types as $scoreTypeId) {
+            $weight = $request->weights[$scoreTypeId] ?? 0;
+            $totalWeight += $weight;
         }
 
-        $subject = Subject::createSubject($data);
-
-        if ($request->has('prerequisites')) {
-            $subject->prerequisites()->sync($request->prerequisites);
+        if ($totalWeight !== 100) {
+            return redirect()->back()->withErrors(['weights' => 'Tổng trọng số cho các loại điểm đã chọn phải bằng 100%.'])->withInput();
         }
+
+        $subject = Subject::createSubject($validated);
 
         toastr()->success('Thêm thành công môn học: ' . $subject->name);
         return redirect()->route('admin.subjects.index');
@@ -52,35 +58,43 @@ class SubjectController extends Controller
         $subject = Subject::with('prerequisites')->findOrFail($id);
         $majors = Major::all();
         $subjects = Subject::all();
+        $scoreTypes = ScoreType::all();
+        $subjectCoreType = SubjectScoreType::where('subject_id', $id)->get();
+
         return view('admin.subjects.edit', [
             'subject' => $subject,
             'majors' => $majors,
-            'subjects' => $subjects
+            'subjects' => $subjects,
+            'scoreTypes' => $scoreTypes,
+            'subjectCoreType' => $subjectCoreType
         ]);
     }
 
     public function update(SubjectRequest $request, string $id)
     {
-        $rules = $request->rules();
-        $messages = $request->messages();
-        $data = $request->only(['code', 'name', 'credit', 'description', 'major_id']);
-        $validator = Validator::make($data, $rules, $messages);
+        $validated = $request->validated();
 
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
+        $totalWeight = 0;
+        foreach ($request->score_types as $scoreTypeId) {
+            $weight = floatval($request->weights[$scoreTypeId] ?? 0);
+            $totalWeight += $weight;
+        }
+        if (abs($totalWeight - 100.0) > 0.01) {
+            return redirect()->back()->withErrors(['weights' => 'Tổng trọng số cho các loại điểm đã chọn phải bằng 100%.'])->withInput();
         }
 
-        $subject = Subject::updateSubject($id, $data);
-        if ($request->has('prerequisites')) {
-            $subject->prerequisites()->sync($request->prerequisites);
-        } else {
-            $subject->prerequisites()->sync([]);
+        try {
+            $subject = Subject::findOrFail($id);
+            $subject->updateSubject($validated);
+
+            toastr()->success('Cập nhật thành công môn học: ' . $subject->name);
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['weights' => $e->getMessage()])->withInput();
         }
-        toastr('Cập nhật thông tin môn học thành công: ' . $subject->name);
+
         return redirect()->route('admin.subjects.index');
     }
+
 
     public function destroy(string $id)
     {
