@@ -15,16 +15,8 @@ class StudentSubjectClass extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'id',
-        'midterm_score',
-        'final_score',
-        'total_score',
-        'classification',
-        'student_id',
-        'subject_class_id',
-        'status',
-    ];
+    protected $fillable = ['total_score', 'classification', 'status', 'student_id', 'subject_class_id'];
+    
     public function student(): BeLongsTo
     {
         return $this->belongsTo(Student::class,'student_id');

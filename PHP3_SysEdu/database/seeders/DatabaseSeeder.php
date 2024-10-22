@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
 
             // SeedersStudentSeeder::class,
 
-            // SubjectLecturersSeeder::class,
+            SubjectLecturersSeeder::class,
         ]);
     }
 }

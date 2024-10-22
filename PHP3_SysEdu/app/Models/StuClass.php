@@ -74,7 +74,7 @@ class StuClass extends Model
 
     public static function getNameClasses()
     {
-        return self::select('id', 'name')->get();
+        return self::with('students')->select('id', 'name')->get();
     }
 
     public static function getAllClasses()

@@ -43,6 +43,11 @@ class Subject extends Model
             ->withPivot('weight');
     }
 
+    public function lecturers()
+    {
+        return $this->hasMany(SubjectLecturer::class);
+    }
+
     public static function getAllSubjects()
     {
         return self::with('major')->latest()->get();
@@ -114,7 +119,8 @@ class Subject extends Model
         return self::where('major_id', $major_id)->get();
     }
 
-    public static function createSubject(array $data){
+    public static function createSubject(array $data)
+    {
         $subject = self::create([
             'code' => $data['code'],
             'name' => $data['name'],
@@ -122,16 +128,16 @@ class Subject extends Model
             'description' => $data['description'],
             'major_id' => $data['major_id'] ?? null,
         ]);
-    
+
         if (isset($data['score_types'])) {
             foreach ($data['score_types'] as $scoreTypeId) {
-                $weight = $data['weights'][$scoreTypeId] ?? 0; 
+                $weight = $data['weights'][$scoreTypeId] ?? 0;
                 if ($weight > 0) {
                     $subject->scoreTypes()->attach($scoreTypeId, ['weight' => $weight]);
                 }
             }
         }
-    
+
         if (isset($data['prerequisites'])) {
             $subject->prerequisites()->sync($data['prerequisites']);
         }
@@ -165,7 +171,24 @@ class Subject extends Model
         }
     }
 
-    public static function detailSubject($id){
+    public static function detailSubject($id)
+    {
         return self::with('scoreTypes', 'prerequisites')->findOrFail($id);
+    }
+
+    public function syncLecturers(array $newLecturers)
+    {
+        $existingLecturers = $this->lecturers()->pluck('employee_id')->toArray();
+        
+        $lecturersToDelete = array_diff($existingLecturers, $newLecturers);
+        if (!empty($lecturersToDelete)) {
+            $this->lecturers()->whereIn('employee_id', $lecturersToDelete)->delete();
+        }
+
+        foreach ($newLecturers as $employeeId) {
+            if (!in_array($employeeId, $existingLecturers)) {
+                $this->lecturers()->create(['employee_id' => $employeeId]);
+            }
+        }
     }
 }

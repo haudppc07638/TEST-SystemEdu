@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class SubjectClass extends Model
@@ -125,6 +126,23 @@ class SubjectClass extends Model
         $creditPrice = $this->credit->price;       
 
         return $subjectCredits * $creditPrice;     
+    }
+
+    public static function createWithStudents(array $data)
+    {
+        return DB::transaction(function () use ($data) {
+            $subjectClass = self::create($data);
+            
+            $students = Student::where('major_class_id', $data['major_class_id'])->get();
+
+            $students->each(function ($student) use ($subjectClass) {
+                $subjectClass->students()->create([
+                    'student_id' => $student->id,
+                ]);
+            });
+
+            return $subjectClass;
+        });
     }
     
 }

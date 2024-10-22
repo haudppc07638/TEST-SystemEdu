@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\SubjectClassController;
 use App\Http\Controllers\Client\ScoreController;
 use App\Http\Controllers\Admin\FeedbackController;
 use App\Http\Controllers\Admin\ScoreTypeController;
+use App\Http\Controllers\Admin\SubjectLecturerController;
 
 // auth route ==============================================================================
 Route::get('/', function () {
@@ -230,6 +231,13 @@ Route::prefix('scoreTypes')->name('admin.score_types.')->group(function () {
     Route::get('edit/{id}', [ScoreTypeController::class, 'edit'])->name('edit');
     Route::put('{id}', [ScoreTypeController::class, 'update'])->name('update');
     Route::delete('{id}', [ScoreTypeController::class, 'destroy'])->name('delete');
+});
+
+Route::prefix('admin')->name('admin.subject_lecturers.')->group(function () {
+    Route::get('subject-lecturers', [SubjectLecturerController::class, 'create'])->name('create');
+    Route::post('subject-lecturers', [SubjectLecturerController::class, 'storeOrUpdate'])->name('storeOrUpdate');
+    Route::get('subject-lecturers/filter', [SubjectLecturerController::class, 'filter'])->name('filter');
+
 });
 
 

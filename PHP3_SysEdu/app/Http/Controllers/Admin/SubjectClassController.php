@@ -15,6 +15,8 @@ use Illuminate\Database\QueryException;
 
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\Admin\SubjectClassRequest;
+use App\Models\Student;
+use App\Models\SubjectLecturer;
 
 class SubjectClassController extends Controller
 {
@@ -27,7 +29,7 @@ class SubjectClassController extends Controller
     public function create()
     {
         
-        $subjects = Subject::getCodeSubject();
+        $subjects = SubjectLecturer::with('subject', 'employee')->get();
         $semesters = Semester::getSemester(); 
         $employees = Employee::getNameEmployees();
         $credits = Credit::getAllCredit();
@@ -64,8 +66,10 @@ class SubjectClassController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
+
         $validatedData = $validator->validated();
-        SubjectClass::create($validatedData);
+        
+        SubjectClass::createWithStudents($validatedData);
 
         toastr()->success('Lớp học được tạo thành công');
         return redirect()->route('admin.subjectclasses.index');
