@@ -205,4 +205,12 @@ class Student extends Authenticatable
         return self::where('major_class_id', $id)
             ->get();
     }
+
+    public static function getStudentDetailById($id)
+    {
+        return self::with(['major', 'stuClass', 'totalTuition', 'studentSubjectClasses.subjectClass'])
+            ->where('id', $id)
+            ->firstOrFail();
+    }
+
 }

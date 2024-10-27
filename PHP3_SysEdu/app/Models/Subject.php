@@ -32,6 +32,11 @@ class Subject extends Model
         return $this->hasMany(SubjectClass::class);
     }
 
+    public function subjectLecturers()
+    {
+        return $this->hasMany(SubjectLecturer::class);
+    }
+
     public function prerequisites()
     {
         return $this->belongsToMany(Subject::class, 'prerequisite_subjects', 'subject_id', 'prerequisite_id');

@@ -75,6 +75,10 @@ class Employee extends Authenticatable
     {
         return $this->hasMany(SubjectLecturer::class);
     }
+    public function subjectLecturers()
+    {
+        return $this->hasMany(SubjectLecturer::class);
+    }
 
     public static function getAvailableTeachers($major_id){
         return self::where('position', 'teacher')
@@ -89,10 +93,11 @@ class Employee extends Authenticatable
         ->orderBy('id', 'desc')
         ->get();
     }
-    public static function getEmployeeById($id){
-        return self::findOrFail($id);
+    public static function getEmployeeById($id) {
+        return self::with('major', 'department')->findOrFail($id);
     }
 
+    
     public static function getTeachersByFaculties($id){
         return self::where('position', 'Giáo viên')
         ->whereIn('faculty_id', $id)

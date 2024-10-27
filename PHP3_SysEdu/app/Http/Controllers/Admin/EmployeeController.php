@@ -7,21 +7,26 @@ use App\Http\Requests\Admin\EmployeeRequest;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\Major;
+use App\Models\SubjectLecturer;
 use Illuminate\Support\Facades\Validator;
 use App\Services\ImageService;
 use App\Exports\EmployeesExport;
+use App\Models\Subject;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Excel as ExcelExcel;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Request; // Sửa ở đây
 
 class EmployeeController extends Controller
 {
     protected $imageService;
+
     public function __construct(ImageService $imageService)
     {
         $this->imageService = $imageService;
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -65,17 +70,17 @@ class EmployeeController extends Controller
             'gender',
             'major_id',
             'department_id',
-            'nation',                  
-            'educational_level',   
+            'nation',
+            'educational_level',
             'provice_city',
             'district',
-            'commune_level',     
-            'identity_card',            
-            'card_issuance_date',       
-            'card_location',            
-            'house_number',             
-            'date_of_birth',            
-            'year_graduation',         
+            'commune_level',
+            'identity_card',
+            'card_issuance_date',
+            'card_location',
+            'house_number',
+            'date_of_birth',
+            'year_graduation',
             'graduate',
         ]);
 
@@ -90,9 +95,9 @@ class EmployeeController extends Controller
         if ($request->hasFile('image')) {
             $data['image'] = $this->imageService->handleImageStore($request);
         }
-    
+
         $employee = Employee::create($data);
-    
+
         toastr()->success('Thêm thành công nhân sự: ' . $employee->full_name);
         return redirect()->route('admin.employees.index');
     }
@@ -131,19 +136,20 @@ class EmployeeController extends Controller
             'gender',
             'major_id',
             'department_id',
-            'nation',                  
-            'educational_level',   
+            'nation',
+            'educational_level',
             'provice_city',
             'district',
-            'commune_level',     
-            'identity_card',            
-            'card_issuance_date',       
-            'card_location',            
-            'house_number',             
-            'date_of_birth',            
-            'year_graduation',         
+            'commune_level',
+            'identity_card',
+            'card_issuance_date',
+            'card_location',
+            'house_number',
+            'date_of_birth',
+            'year_graduation',
             'graduate',
         ]);
+
         $validator = Validator::make($data, $rules, $messages);
 
         if ($validator->stopOnFirstFailure()->fails()) {
@@ -151,9 +157,11 @@ class EmployeeController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
+
         $employee = Employee::getEmployeeById($id);
         $data['image'] = $this->imageService->handleImageUpdate($request, $employee);
         $employee->update($data);
+
         toastr()->success('Cập nhật thành công thông tin nhân sự: ' . $employee->full_name);
         return redirect()->route('admin.employees.index');
     }
@@ -167,13 +175,55 @@ class EmployeeController extends Controller
             $employee = Employee::getEmployeeById($id);
             $this->imageService->handleImageDelete($employee->image);
             $employee->delete();
-            toastr()->success('Xoá thành công nhân sự: ' . $employee->fullname);
+            toastr()->success('Xoá thành công nhân sự: ' . $employee->full_name);
             return redirect()->route('admin.employees.index');
         } catch (QueryException $e) {
-            if ($e->getCode()) {
-                return redirect()->route('admin.employees.index');
-            }
             return redirect()->route('admin.employees.index');
         }
     }
+
+    public function showDetail($id)
+    {
+        $employee = Employee::getEmployeeById($id);
+        $subjects = Subject::all();
+        $nameSubject = SubjectLecturer::getNameSubjectByEmployeeId($id);
+        $employeeSubjects = $employee->subjectLecturers->pluck('subject_id')->toArray();
+        return view('admin.employees.detail', [
+            'employee' => $employee,
+            'subjects' => $subjects,
+            'nameSubject' => $nameSubject,
+            'employeeSubjects' => $employeeSubjects
+        ]);
+    }
+
+    public function updateSubjects(Request $request, $id)
+    {
+        $request->validate([
+            'subjects' => 'array',
+            'subjects.*' => 'exists:subjects,id',
+        ]);
+
+        $employee = Employee::findOrFail($id);
+        $existingSubjects = $employee->subjectLecturers()->pluck('subject_id')->toArray();
+
+        if ($request->has('subjects')) {
+            foreach ($request->subjects as $subjectId) {
+                if (!in_array($subjectId, $existingSubjects)) {
+                    $employee->subjectLecturers()->create(['subject_id' => $subjectId]);
+                }
+            }
+
+            foreach ($existingSubjects as $existingSubject) {
+                if (!in_array($existingSubject, $request->subjects)) {
+                    $employee->subjectLecturers()->where('subject_id', $existingSubject)->delete();
+                }
+            }
+        } else {
+            $employee->subjectLecturers()->delete();
+        }
+
+        toastr()->success('Cập nhật môn học thành công cho nhân sự: ' . $employee->full_name);
+        return redirect()->route('admin.employees.detail', $employee->id);
+    }
+
 }

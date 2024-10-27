@@ -47,11 +47,7 @@
                                             <td>{{ $student->email }}</td>
                                             <td>{{ $student->phone }}</td>
                                             <td>
-                                                @if($student->image)
-                                                    <img src="{{ asset('storage/avatars/' . $student->image) }}" alt="avatar" class="rounded-circle" width="40px" height="40px">
-                                                @else
-                                                    <p style="font-style: italic; color: gray;">Chưa có ảnh</p>
-                                                @endif
+                                                <img src="{{ $student->image ? asset('storage/avatars/' . $student->image) : asset('assets/images/default-avatar1.jpg') }}" alt="avatar" class="rounded-circle" width="40px" height="40px">
                                             </td>                                            
                                             <td>{{ $student->major->name ?? 'Chưa có chuyên ngành' }}</td>
                                             <td>{{ $student->stuClass->name ?? 'Chưa có lớp học' }}</td>
@@ -62,7 +58,13 @@
                                                         data-bs-toggle="dropdown">
                                                         <i class="bx bx-dots-vertical-rounded"></i>
                                                     </button>
+                                                    
                                                     <div class="dropdown-menu">
+                                                        <a class="dropdown-item"
+                                                            href="{{ route('admin.students.detail', ['id' => $student->id]) }}">
+                                                            <i class="bx bx-id-card me-2"></i>
+                                                            Xem chi tiết
+                                                        </a>
                                                         <a class="dropdown-item"
                                                             href="{{ route('admin.students.edit', ['id' => $student->id]) }}">
                                                             <i class="bx bx-edit-alt me-2"></i> Chỉnh sửa

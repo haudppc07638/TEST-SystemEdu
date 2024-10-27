@@ -109,6 +109,8 @@ Route::prefix('employees')->name('admin.employees.')->group(function () {
     Route::get('edit/{id}', [EmployeeController::class, 'edit'])->name('edit');
     Route::put('/{id}', [EmployeeController::class, 'update'])->name('update');
     Route::delete('{id}', [EmployeeController::class, 'destroy'])->name('destroy');
+    Route::get('detail/{id}', [EmployeeController::class, 'showDetail'])->name('detail');
+    Route::post('updateSubjects/{id}', [EmployeeController::class, 'updateSubjects'])->name('updateSubjects');
 });
 
 Route::prefix('students')->name('admin.students.')->group(function () {
@@ -118,6 +120,7 @@ Route::prefix('students')->name('admin.students.')->group(function () {
     Route::get('edit/{id}', [StudentController::class, 'edit'])->name('edit');
     Route::put('{id}', [StudentController::class, 'update'])->name('update');
     Route::delete('{id}', [StudentController::class, 'destroy'])->name('destroy');
+    Route::get('detail/{id}', [StudentController::class, 'showDetail'])->name('detail');
 });
 
 Route::prefix('schedules')->name('admin.schedules.')->group(function () {

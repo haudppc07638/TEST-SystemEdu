@@ -175,4 +175,13 @@ class StudentController extends Controller
         return redirect()->route('admin.students.index');
     }}
 
+    public function showDetail($id)
+    {
+        $student = Student::getStudentDetailById($id);
+
+        return view('admin.students.detail', [
+            'student' => $student
+        ]);
+    }
+
 }

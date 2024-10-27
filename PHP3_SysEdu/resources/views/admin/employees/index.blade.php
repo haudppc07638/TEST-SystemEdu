@@ -46,7 +46,7 @@
                                         <td>{{ $employee->phone }}</td>
 
                                         <td>
-                                            <img src="{{ asset('storage/avatars/' . $employee->image) }}" alt="avatar"
+                                            <img src="{{ $employee->image ? asset('storage/avatars/' . $employee->image) : asset('assets/images/default-avatar1.jpg') }}" alt="avatar"
                                                 class="rounded-circle" width="40px" height="40px">
                                         </td>
 
@@ -62,6 +62,11 @@
                                                 </button>
 
                                                 <div class="dropdown-menu">
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('admin.employees.detail', ['id' => $employee->id]) }}">
+                                                        <i class="bx bx-id-card me-2"></i>
+                                                        Xem chi tiết
+                                                    </a>
                                                     <a class="dropdown-item"
                                                         href="{{ route('admin.employees.edit', ['id' => $employee->id]) }}">
                                                         <i class="bx bx-edit-alt me-2"></i>
