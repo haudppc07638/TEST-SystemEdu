@@ -63,7 +63,6 @@ Route::post('/dang-xuat', [LogoutController::class, 'logoutStudent'])->name('log
 // admin route ==============================================================================
 
 Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-Route::get('/majors-by-faculty', [DashboardController::class, 'getMajorsByFaculty'])->name('majors.by.faculty');
 
 Route::prefix('faculties')->name('admin.faculties.')->group(function () {
     Route::get('/', [FacultyController::class, 'index'])->name('index');
@@ -237,8 +236,13 @@ Route::prefix('admin')->name('admin.subject_lecturers.')->group(function () {
     Route::get('subject-lecturers', [SubjectLecturerController::class, 'create'])->name('create');
     Route::post('subject-lecturers', [SubjectLecturerController::class, 'storeOrUpdate'])->name('storeOrUpdate');
     Route::get('subject-lecturers/filter', [SubjectLecturerController::class, 'filter'])->name('filter');
-
 });
+
+
+// Ajax
+Route::get('/majors-by-faculty', [DashboardController::class, 'getMajorsByFaculty'])->name('majors.by.faculty');
+Route::get('admin/lecturers-by-subject', [SubjectLecturerController::class, 'getLecturersBySubject'])->name('admin.lecturers.by.subject');
+Route::get('admin/majorclasses-by-subject', [ClassController::class, 'getMajorClassesBySubject'])->name('admin.majorclasses.by.subject');
 
 
 //end admin route ==============================================================================

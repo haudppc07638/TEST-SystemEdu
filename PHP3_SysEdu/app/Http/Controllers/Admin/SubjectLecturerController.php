@@ -47,4 +47,16 @@ class SubjectLecturerController extends Controller
 
         return response()->json($subjects);
     }
+
+    public function getLecturersBySubject(Request $request)
+    {
+        $subjectId = $request->input('subject_id');
+
+        $lecturers = SubjectLecturer::with('employee')
+            ->where('subject_id', $subjectId)
+            ->get()
+            ->pluck('employee');
+
+        return response()->json($lecturers);
+    }
 }

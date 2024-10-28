@@ -5,7 +5,7 @@
 @section('main')
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>Quản Lý Điểm Sinh Viên</h1>
+            <h1>Quản Lý Điểm - Lớp Môn: {{ $subjectClass->name }}</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
@@ -24,11 +24,11 @@
                             <div class="card-title d-flex justify-content-between align-items-center">
                                 <h5>Danh sách điểm sinh viên</h5>
                                 <div class="btn-group">
-                                    <a href="{{ route('admin.studentsubjectclass.export', $subjectClassId) }}"
+                                    <a href="{{ route('admin.studentsubjectclass.export', $subjectClass->id) }}"
                                         class="btn btn-sm btn-success me-2">
                                         <i class="bi bi-file-earmark-excel me-1"></i> Xuất Excel
                                     </a>
-                                    @if (!$isExpired && !$isBeforeStart)
+                                    @if (!$isBeforeStart)
                                         <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal"
                                             data-bs-target="#importExcelModal">
                                             <i class="bi bi-file-earmark-excel me-1"></i> Nhập điểm từ Excel
@@ -42,41 +42,52 @@
                             <table id="sysTable" class="table datatable">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th>Họ và tên</th>
-                                        <th>Mã sinh viên</th>
-                                        <th>Email</th>
-                                        <th>Điểm Giữa Kỳ</th>
-                                        <th>Điểm Cuối Kỳ</th>
-                                        <th>Điểm Trung Bình</th>
-                                        <th>Xếp Loại</th>
-                                        <th>Lớp Môn</th>
-                                        <th>Trạng Thái</th>
-                                        @if (!$isExpired && !$isBeforeStart)
-                                        <th>Tác vụ</th>
+                                        <th class="fs-6">#</th>
+                                        <th class="fs-6">MSV</th>
+                                        <th class="fs-6">Họ và tên</th>
+                                        <!-- Các loại điểm của môn -->
+                                        @foreach ($scoreTypes as $scoreType)
+                                            <th class="fs-6">{{ $scoreType->scoreType->name }}({{ $scoreType->weight }}%)
+                                            </th>
+                                        @endforeach
+                                        <th class="fs-6">Tổng Điểm</th>
+                                        <th class="fs-6">Xếp Loại</th>
+                                        <th class="fs-6">Trạng Thái</th>
+                                        @if (!$isBeforeStart)
+                                            <th>Tác vụ</th>
                                         @endif
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($studentSubjectClasses as $index => $studentSubjectClass)
                                         <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $studentSubjectClass->student->fullname }}</td>
-                                            <td>{{ $studentSubjectClass->student->code }}</td>
-                                            <td>{{ $studentSubjectClass->student->email }}</td>
-                                            <td>{{ $studentSubjectClass->midterm_score }}</td>
-                                            <td>{{ $studentSubjectClass->final_score }}</td>
-                                            <td>{{ $studentSubjectClass->total_score }}</td>
-                                            <td>{{ $studentSubjectClass->classification }}</td>
-                                            <td>{{ $studentSubjectClass->subjectClass->name }}</td>
-                                            <td>
+                                            <td class="fs-6">{{ $index + 1 }}</td>
+                                            <td class="fs-6">{{ $studentSubjectClass->student->code }}</td>
+                                            <td class="fs-6">{{ $studentSubjectClass->student->full_name }}</td>
+
+                                            @foreach ($scoreTypes as $scoreType)
+                                                <td class="fs-6">
+                                                    @php
+                                                        $score = $studentSubjectClass->scores
+                                                            ->where('subject_score_type_id', $scoreType->id)
+                                                            ->first();
+                                                    @endphp
+                                                    {{ $score ? $score->score : '' }}
+                                                </td>
+                                            @endforeach
+
+                                            <td class="fs-6">
+                                                {{ $studentSubjectClass->total_score ? $studentSubjectClass->total_score : '' }}
+                                            </td>
+                                            <td class="fs-6">{{ $studentSubjectClass->classification }}</td>
+                                            <td class="fs-6">
                                                 @if ($studentSubjectClass->status == 'passed')
                                                     <span class="badge bg-success">Pass</span>
                                                 @else
                                                     <span class="badge bg-danger">Fail</span>
                                                 @endif
                                             </td>
-                                            @if (!$isExpired && !$isBeforeStart)
+                                            @if (!$isBeforeStart)
                                                 <td>
                                                     <div class="dropdown">
                                                         <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
@@ -117,7 +128,7 @@
                     <h5 class="modal-title" id="importExcelModalLabel">Nhập điểm từ file Excel</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="{{ route('admin.studentsubjectclass.import', $subjectClassId) }}" method="POST"
+                <form action="{{ route('admin.studentsubjectclass.import', $subjectClass->id) }}" method="POST"
                     enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">

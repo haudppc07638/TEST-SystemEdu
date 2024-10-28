@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Http\Request;
 
 class StuClass extends Model
 {
@@ -16,7 +17,7 @@ class StuClass extends Model
         'id',
         'training_system',
         'name',
-        'quantity', 
+        'quantity',
         'status',
         'major_id',
         'start_date',
@@ -28,8 +29,9 @@ class StuClass extends Model
     {
         return $this->belongsTo(Major::class);
     }
-    public function subjectClass(){
-        return $this->belongsTo(SubjectClass::class);
+    public function subjectClasses()
+    {
+        return $this->hasMany(SubjectClass::class);
     }
     public function employee(): BelongsTo
     {
@@ -100,4 +102,5 @@ class StuClass extends Model
         return self::with('major', 'employee')
             ->findOrFail($major_class_id);
     }
+   
 }

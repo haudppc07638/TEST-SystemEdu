@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Admin\StudentSubjectClassRequest;
 use App\Models\SubjectClass;
 use App\Exports\StudentSubjectClassExport;
+use App\Models\Score;
+use App\Models\Subject;
+use App\Models\SubjectScoreType;
 use Maatwebsite\Excel\Facades\Excel;
 
 class StudentSubjectClassController extends Controller
@@ -17,64 +20,68 @@ class StudentSubjectClassController extends Controller
     public function index($id)
     {
         $studentSubjectClasses = StudentSubjectClass::getStudentSubClass($id);
+        foreach ($studentSubjectClasses as $studentSubjectClass) {
+            $studentSubjectClass->save();
+        }
         $subjectClass = SubjectClass::findSubjectClassById($id);
+        $scoreTypes = SubjectScoreType::getScoreTypesForSubjectClass($subjectClass->subject_id);
+
         $today = now();
-        $isExpired = $subjectClass->end_date <= $today;
         $isBeforeStart = $subjectClass->start_date > $today;
 
         return view('admin.studentsubjectclass.index', [
             'studentSubjectClasses' => $studentSubjectClasses,
-            'subjectClassId' => $id,
-            'isExpired' => $isExpired,
-            'isBeforeStart' => $isBeforeStart
+            'subjectClass' => $subjectClass,
+
+            'isBeforeStart' => $isBeforeStart,
+            'scoreTypes' => $scoreTypes
         ]);
     }
-    public function create()
-    {
-        // return view('admin.studentsubclass.create');
-    }
-    public function show($id)
-    {
 
-    }
-    public function store()
-    {
-
-    }
     public function edit($id)
     {
-        $studentSubClass = StudentSubjectClass::editStudentSubClass($id);
-        $profile = Student::getProfileStudent();
+        $studentSubClass = StudentSubjectClass::with(['scores', 'subjectClass.subject.subjectScoreTypes.scoreType'])->findOrFail($id);
+
+        $profile = $studentSubClass->student;
+        $subjectScoreTypes = $studentSubClass->subjectClass->subject->subjectScoreTypes;
+
         return view('admin.studentsubjectclass.edit', [
             'editstudentsubjectclass' => $studentSubClass,
-            'student' => $profile
+            'student' => $profile,
+            'subjectScoreTypes' => $subjectScoreTypes,
         ]);
     }
+
+
+
+
     public function update(StudentSubjectClassRequest $request, $id)
     {
-        $data = $request->only('student_id', 'midterm_score', 'final_score');
-        $validator = StudentSubjectClass::validate($data, $request);
+        $scores = $request->input('scores');
 
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return redirect()->route('admin.studentsubjectclass.edit', ['id' => $request->id])
-                ->withErrors($validator)
-                ->withInput();
+        foreach ($scores as $subjectScoreTypeId => $scoreValue) {
+            Score::updateOrCreate(
+                [
+                    'student_subject_class_id' => $id,
+                    'subject_score_type_id' => $subjectScoreTypeId,
+                ],
+                ['score' => $scoreValue]
+            );
         }
-        $studentsubjectclass = StudentSubjectClass::updateStudentSubClass($id, $data);
-        toastr()->success('Cập nhật thành công điểm sinh viên: ' . $studentsubjectclass->student->fullname);
-        return redirect()->route('admin.studentsubjectclass.index',$studentsubjectclass->subjectClass->id);
-    }
-    public function destroy()
-    {
 
+        toastr()->success('Cập nhật thành công điểm.');
+        return redirect()->route('admin.studentsubjectclass.index', $id);
     }
+
+
+    public function destroy() {}
 
     public function export($id)
     {
         $subjectClass = SubjectClass::findOrFail($id);
         $subjectClassName = $subjectClass->name;
         $day = now()->format('y-m-d');
-        $fileName = 'Bang_diem_lop_'.$subjectClassName.'_'.$day.'.xlsx';
+        $fileName = 'Bang_diem_lop_' . $subjectClassName . '_' . $day . '.xlsx';
         return Excel::download(new StudentSubjectClassExport($subjectClassName, $id), $fileName);
     }
 
@@ -85,25 +92,24 @@ class StudentSubjectClassController extends Controller
 
         // Kiểm tra nếu có file được upload
         if ($request->hasFile('file')) {
-            $file = $request->file(key: 'file');
+            $file = $request->file('file');
 
             try {
-                // Import file và truyền tên lớp môn
-                $import = new StudentSubjectClassImport($subjectClass->name);
+                // Import file và truyền SubjectClass
+                $import = new StudentSubjectClassImport($subjectClass);
                 Excel::import($import, $file);
 
-                // Kiểm tra nếu có lỗi trong quá trình import
+                // Kiểm tra lỗi trong quá trình import
                 $errors = $import->getErrors();
                 if (!empty($errors)) {
-                    // Nếu có lỗi, hiển thị lỗi
                     toastr()->error('Có lỗi trong quá trình nhập dữ liệu:<br>' . implode('<br>', $errors));
                     return back();
                 }
 
                 toastr()->success('Nhập điểm thành công!');
                 return back();
-            } catch (\Exception $e) {
-                // Xử lý ngoại lệ nếu có lỗi trong quá trình import
+            } catch (\Throwable $e) {
+                // Xử lý ngoại lệ
                 toastr()->error('Có lỗi xảy ra: ' . $e->getMessage());
                 return back();
             }

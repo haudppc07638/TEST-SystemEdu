@@ -16,19 +16,25 @@ class StudentSubjectClass extends Model
     use HasFactory;
 
     protected $fillable = ['total_score', 'classification', 'status', 'student_id', 'subject_class_id'];
-    
+
     public function student(): BeLongsTo
     {
-        return $this->belongsTo(Student::class,'student_id');
+        return $this->belongsTo(Student::class, 'student_id');
     }
     public function subjectClass(): BeLongsTo
     {
         return $this->belongsTo(SubjectClass::class);
     }
-    public function tuition(): HasOne{
-        return $this->hasOne(Tuition::class,'student_subject_class_id');
+    public function tuition(): HasOne
+    {
+        return $this->hasOne(Tuition::class, 'student_subject_class_id');
     }
-    public function subject(): HasManyThrough{
+    public function scores()
+    {
+        return $this->hasMany(Score::class, 'student_subject_class_id');
+    }
+    public function subject(): HasManyThrough
+    {
         return $this->hasManyThrough(
             Subject::class,
             SubjectClass::class,
@@ -49,47 +55,6 @@ class StudentSubjectClass extends Model
     //     $this->attributes['final_score'] = $value;
     //     $this->calculateTotalScore();
     // }
-
-    // protected function calculateTotalScore()
-    // {
-    //     $midtermScore = $this->attributes['midterm_score'] ?? 0;
-    //     $finalScore = $this->attributes['final_score'] ?? 0;
-    //     $this->attributes['total_score'] = ($midtermScore * 0.4) + ($finalScore * 0.6);
-    //     $this->updateClassfication();
-    //     $this->updateStatusBasedOnTotalScore();
-    //     $this->save();
-    // }
-    public function getClassficationAttribute()
-    {
-        $totalScore = $this->attributes['total_score'];
-
-        if ($totalScore >= 9) {
-            return 'Loại Xuất sắc';
-        } elseif ($totalScore >= 8) {
-            return 'Loại Giỏi';
-        } elseif ($totalScore >= 7) {
-            return 'Loại Khá';
-        } elseif ($totalScore >= 6) {
-            return 'Loại Trung bình';
-        } else {
-            return 'Loại Yếu';
-        }
-    }
-
-    protected function updateStatusBasedOnTotalScore()
-    {
-        $totalScore = $this->attributes['total_score'];
-
-        if ($totalScore >= 5) {
-            $this->attributes['status'] = 'passed';
-        } else {
-            $this->attributes['status'] = 'failed';
-        }
-    }
-    protected function updateClassfication()
-    {
-        $this->attributes['classification'] = $this->getClassficationAttribute();
-    }
     public static function validate($data, $request)
     {
         $rules = $request->rules();
@@ -98,13 +63,13 @@ class StudentSubjectClass extends Model
 
         return Validator::make($data, $rules, $messages);
     }
-    protected static function getStudentSubClass($id)
+    public static function getStudentSubClass($id)
     {
-        return self::with('student', 'subjectClass')->where('subject_class_id', $id)->get();
+        return self::with('student', 'subjectClass', 'scores')->where('subject_class_id', $id)->get();
     }
     protected static function editStudentSubClass($id)
     {
-        return self::findOrFail($id);
+        return self::with('subjectClass')->findOrFail($id);
     }
     protected static function updateStudentSubClass($id, $data)
     {
@@ -115,31 +80,18 @@ class StudentSubjectClass extends Model
 
     public static function cancelStudentSubjectClass($studentId, $subjectClassId)
     {
-           $studentSubjectClass = self::where('student_id', $studentId)
+        $studentSubjectClass = self::where('student_id', $studentId)
             ->where('subject_class_id', $subjectClassId)
             ->first();
-            if ($studentSubjectClass) {
-                $subjectClass = $studentSubjectClass->subjectClass;
-        
-                if ($subjectClass && $subjectClass->subject) {
-          
-                    return $studentSubjectClass->delete();
-                }
-            }
-            return false;
-        }
+        if ($studentSubjectClass) {
+            $subjectClass = $studentSubjectClass->subjectClass;
 
-    public static function insertStudentSubjectClass($studentId, $subjectClassId)
-    {
-        return self::create([
-            'student_id' => $studentId,
-            'subject_class_id' => $subjectClassId,
-            'midterm_score' => 1,
-            'final_score' => 1,
-            'total_score' => 1,
-            'classification' => 'Chưa phân loại',
-            'status' => 'fail'
-        ]);
+            if ($subjectClass && $subjectClass->subject) {
+
+                return $studentSubjectClass->delete();
+            }
+        }
+        return false;
     }
 
     public static function getRegisteredClassForSubject($studentId, $subjectId)
@@ -180,14 +132,14 @@ class StudentSubjectClass extends Model
             $studentId = $studentSubjectClass->student_id;
             $subjectClass = $studentSubjectClass->subjectClass;
             $subject = $subjectClass->subject;
-    
+
             if ($studentId && $subject) {
                 $totalTuition = TotalTuition::where('student_id', $studentId)->first();
-                
+
                 if ($totalTuition) {
                     $totalTuition->total_amount -= $subject->price;
                     $totalTuition->total_credit -= $subject->credit;
-    
+
                     if ($totalTuition->total_amount <= 0 && $totalTuition->total_credit <= 0) {
                         $totalTuition->delete();
                     } else {
@@ -196,7 +148,64 @@ class StudentSubjectClass extends Model
                 }
             }
         });
-    }
-    
 
+        static::saving(function ($model) {
+            $model->calculateTotalScore(); // tổng điểm
+        });
+    }
+
+    protected function calculateTotalScore()
+    {
+        $scores = $this->scores; 
+
+        if ($scores->isEmpty()) {
+            $this->attributes['total_score'] = null;
+            return;
+        }
+
+        $totalWeightedScore = 0;
+        $totalWeight = 0;
+
+        // Tính tổng điểm nhân trọng số và tổng trọng số
+        foreach ($scores as $score) {
+            $weight = $score->subjectScoreType->weight;
+            $totalWeightedScore += $score->score * $weight;
+            $totalWeight += $weight;
+        }
+
+        // Kiểm tra tổng trọng số để tránh chia cho 0
+        if ($totalWeight > 0) {
+            $averageScore = $totalWeightedScore / $totalWeight;
+            $this->attributes['total_score'] = round($averageScore, 2);
+        } else {
+            $this->attributes['total_score'] = null;
+        }
+
+        // Cập nhật phân loại và trạng thái
+        $this->updateClassification();
+        $this->updateStatus();
+    }
+
+    protected function updateClassification()
+    {
+        $this->attributes['classification'] = $this->getClassificationAttribute();
+    }
+
+    public function getClassificationAttribute()
+    {
+        $totalScore = $this->attributes['total_score'] ?? 0;
+
+        return match (true) {
+            $totalScore >= 9 => 'Xuất sắc',
+            $totalScore >= 8 => 'Giỏi',
+            $totalScore >= 7 => 'Khá',
+            $totalScore >= 6 => 'Trung bình',
+            default => 'Yếu',
+        };
+    }
+
+    protected function updateStatus()
+    {
+        $this->attributes['status'] = $this->attributes['total_score'] >= 5 ? 'passed' : 'failed';
+    }
 }

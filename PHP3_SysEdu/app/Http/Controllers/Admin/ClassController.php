@@ -9,7 +9,9 @@ use App\Models\Faculty;
 use App\Models\Major;
 use App\Models\StuClass;
 use App\Models\Student;
+use App\Models\Subject;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ClassController extends Controller
@@ -162,5 +164,18 @@ class ClassController extends Controller
             'class' => $class,
             'students' => $students,
         ]);
+    }
+
+    public function getMajorClassesBySubject(Request $request)
+    {
+        $subject = Subject::find($request->subject_id);
+
+        if ($subject && $subject->major_id) {
+            $majorClasses = StuClass::where('major_id', $subject->major_id)->get();
+        } else {
+            $majorClasses = StuClass::all();
+        }
+
+        return response()->json($majorClasses);
     }
 }

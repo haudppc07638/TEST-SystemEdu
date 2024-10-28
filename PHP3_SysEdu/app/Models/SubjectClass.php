@@ -36,8 +36,9 @@ class SubjectClass extends Model
     public function credit(): BelongsTo{
         return $this->belongsTo(Credit::class, 'credit_id');
     }
-    public function stuClass(){
-        return $this->hasMany(StuClass::class, 'major_class_id');
+    public function majorClass()
+    {
+        return $this->belongsTo(StuClass::class);
     }
     public function semester(): BelongsTo
     {
@@ -55,6 +56,14 @@ class SubjectClass extends Model
     {
         return $this->hasMany(StudentSubjectClass::class, 'subject_class_id');
     }
+    public function lecturer()
+    {
+        return $this->belongsTo(Employee::class, 'employee_id');
+    }
+    public function lecturers()
+    {
+        return $this->hasMany(SubjectLecturer::class);
+    }
     
     public function feedbacks()
     {
@@ -69,12 +78,13 @@ class SubjectClass extends Model
     }
     public static function createSubjectClass($data)
     {
+        $data['price']= 0;
         return self::create($data);
     }
 
     public static function findSubjectClassById($id)
     {
-        return self::findOrFail($id);
+        return self::with('subject')->find($id);
     }
 
     public static function updateSubjectClass($id, $data)
@@ -120,6 +130,7 @@ class SubjectClass extends Model
     public static function getAllSubjectClass(){
         return self::all();
     }
+
     public function getPriceAttribute()
     {
         $subjectCredits = $this->subject->credit;  
@@ -128,21 +139,19 @@ class SubjectClass extends Model
         return $subjectCredits * $creditPrice;     
     }
 
-    public static function createWithStudents(array $data)
+    public function addStudents($majorClassId)
     {
-        return DB::transaction(function () use ($data) {
-            $subjectClass = self::create($data);
-            
-            $students = Student::where('major_class_id', $data['major_class_id'])->get();
+        $students = Student::where('major_class_id', $majorClassId)->get();
 
-            $students->each(function ($student) use ($subjectClass) {
-                $subjectClass->students()->create([
-                    'student_id' => $student->id,
-                ]);
-            });
-
-            return $subjectClass;
-        });
+        foreach ($students as $student) {
+            StudentSubjectClass::create([
+                'student_id' => $student->id,
+                'subject_class_id' => $this->id,
+                'total_score' => null,
+                'classification' => null,
+                'status' => 'fail',
+            ]);
+        }
     }
     
 }

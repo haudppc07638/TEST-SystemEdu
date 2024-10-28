@@ -13,12 +13,12 @@ class SubjectScoreType extends Model
 
     protected $fillable = ['subject_id', 'score_type_id', 'weight'];
 
-    public function subject():BelongsTo
+    public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class);
     }
 
-    public function scoreType():BelongsTo
+    public function scoreType(): BelongsTo
     {
         return $this->belongsTo(ScoreType::class);
     }
@@ -26,5 +26,10 @@ class SubjectScoreType extends Model
     public function scores(): HasMany
     {
         return $this->hasMany(Score::class);
-    }//
+    } //
+
+    public static function getScoreTypesForSubjectClass($subject_id)
+    {
+        return self::where('subject_id', $subject_id)->with('scoreType')->get();
+    }
 }

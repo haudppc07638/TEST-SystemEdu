@@ -22,19 +22,17 @@ class StudentSubjectClassRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'midterm_score' => 'numeric|min:0|max:10',
-            'final_score' => 'numeric|min:0|max:10',
+            'scores.*' => 'nullable|numeric|min:0|max:10',
         ];
     }
-    public function messages(){
+
+    public function messages()
+    {
         return [
-            'midterm_score.numeric' => 'Điểm phải nhập bằng số!',
-            'midterm_score.min' => 'Điểm không nhập nhỏ hơn 0',
-            'midterm_score.max' => 'Điểm không nhập lớn hơn 10',
-            'final_score.numeric' => 'Điểm phải nhập bằng số!',
-            'final_score.min' => 'Điểm không nhập nhỏ hơn 0',
-            'final_score.max' => 'Điểm không được nhập lớn hơn 10',
+
+            'scores.*.numeric' => 'Điểm phải nhập bằng số!',
+            'scores.*.min' => 'Điểm không được nhỏ hơn 0.',
+            'scores.*.max' => 'Điểm không được lớn hơn 10.',
         ];
-        
     }
 }

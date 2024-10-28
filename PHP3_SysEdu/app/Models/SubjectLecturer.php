@@ -11,7 +11,12 @@ class SubjectLecturer extends Model
     protected $fillable = ["subject_id", "employee_id"];
 
     public function employee()
-{
-    return $this->belongsTo(Employee::class);
-}
+    {
+        return $this->belongsTo(Employee::class);
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
+    }
 }

@@ -125,7 +125,7 @@
                                         <option value="">Chọn Học Kỳ</option>
                                         @foreach($semesters as $semester)
                                             <option value="{{ $semester->id }}" {{ old('semester_id', $subjectClass->semester_id) == $semester->id ? 'selected' : '' }}>
-                                                {{ $semester->block }}
+                                                {{ $semester->block }} {{$semester->year}}
                                             </option>
                                         @endforeach
                                     </select>

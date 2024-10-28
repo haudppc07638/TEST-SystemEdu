@@ -23,10 +23,10 @@ class Semester extends Model
     }
     public static function getSemester()
     {
-        return self::select('id', 'block')
+        return self::select('id', 'block', 'year')
         ->get();
     }
-    public static function getAllSemester(){
+        public static function getAllSemester(){
         return self::select('id', 'block', 'year')
         ->orderBy('id', 'desc')
         ->get();

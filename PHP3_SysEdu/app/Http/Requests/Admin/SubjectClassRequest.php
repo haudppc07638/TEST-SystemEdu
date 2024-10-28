@@ -32,8 +32,7 @@ class SubjectClassRequest extends FormRequest
             'subject_id' => 'required',
             'semester_id' => 'required',
             'major_class_id' => 'required',
-            'credit_id' => 'required',
-            
+            'credit_id' => 'required',     
         ];
     }
 
@@ -61,7 +60,6 @@ class SubjectClassRequest extends FormRequest
             'employee_id.required' => 'Giảng viên là bắt buộc.',
             'subject_id.required' => 'Môn học là bắt buộc.',
             'semester_id.required' => 'Học kỳ là bắt buộc.',
-
         ];
     }
 }

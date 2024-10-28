@@ -10,13 +10,10 @@ use App\Models\Employee;
 use App\Models\Semester;
 use App\Models\Credit;
 use App\Models\StuClass;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Database\QueryException;
 
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\Admin\SubjectClassRequest;
-use App\Models\Student;
-use App\Models\SubjectLecturer;
 
 class SubjectClassController extends Controller
 {
@@ -28,8 +25,7 @@ class SubjectClassController extends Controller
 
     public function create()
     {
-        
-        $subjects = SubjectLecturer::with('subject', 'employee')->get();
+        $subjects = Subject::with('major')->get();
         $semesters = Semester::getSemester(); 
         $employees = Employee::getNameEmployees();
         $credits = Credit::getAllCredit();
@@ -68,8 +64,10 @@ class SubjectClassController extends Controller
         }
 
         $validatedData = $validator->validated();
+
+        $subjectClass = SubjectClass::createSubjectClass($validatedData);
         
-        SubjectClass::createWithStudents($validatedData);
+        $subjectClass->addStudents($data['major_class_id']);
 
         toastr()->success('Lớp học được tạo thành công');
         return redirect()->route('admin.subjectclasses.index');

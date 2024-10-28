@@ -20,7 +20,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body mt-3">
                         <a href="{{ route('admin.subjectclasses.create') }}" class="btn btn-primary m-2">Thêm mới</a>
                         <table id="tableSubjectClass" class="table datatable">
                             <thead>

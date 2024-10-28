@@ -43,6 +43,11 @@ class Subject extends Model
             ->withPivot('weight');
     }
 
+    public function subjectScoreTypes()
+    {
+        return $this->hasMany(SubjectScoreType::class, 'subject_id');
+    }
+
     public function lecturers()
     {
         return $this->hasMany(SubjectLecturer::class);
@@ -179,7 +184,7 @@ class Subject extends Model
     public function syncLecturers(array $newLecturers)
     {
         $existingLecturers = $this->lecturers()->pluck('employee_id')->toArray();
-        
+
         $lecturersToDelete = array_diff($existingLecturers, $newLecturers);
         if (!empty($lecturersToDelete)) {
             $this->lecturers()->whereIn('employee_id', $lecturersToDelete)->delete();
@@ -190,5 +195,12 @@ class Subject extends Model
                 $this->lecturers()->create(['employee_id' => $employeeId]);
             }
         }
+    }
+
+    public static function getBySubjectClass($subjectClassId)
+    {
+        $subject = Subject::with('scoreTypes')->find($subjectClassId);
+        $scoreTypes = $subject->scoreTypes;
+        return $scoreTypes;
     }
 }

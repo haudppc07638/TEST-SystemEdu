@@ -1,7 +1,9 @@
 <?php
+
 namespace App\Exports;
 
 use App\Models\StudentSubjectClass;
+use App\Models\SubjectScoreType;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -68,32 +70,54 @@ class StudentSubjectClassExport implements FromCollection, WithHeadings, WithEve
 
     public function collection()
     {
-        return StudentSubjectClass::with('student', 'subjectClass')
+        // Lấy danh sách loại điểm cho môn học
+        $scoreTypes = SubjectScoreType::where('subject_id', $this->subjectClassId)
+            ->with('scoreType')
+            ->get();
+
+        // Lấy danh sách sinh viên cùng với điểm
+        return StudentSubjectClass::with(['student', 'scores.subjectScoreType'])
             ->where('subject_class_id', $this->subjectClassId)
-            ->select('student_id', 'midterm_score', 'final_score', 'total_score')
             ->get()
-            ->map(function ($studentSubjectClass,$index) {
-                return [
+            ->map(function ($studentSubjectClass, $index) use ($scoreTypes) {
+                $row = [
                     'stt' => $index + 1,
-                    'fullname' => $studentSubjectClass->student->fullname,
+                    'full_name' => $studentSubjectClass->student->full_name,
                     'code' => $studentSubjectClass->student->code,
                     'email' => $studentSubjectClass->student->email,
-                    'midterm_score' => $studentSubjectClass->midterm_score,
-                    'final_score' => $studentSubjectClass->final_score,
                 ];
+
+                // Thêm các điểm theo loại điểm
+                foreach ($scoreTypes as $scoreType) {
+                    $score = $studentSubjectClass->scores
+                        ->where('subject_score_type_id', $scoreType->id)
+                        ->first();
+                    $row[$scoreType->scoreType->name] = $score ? $score->score : '';
+                }
+                
+
+                return $row;
             });
     }
 
     public function headings(): array
     {
-        return [
-            'STT',  
+        // Lấy danh sách loại điểm cho môn học
+        $scoreTypes = SubjectScoreType::where('subject_id', $this->subjectClassId)->with('scoreType')->get();
+
+        $headings = [
+            'STT',
             'Họ và tên',
             'Mã sinh viên',
             'Email',
-            'Điểm Giữa Kỳ',
-            'Điểm Cuối Kỳ',
         ];
+
+        // Thêm tên các loại điểm vào tiêu đề
+        foreach ($scoreTypes as $scoreType) {
+            $headings[] = $scoreType->scoreType->name;
+        }
+
+        return $headings;
     }
 
     public function startCell(): string
@@ -108,7 +132,7 @@ class StudentSubjectClassExport implements FromCollection, WithHeadings, WithEve
                 $sheet = $event->sheet->getDelegate();
 
                 // tên sheet
-                $sheet->setTitle('BangDiemSinhVien');   
+                $sheet->setTitle('BangDiemSinhVien');
 
                 // tiêu đề
                 $event->sheet->setCellValue('A1', 'SYSEDU - Bảng Điểm Sinh Viên Lớp ' . $this->subjectClassName);
@@ -116,7 +140,7 @@ class StudentSubjectClassExport implements FromCollection, WithHeadings, WithEve
                 $event->sheet->getStyle('A1:F1')->applyFromArray($this->titleStyle); // Áp dụng style cho tiêu đề
 
                 // Apply header style
-                $sheet->getStyle('A2:F2')->applyFromArray($this->headerStyle);
+                $sheet->getStyle('A2:' . $sheet->getHighestColumn() . '2')->applyFromArray($this->headerStyle);
 
                 // Set row height
                 $sheet->getRowDimension(1)->setRowHeight(25);
@@ -127,47 +151,53 @@ class StudentSubjectClassExport implements FromCollection, WithHeadings, WithEve
                 $sheet->getColumnDimension('B')->setWidth(20); // Họ và tên
                 $sheet->getColumnDimension('C')->setWidth(15); // Mã sinh viên
                 $sheet->getColumnDimension('D')->setWidth(30); // Email
-                $sheet->getColumnDimension('E')->setWidth(15); // Điểm Giữa Kỳ
-                $sheet->getColumnDimension('F')->setWidth(15); // Điểm Cuối Kỳ
 
-                // Apply validation for Điểm Giữa Kỳ and Điểm Cuối Kỳ
+                // Lấy danh sách các loại điểm cho môn học
+                $scoreTypes = SubjectScoreType::where('subject_id', $this->subjectClassId)->with('scoreType')->get();
+                $startColumn = 'E'; // Bắt đầu từ cột E
+
+                // Đặt độ rộng cho các cột điểm
+                foreach ($scoreTypes as $index => $scoreType) {
+                    $sheet->getColumnDimension(chr(ord($startColumn) + $index))->setWidth(15); // Điểm loại
+                }
+
+                // Apply validation cho các cột điểm
                 $highestRow = $sheet->getHighestRow();
+                foreach ($scoreTypes as $index => $scoreType) {
+                    $columnLetter = chr(ord($startColumn) + $index); // Tính cột dựa trên E, F, G, ...
 
-                // Điểm Giữa Kỳ validation
-                $validationD = $sheet->getCell('E3')->getDataValidation();
-                $validationD->setType(DataValidation::TYPE_DECIMAL)
-                    ->setOperator(DataValidation::OPERATOR_BETWEEN)
-                    ->setFormula1('1')
-                    ->setFormula2('10')
-                    ->setShowErrorMessage(true)
-                    ->setErrorTitle('Dữ liệu không hợp lệ')
-                    ->setError('Điểm được quy định từ 1 đến 10 và khoảng cách là 0.25')
-                    ->setPromptTitle('Dữ liệu không hợp lệ')
-                    ->setPrompt('Điểm được quy định từ 1 đến 10 và khoảng cách là 0.25');
+                    // Validation cho từng loại điểm
+                    $validation = $sheet->getCell($columnLetter . '3')->getDataValidation();
+                    $validation->setType(DataValidation::TYPE_DECIMAL)
+                        ->setOperator(DataValidation::OPERATOR_BETWEEN)
+                        ->setFormula1('1')
+                        ->setFormula2('10')
+                        ->setShowErrorMessage(true)
+                        ->setErrorTitle('Dữ liệu không hợp lệ')
+                        ->setError('Điểm được quy định từ 1 đến 10 và khoảng cách là 0.25')
+                        ->setPromptTitle('Dữ liệu không hợp lệ')
+                        ->setPrompt('Điểm được quy định từ 1 đến 10 và khoảng cách là 0.25');
 
-                // Apply validation to entire column D
-                for ($row = 3; $row <= $highestRow; $row++) {
-                    $cell = 'E' . $row;
-                    $sheet->getCell($cell)->setDataValidation($validationD);
+                    // Áp dụng xác thực cho toàn bộ cột
+                    for ($row = 3; $row <= $highestRow; $row++) {
+                        $cell = $columnLetter . $row;
+                        $sheet->getCell($cell)->setDataValidation($validation);
+                    }
                 }
 
-                // Điểm Cuối Kỳ validation
-                $validationE = $sheet->getCell('F3')->getDataValidation();
-                $validationE->setType(DataValidation::TYPE_DECIMAL)
-                    ->setOperator(DataValidation::OPERATOR_BETWEEN)
-                    ->setFormula1('1')
-                    ->setFormula2('10')
-                    ->setShowErrorMessage(true)
-                    ->setErrorTitle('Dữ liệu không hợp lệ')
-                    ->setError('Điểm được quy định từ 1 đến 10 và khoảng cách là 0.25')
-                    ->setPromptTitle('Dữ liệu không hợp lệ')
-                    ->setPrompt('Điểm được quy định từ 1 đến 10 và khoảng cách là 0.25');
+                // Thêm border cho toàn bộ bảng
+                $borderStyle = [
+                    'borders' => [
+                        'allBorders' => [
+                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                            'color' => ['argb' => '000000'], // Màu của border
+                        ],
+                    ],
+                ];
 
-                // Apply validation to entire column E
-                for ($row = 3; $row <= $highestRow; $row++) {
-                    $cell = 'F' . $row;
-                    $sheet->getCell($cell)->setDataValidation($validationE);
-                }
+                // Xác định phạm vi cần thêm border
+                $lastColumn = $sheet->getHighestColumn(); // Cột cuối cùng
+                $sheet->getStyle('A1:' . $lastColumn . $highestRow)->applyFromArray($borderStyle); // Áp dụng border cho toàn bộ bảng
             }
         ];
     }

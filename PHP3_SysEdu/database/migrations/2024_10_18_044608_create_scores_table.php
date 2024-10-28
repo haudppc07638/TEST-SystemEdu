@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('scores', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->decimal('score', 4, 2);
+            $table->decimal('score', 4, 2)->nullable();
             $table->foreignId('subject_score_type_id')->constrained('subject_score_types');
             $table->foreignId('student_subject_class_id')->constrained('student_subject_classes');
             $table->timestamps();

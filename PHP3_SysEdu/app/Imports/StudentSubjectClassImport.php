@@ -2,9 +2,13 @@
 
 namespace App\Imports;
 
-use App\Models\StudentSubjectClass;
 use App\Models\Student;
+use App\Models\StudentSubjectClass;
 use App\Models\SubjectClass;
+use App\Models\SubjectScoreType;
+use App\Models\Score;
+use App\Models\ScoreType;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithStartRow;
@@ -14,10 +18,9 @@ class StudentSubjectClassImport implements ToModel, WithHeadingRow, WithStartRow
     protected $subjectClass;
     protected $errors = [];
 
-    public function __construct($subjectClassName)
+    public function __construct(SubjectClass $subjectClass)
     {
-        // Tìm SubjectClass dựa trên tên lớp môn
-        $this->subjectClass = SubjectClass::where('name', $subjectClassName)->first();
+        $this->subjectClass = $subjectClass;
     }
 
     // Bỏ qua hàng đầu tiên (chứa tiêu đề file)
@@ -25,6 +28,7 @@ class StudentSubjectClassImport implements ToModel, WithHeadingRow, WithStartRow
     {
         return 3;
     }
+
     public function headingRow(): int
     {
         return 2;
@@ -32,44 +36,65 @@ class StudentSubjectClassImport implements ToModel, WithHeadingRow, WithStartRow
 
     public function model(array $row)
     {
-        // Kiểm tra và gán giá trị của cột 'Mã sinh viên'
+        // Kiểm tra mã sinh viên
         $studentCode = $row['ma_sinh_vien'] ?? null;
 
         if (!$studentCode) {
-            $this->errors[] = 'Dữ liệu nào đó đã thiếu mã sinh viên, vui lòng kiểm tra lại file!';
+            $this->errors[] = 'Thiếu mã sinh viên ở một dòng, vui lòng kiểm tra lại file!';
             return null;
         }
 
-        // Tìm sinh viên dựa trên mã sinh viên (code)
+        // Tìm sinh viên dựa vào mã
         $student = Student::where('code', $studentCode)->first();
 
         if (!$student) {
-            $this->errors[] = 'Có mã sinh viên không tồn tại, vui lòng kiểm tra lại file!';
+            $this->errors[] = "Mã sinh viên '{$studentCode}' không tồn tại!";
+            return null;
         }
+        // Sử dụng transaction để đảm bảo tính toàn vẹn dữ liệu
+        try {
+            DB::transaction(function () use ($student, $row) {
+                // Duyệt qua tất cả các loại điểm của lớp môn
+                $subjectScoreTypes = SubjectScoreType::with('scoreType')->where('subject_id', $this->subjectClass->subject_id)->get();
 
-        if ($student && $this->subjectClass) {
-            // Tìm bản ghi đã có trong bảng StudentSubjectClass
-            $studentSubjectClass = StudentSubjectClass::where('student_id', $student->id)
-                ->where('subject_class_id', $this->subjectClass->id)
-                ->first();
+                foreach ($subjectScoreTypes as $subjectScoreType) { // Lấy tên cột tương ứng với loại điểm từ file Excel
 
-            // Cập nhật điểm nếu đã có bản ghi
-            if ($studentSubjectClass) {
-                $studentSubjectClass->midterm_score = $row['diem_giua_ky'];
-                $studentSubjectClass->final_score = $row['diem_cuoi_ky'];
-                $studentSubjectClass->save();
-            } else {
-                // Nếu chưa có, tạo mới bản ghi
-                return new StudentSubjectClass([
-                    'student_id' => $student->id,
-                    'subject_class_id' => $this->subjectClass->id,
-                    'midterm_score' => $row['diem_giua_ky'],
-                    'final_score' => $row['diem_cuoi_ky'],
-                ]);
-            }
+                    $columnName = strtolower(str_replace(' ', '_', $subjectScoreType->scoreType->name));    
+                    // Kiểm tra nếu file có cột tương ứng
+
+                    if (!isset($row[$columnName])) {
+                        $this->errors[] = "Thiếu cột '{$columnName}' cho sinh viên '{$student->code}'.";
+                        continue;
+                    }
+
+                    // Tạo hoặc cập nhật điểm
+                    Score::updateOrCreate(
+                        [
+                            'student_subject_class_id' => $this->getStudentSubjectClassId($student->id),
+                            'subject_score_type_id' => $subjectScoreType->id,
+                        ],
+                        [
+                            'score' => $row[$columnName],
+                        ]
+                    );
+                }
+            });
+        } catch (\Throwable $e) {
+            $this->errors[] = "Lỗi khi xử lý mã sinh viên '{$studentCode}': " . $e->getMessage();
         }
 
         return null;
+    }
+
+    private function getStudentSubjectClassId($studentId)
+    {
+        // Tìm hoặc tạo bản ghi trong bảng student_subject_classes
+        $studentSubjectClass = StudentSubjectClass::firstOrCreate([
+            'student_id' => $studentId,
+            'subject_class_id' => $this->subjectClass->id,
+        ]);
+
+        return $studentSubjectClass->id;
     }
 
     public function getErrors()
