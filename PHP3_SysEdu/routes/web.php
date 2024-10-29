@@ -20,7 +20,8 @@ use App\Http\Controllers\Admin\SemesterController;
 use App\Http\Controllers\Admin\TimeSlotController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Client\HelpController;
-use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\Client\HomeController as ClientHomeController;
+use App\Http\Controllers\Teacher\HomeController as TeacherHomeController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Client\RegisterSubjectController;
 use App\Http\Controllers\Admin\StudentSubjectClassController;
@@ -249,7 +250,7 @@ Route::get('admin/majorclasses-by-subject', [ClassController::class, 'getMajorCl
 
 
 
-Route::get('trang-chu', [HomeController::class, 'index'])->name('home');
+Route::get('trang-chu', [ClientHomeController::class, 'index'])->name('home');
 
 Route::get('diem', [ClientGradeController::class, 'index'])->name('grades');
 
@@ -268,3 +269,11 @@ Route::get('/bang-diem-theo-ky', [ScoreController::class, 'index'])->name('score
 
 Route::get('feedback', [FeedbackController::class, 'showForStudent'])->name('showForStudent');
 Route::post('feedback/{id}', [FeedbackController::class, 'submitStudentFeedback'])->name('submitStudentFeedback');
+
+
+
+//teacher
+Route::prefix('gv')->group(function () {
+    Route::get('/', [TeacherHomeController::class, 'index'])->name('home');
+    
+});
