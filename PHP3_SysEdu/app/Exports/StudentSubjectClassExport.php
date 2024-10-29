@@ -3,12 +3,14 @@
 namespace App\Exports;
 
 use App\Models\StudentSubjectClass;
+use App\Models\SubjectClass;
 use App\Models\SubjectScoreType;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 
 class StudentSubjectClassExport implements FromCollection, WithHeadings, WithEvents, WithCustomStartCell
@@ -70,8 +72,8 @@ class StudentSubjectClassExport implements FromCollection, WithHeadings, WithEve
 
     public function collection()
     {
-        // Lấy danh sách loại điểm cho môn học
-        $scoreTypes = SubjectScoreType::where('subject_id', $this->subjectClassId)
+        $subjectClass = SubjectClass::findOrFail($this->subjectClassId);
+        $scoreTypes = SubjectScoreType::where('subject_id', $subjectClass->subject_id)
             ->with('scoreType')
             ->get();
 
@@ -87,15 +89,13 @@ class StudentSubjectClassExport implements FromCollection, WithHeadings, WithEve
                     'email' => $studentSubjectClass->student->email,
                 ];
 
-                // Thêm các điểm theo loại điểm
                 foreach ($scoreTypes as $scoreType) {
                     $score = $studentSubjectClass->scores
                         ->where('subject_score_type_id', $scoreType->id)
                         ->first();
                     $row[$scoreType->scoreType->name] = $score ? $score->score : '';
                 }
-                
-
+                // dd($row);
                 return $row;
             });
     }
@@ -103,7 +103,8 @@ class StudentSubjectClassExport implements FromCollection, WithHeadings, WithEve
     public function headings(): array
     {
         // Lấy danh sách loại điểm cho môn học
-        $scoreTypes = SubjectScoreType::where('subject_id', $this->subjectClassId)->with('scoreType')->get();
+        $subjectClass = SubjectClass::findOrFail($this->subjectClassId);
+        $scoreTypes = SubjectScoreType::where('subject_id', $subjectClass->subject_id)->with('scoreType')->get();
 
         $headings = [
             'STT',
@@ -134,10 +135,18 @@ class StudentSubjectClassExport implements FromCollection, WithHeadings, WithEve
                 // tên sheet
                 $sheet->setTitle('BangDiemSinhVien');
 
+                // Lấy danh sách các loại điểm cho môn học
+                $subjectClass = SubjectClass::findOrFail($this->subjectClassId);
+                $scoreTypes = SubjectScoreType::where('subject_id', $subjectClass->subject_id)
+                    ->with('scoreType')->get();
+
+                $totalColumns = 4 + $scoreTypes->count();
+                $lastColumn = Coordinate::stringFromColumnIndex($totalColumns); // Tính cột cuối cùng    
+
                 // tiêu đề
                 $event->sheet->setCellValue('A1', 'SYSEDU - Bảng Điểm Sinh Viên Lớp ' . $this->subjectClassName);
-                $event->sheet->mergeCells('A1:F1'); // Gộp ô
-                $event->sheet->getStyle('A1:F1')->applyFromArray($this->titleStyle); // Áp dụng style cho tiêu đề
+                $event->sheet->mergeCells("A1:{$lastColumn}1");
+                $event->sheet->getStyle("A1:{$lastColumn}1")->applyFromArray($this->titleStyle); // Áp dụng style cho tiêu đề
 
                 // Apply header style
                 $sheet->getStyle('A2:' . $sheet->getHighestColumn() . '2')->applyFromArray($this->headerStyle);
@@ -153,7 +162,8 @@ class StudentSubjectClassExport implements FromCollection, WithHeadings, WithEve
                 $sheet->getColumnDimension('D')->setWidth(30); // Email
 
                 // Lấy danh sách các loại điểm cho môn học
-                $scoreTypes = SubjectScoreType::where('subject_id', $this->subjectClassId)->with('scoreType')->get();
+                $subjectClass = SubjectClass::findOrFail($this->subjectClassId);
+                $scoreTypes = SubjectScoreType::where('subject_id', $subjectClass->subject_id)->with('scoreType')->get();
                 $startColumn = 'E'; // Bắt đầu từ cột E
 
                 // Đặt độ rộng cho các cột điểm

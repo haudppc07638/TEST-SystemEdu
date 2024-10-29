@@ -7,7 +7,6 @@ use App\Models\StudentSubjectClass;
 use App\Models\SubjectClass;
 use App\Models\SubjectScoreType;
 use App\Models\Score;
-use App\Models\ScoreType;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
@@ -23,7 +22,7 @@ class StudentSubjectClassImport implements ToModel, WithHeadingRow, WithStartRow
         $this->subjectClass = $subjectClass;
     }
 
-    // Bỏ qua hàng đầu tiên (chứa tiêu đề file)
+    // Bỏ qua hàng đầu tiên (chứa tiêu đề)
     public function startRow(): int
     {
         return 3;
@@ -51,21 +50,18 @@ class StudentSubjectClassImport implements ToModel, WithHeadingRow, WithStartRow
             $this->errors[] = "Mã sinh viên '{$studentCode}' không tồn tại!";
             return null;
         }
-        // Sử dụng transaction để đảm bảo tính toàn vẹn dữ liệu
+
         try {
+            // Sử dụng transaction để đảm bảo tính toàn vẹn dữ liệu
             DB::transaction(function () use ($student, $row) {
-                // Duyệt qua tất cả các loại điểm của lớp môn
-                $subjectScoreTypes = SubjectScoreType::with('scoreType')->where('subject_id', $this->subjectClass->subject_id)->get();
+                $subjectScoreTypes = SubjectScoreType::with('scoreType')
+                    ->where('subject_id', $this->subjectClass->subject_id)
+                    ->get();
 
-                foreach ($subjectScoreTypes as $subjectScoreType) { // Lấy tên cột tương ứng với loại điểm từ file Excel
+                foreach ($subjectScoreTypes as $subjectScoreType) {
+                    $columnName = strtolower(str_replace(' ', '_', $subjectScoreType->scoreType->name));
 
-                    $columnName = strtolower(str_replace(' ', '_', $subjectScoreType->scoreType->name));    
-                    // Kiểm tra nếu file có cột tương ứng
-
-                    if (!isset($row[$columnName])) {
-                        $this->errors[] = "Thiếu cột '{$columnName}' cho sinh viên '{$student->code}'.";
-                        continue;
-                    }
+                    $scoreValue = $row[$columnName];
 
                     // Tạo hoặc cập nhật điểm
                     Score::updateOrCreate(
@@ -74,7 +70,7 @@ class StudentSubjectClassImport implements ToModel, WithHeadingRow, WithStartRow
                             'subject_score_type_id' => $subjectScoreType->id,
                         ],
                         [
-                            'score' => $row[$columnName],
+                            'score' => $scoreValue,
                         ]
                     );
                 }
