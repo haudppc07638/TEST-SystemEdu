@@ -23,7 +23,7 @@
                         <form action="{{ route('admin.score_types.store') }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <label for="name" class="form-label">Tên Loại Điểm</label>
+                                <label for="name" class="form-label">Tên Điểm Quá Trình</label>
                                 <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>

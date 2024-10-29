@@ -11,7 +11,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
                 <li class="breadcrumb-item">Điểm</li>
-                <li class="breadcrumb-item active">Loại Điểm</li>
+                <li class="breadcrumb-item active">Loại Điểm Quá Trình</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
