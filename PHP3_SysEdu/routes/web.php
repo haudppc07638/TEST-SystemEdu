@@ -276,7 +276,7 @@ Route::post('feedback/{id}', [FeedbackController::class, 'submitStudentFeedback'
 
 
 //teacher
-Route::prefix('gv')->group(function () {
-    Route::get('/', [TeacherHomeController::class, 'index'])->name('home');
+// Route::prefix('gv')->group(function () {
+//     // Route::get('/', [TeacherHomeController::class, 'index'])->name('home');
     
-});
+// });
