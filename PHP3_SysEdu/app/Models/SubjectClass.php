@@ -154,4 +154,15 @@ class SubjectClass extends Model
         }
     }
     
+    public static function getAllDates()
+    {
+        return self::all()->mapWithKeys(function ($subjectClass) {
+            return [
+                $subjectClass->id => [
+                    'start_date' => $subjectClass->start_date,
+                    'end_date' => $subjectClass->end_date,
+                ],
+            ];
+        });
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -81,11 +82,6 @@ class Schedule extends Model
         return Validator::make($data, $rules, $messages);
     }
 
-    public static function createSchedule($data)
-    {
-        return self::create($data);
-    }
-
     public static function findScheduleById($id)
     {
         return self::findOrFail($id);
@@ -119,6 +115,37 @@ class Schedule extends Model
     public function semester()
     {
         return $this->subjectClass->semester();
+    }
+
+    public static function createSchedule($data, $scheduleType)
+    {
+        $startDate = Carbon::parse($data['start_date']);
+        $endDate = Carbon::parse($data['end_date']);
+        $currentDate = $startDate->copy();
+
+        while ($currentDate->lte($endDate)) {
+            $dayOfWeek = $currentDate->dayOfWeek;
+            $shouldCreateSchedule = ($scheduleType === 'odd')
+                ? in_array($dayOfWeek, [1, 3, 5])
+                : in_array($dayOfWeek, [2, 4, 6]);
+
+            if ($shouldCreateSchedule) {
+                self::create([
+                    'time_slot_id' => $data['time_slot_id'],
+                    'classroom_id' => $data['classroom_id'],
+                    'date' => $currentDate->toDateString(),
+                    'subject_class_id' => $data['subject_class_id'],
+                    'schedule_day' => $currentDate->toDateString(),
+                ]);
+            }
+
+            $currentDate->addDay();
+        }
+    }
+
+    public static function getPaginatedSchedules($perPage = 10)
+    {
+        return self::orderBy('id', 'desc')->paginate($perPage);
     }
 
 }

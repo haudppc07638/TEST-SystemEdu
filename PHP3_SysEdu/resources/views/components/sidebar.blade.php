@@ -64,20 +64,10 @@
              </a>
              <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                  <li>
-                     <a href="{{ route('admin.schedules.select.faculty') }}">
+                     <a href="{{ route('admin.schedules.index') }}">
                          <i class="bi bi-circle"></i><span>Lịch học</span>
                      </a>
                  </li>
-                 {{-- <li>
-            <a href="forms-layouts.html">
-              <i class="bi bi-circle"></i><span>Ca Học</span>
-            </a> --}}
-                 {{-- </li>
-          <li>
-            <a href="{{ route('admin.daycombinations.index')}}">
-              <i class="bi bi-circle"></i><span>Ngày Học</span>
-            </a>
-          </li>  --}}
                  <li>
                      <a href="{{ route('admin.semesters.index') }}">
                          <i class="bi bi-circle"></i><span>Học Kỳ</span>

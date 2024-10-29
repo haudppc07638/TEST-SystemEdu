@@ -125,13 +125,7 @@ Route::prefix('students')->name('admin.students.')->group(function () {
 
 Route::prefix('schedules')->name('admin.schedules.')->group(function () {
     Route::get('/', [AdminScheduleController::class, 'index'])->name('index');
-    Route::get('select-faculty', [AdminScheduleController::class, 'selectFaculty'])->name('select.faculty');
-    Route::get('select-major/{facultyId}', [AdminScheduleController::class, 'selectMajor'])->name('select.major');
-    Route::get('select-subject/{facultyId}/{majorId}', [AdminScheduleController::class, 'selectSubject'])->name('select.subject');
-    Route::get('select-teacher/{facultyId}/{majorId}/{subjectId}', [AdminScheduleController::class, 'selectTeacher'])->name('select.teacher');
-    Route::get('select-year', [AdminScheduleController::class, 'selectYear'])->name('select.year');
-    Route::get('select-semester', [AdminScheduleController::class, 'selectSemester'])->name('select.semester');
-    Route::get('create/{semesterId?}', [AdminScheduleController::class, 'create'])->name('create');
+    Route::get('create', [AdminScheduleController::class, 'create'])->name('create');
     Route::post('create', [AdminScheduleController::class, 'store'])->name('create.post');
     Route::get('edit/{id}', [AdminScheduleController::class, 'edit'])->name('edit');
     Route::put('{id}', [AdminScheduleController::class, 'update'])->name('update');
