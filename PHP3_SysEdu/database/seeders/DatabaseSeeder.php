@@ -25,11 +25,11 @@ class DatabaseSeeder extends Seeder
 
             // MajorClassSeeder::class,
 
-            // ClassroomSeeder::class,
+            ClassroomSeeder::class,
 
             // SeedersStudentSeeder::class,
 
-            SubjectLecturersSeeder::class,
+            // SubjectLecturersSeeder::class,
         ]);
     }
 }

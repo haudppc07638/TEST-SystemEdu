@@ -34,7 +34,9 @@ class CreditController extends Controller
     public function store(Request $request)
     {
         $data = $request->only(['price', 'vat']);
-        $data['vat'] = 0;
+        if (empty($data['vat'])) {
+            $data['vat'] = 0;
+        }
         $credit = Credit::createCredit($data);
 
         toastr()->success('Thêm thành công: ' . $credit->totalPrice);

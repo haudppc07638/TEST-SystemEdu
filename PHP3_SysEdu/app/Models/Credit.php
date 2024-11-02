@@ -21,6 +21,8 @@ class Credit extends Model
         return self::all();
     }
     public static function createCredit($data){
+        $data['vat'] = $data['vat'] ?? 0;
+
         $totalPrice = $data['price'] + ($data['price'] * $data['vat'] / 100);
 
         $data['total_price'] = $totalPrice;

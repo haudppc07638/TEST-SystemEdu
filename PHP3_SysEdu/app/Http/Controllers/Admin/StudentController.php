@@ -86,8 +86,8 @@ class StudentController extends Controller
         }
 
         $data['image'] = $this->imageService->handleImageStore($request);
-
         $student = Student::createStudent($data);
+        dd($student);
         toastr()->success('Thêm thành công học sinh: ' . $student->fullname);
         return redirect()->route('admin.students.index');
     }

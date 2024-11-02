@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class SubjectClass extends Model
 {
@@ -27,6 +28,7 @@ class SubjectClass extends Model
         'subject_id',
         'semester_id',
         'major_class_id',
+        'credit_price',
         'status'
     ];
     public function subject(): BelongsTo
@@ -134,9 +136,22 @@ class SubjectClass extends Model
     public function getPriceAttribute()
     {
         $subjectCredits = $this->subject->credit;  
-        $creditPrice = $this->credit->price;       
+        $creditPrice = $this->attributes['credit_price'] ?? 0;
+     
+        Log::info("Số tín chỉ: $subjectCredits, Giá tín chỉ: $creditPrice");
 
         return $subjectCredits * $creditPrice;     
+    }
+    protected static function boot()
+    {
+    parent::boot();
+
+    static::saving(function (SubjectClass $subjectClass) {
+        $subjectCredits = $subjectClass->subject->credit ?? 0;
+        $creditPrice = $subjectClass->credit_price ?? 0;
+
+        $subjectClass->price = $subjectCredits * $creditPrice;
+    });
     }
 
     public function addStudents($majorClassId)

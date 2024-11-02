@@ -54,7 +54,8 @@ class SubjectClassController extends Controller
             'subject_id',
             'semester_id',
             'major_class_id',
-            'credit_id'
+            'credit_id',
+            'credit_price'
         ]);
         $validator = Validator::make($data, $rules, $messages);
         if ($validator->stopOnFirstFailure()->fails()) {
@@ -65,7 +66,7 @@ class SubjectClassController extends Controller
 
         $validatedData = $validator->validated();
 
-        $subjectClass = SubjectClass::createSubjectClass($validatedData);
+        $subjectClass = SubjectClass::createSubjectClass($data);
         
         $subjectClass->addStudents($data['major_class_id']);
 
