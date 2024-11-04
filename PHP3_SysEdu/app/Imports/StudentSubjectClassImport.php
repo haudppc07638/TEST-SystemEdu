@@ -11,8 +11,10 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithStartRow;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
 
-class StudentSubjectClassImport implements ToModel, WithHeadingRow, WithStartRow
+class StudentSubjectClassImport implements ToModel, WithHeadingRow, WithStartRow, WithChunkReading, WithBatchInserts
 {
     protected $subjectClass;
     protected $errors = [];
@@ -20,6 +22,7 @@ class StudentSubjectClassImport implements ToModel, WithHeadingRow, WithStartRow
     public function __construct(SubjectClass $subjectClass)
     {
         $this->subjectClass = $subjectClass;
+        ini_set('max_execution_time', 300); // Tăng thời gian thực thi lên 5 phút
     }
 
     // Bỏ qua hàng đầu tiên (chứa tiêu đề)
@@ -33,12 +36,22 @@ class StudentSubjectClassImport implements ToModel, WithHeadingRow, WithStartRow
         return 2;
     }
 
+    public function batchSize(): int
+    {
+        return 100; // Xử lý mỗi lần 100 bản ghi
+    }
+
+    public function chunkSize(): int
+    {
+        return 100; // Đọc mỗi lần 100 bản ghi
+    }
+
     public function model(array $row)
     {
-        // Kiểm tra mã sinh viên
-        $studentCode = $row['ma_sinh_vien'] ?? null;
+        // dd($row);   
+        $studentCode = trim($row['ma_sinh_vien'] ?? '');
 
-        if (!$studentCode) {
+        if (empty($studentCode)) {
             $this->errors[] = 'Thiếu mã sinh viên ở một dòng, vui lòng kiểm tra lại file!';
             return null;
         }
@@ -52,27 +65,68 @@ class StudentSubjectClassImport implements ToModel, WithHeadingRow, WithStartRow
         }
 
         try {
-            // Sử dụng transaction để đảm bảo tính toàn vẹn dữ liệu
-            DB::transaction(function () use ($student, $row) {
+            return DB::transaction(function () use ($student, $row) {
+                $studentSubjectClass = $this->getStudentSubjectClassId($student->id);
+
                 $subjectScoreTypes = SubjectScoreType::with('scoreType')
                     ->where('subject_id', $this->subjectClass->subject_id)
                     ->get();
 
                 foreach ($subjectScoreTypes as $subjectScoreType) {
-                    $columnName = strtolower(str_replace(' ', '_', $subjectScoreType->scoreType->name));
+                    $columnName = mb_strtolower(str_replace(' ', '', $subjectScoreType->name));
 
-                    $scoreValue = $row[$columnName];
+                    if ($subjectScoreType->scoreType->type === 'multi') {
+                        // Tìm index của điểm trong nhóm multi
+                        $index = $subjectScoreTypes
+                            ->where('score_type_id', $subjectScoreType->score_type_id)
+                            ->search(function ($item) use ($subjectScoreType) {
+                                return $item->id === $subjectScoreType->id;
+                            });
 
-                    // Tạo hoặc cập nhật điểm
-                    Score::updateOrCreate(
-                        [
-                            'student_subject_class_id' => $this->getStudentSubjectClassId($student->id),
-                            'subject_score_type_id' => $subjectScoreType->id,
-                        ],
-                        [
-                            'score' => $scoreValue,
-                        ]
-                    );
+                        $scoreValue = isset($row[$columnName]) ? $row[$columnName] : null;
+                        
+                        // Kiểm tra và xử lý giá trị điểm
+                        if ($scoreValue !== null && $scoreValue !== '' && !is_numeric($scoreValue)) {
+                            throw new \Exception("Điểm không hợp lệ cho cột {$columnName}");
+                        }
+
+                        if ($scoreValue === '') {
+                            $scoreValue = null;
+                        }
+
+                        Score::updateOrCreate(
+                            [
+                                'student_subject_class_id' => $studentSubjectClass,
+                                'subject_score_type_id' => $subjectScoreType->id,
+                            ],
+                            [
+                                'name' => $columnName,
+                                'score' => $scoreValue !== null ? (float)$scoreValue : null,
+                            ]
+                        );
+                    } else {
+                        // Xử lý điểm không phải multi
+                        $scoreValue = isset($row[$columnName]) ? $row[$columnName] : null;
+
+                        if ($scoreValue !== null && $scoreValue !== '' && !is_numeric($scoreValue)) {
+                            throw new \Exception("Điểm không hợp lệ cho cột {$columnName}");
+                        }
+
+                        if ($scoreValue === '') {
+                            $scoreValue = null;
+                        }
+
+                        Score::updateOrCreate(
+                            [
+                                'student_subject_class_id' => $studentSubjectClass,
+                                'subject_score_type_id' => $subjectScoreType->id,
+                            ],
+                            [
+                                'name' => $columnName,
+                                'score' => $scoreValue !== null ? (float)$scoreValue : null,
+                            ]
+                        );
+                    }
                 }
             });
         } catch (\Throwable $e) {

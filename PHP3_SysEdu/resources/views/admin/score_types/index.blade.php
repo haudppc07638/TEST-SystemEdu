@@ -31,6 +31,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Tên Loại Điểm</th>
+                                    <th>Thuộc loại</th>
                                     <th>Tác Vụ</th>
                                 </tr>
                             </thead>
@@ -39,6 +40,7 @@
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $scoreType->name }}</td>
+                                        <td>{{ $scoreType->type }}</td>
                                         <td>
                                             <div class="dropdown">
                                                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" 

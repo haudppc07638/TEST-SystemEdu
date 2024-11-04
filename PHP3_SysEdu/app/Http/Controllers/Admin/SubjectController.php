@@ -36,17 +36,7 @@ class SubjectController extends Controller
     public function store(SubjectRequest $request)
     {
         $validated = $request->validated();
-
-        $totalWeight = 0;
-        foreach ($request->score_types as $scoreTypeId) {
-            $weight = $request->weights[$scoreTypeId] ?? 0;
-            $totalWeight += $weight;
-        }
-
-        if ($totalWeight !== 100) {
-            return redirect()->back()->withErrors(['weights' => 'Tổng trọng số cho các loại điểm đã chọn phải bằng 100%.'])->withInput();
-        }
-
+        $this->validateTotalWeight($request);
         $subject = Subject::createSubject($validated);
 
         toastr()->success('Thêm thành công môn học: ' . $subject->name);
@@ -73,25 +63,41 @@ class SubjectController extends Controller
     public function update(SubjectRequest $request, string $id)
     {
         $validated = $request->validated();
+        $this->validateTotalWeight($request);
 
-        $totalWeight = 0;
-        foreach ($request->score_types as $scoreTypeId) {
-            $weight = floatval($request->weights[$scoreTypeId] ?? 0);
-            $totalWeight += $weight;
+        $subject = Subject::findOrFail($id);
+
+        // Cập nhật thông tin môn học
+        $subject->updateSubject($validated);
+
+        // Xử lý cập nhật score types và weights
+        if (isset($validated['score_types'])) {
+            $subject->scoreTypes()->detach(); // Xóa tất cả các liên kết cũ
+
+            foreach ($validated['score_types'] as $scoreTypeId) {
+                $scoreType = ScoreType::find($scoreTypeId);
+                $weight = $validated['weights'][$scoreTypeId] ?? 0;
+
+                if ($scoreType->type === 'multi' && isset($request->sub_scores[$scoreTypeId])) {
+                    $quantity = $request->sub_scores[$scoreTypeId];
+                    $subWeight = $weight / $quantity;
+
+                    for ($i = 1; $i <= $quantity; $i++) {
+                        $subject->scoreTypes()->attach($scoreTypeId, [
+                            'weight' => $subWeight,
+                            'name' => "{$scoreType->name}{$i}"
+                        ]);
+                    }
+                } else {
+                    $subject->scoreTypes()->attach($scoreTypeId, [
+                        'weight' => $weight,
+                        'name' => $scoreType->name
+                    ]);
+                }
+            }
         }
-        if (abs($totalWeight - 100.0) > 0.01) {
-            return redirect()->back()->withErrors(['weights' => 'Tổng trọng số cho các loại điểm đã chọn phải bằng 100%.'])->withInput();
-        }
 
-        try {
-            $subject = Subject::findOrFail($id);
-            $subject->updateSubject($validated);
-
-            toastr()->success('Cập nhật thành công môn học: ' . $subject->name);
-        } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['weights' => $e->getMessage()])->withInput();
-        }
-
+        toastr()->success('Cập nhật thành công môn học: ' . $subject->name);
         return redirect()->route('admin.subjects.index');
     }
 
@@ -109,6 +115,22 @@ class SubjectController extends Controller
                 return redirect()->route('admin.subjects.index');
             }
             return redirect()->route('admin.subjects.index');
+        }
+    }
+
+    private function validateTotalWeight($request)
+    {
+        $totalWeight = 0;
+
+        foreach ($request->input('score_types', []) as $scoreTypeId) {
+            $weight = floatval($request->input("weights.$scoreTypeId", 0));
+            $totalWeight += $weight;
+        }
+
+        if (round($totalWeight, 2) !== 100.00) {
+            return redirect()->back()
+                ->withErrors(['weights' => 'Tổng trọng số cho các loại điểm đã chọn phải bằng 100%.'])
+                ->withInput();
         }
     }
 }

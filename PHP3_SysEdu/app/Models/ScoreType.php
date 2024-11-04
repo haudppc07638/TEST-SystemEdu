@@ -10,7 +10,7 @@ class ScoreType extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'type'];
 
     public function subjectScoreTypes(): HasMany
     {

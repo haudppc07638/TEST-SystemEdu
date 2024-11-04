@@ -23,6 +23,7 @@ class ScoreTypeRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:100',
+            'type' => 'required|in:single,multi',
         ];
     }
 
@@ -32,6 +33,9 @@ class ScoreTypeRequest extends FormRequest
             'name.required' => 'Tên loại điểm là bắt buộc.',
             'name.string' => 'Tên loại điểm phải là một chuỗi.',
             'name.max' => 'Tên loại điểm không được quá 100 ký tự.',
+
+            'type.required' => 'Loại điểm không được để trống',
+            'type.in' => 'Loại điểm không hợp lệ',
         ];
     }
 }

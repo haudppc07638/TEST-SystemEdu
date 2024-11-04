@@ -141,9 +141,25 @@ class Subject extends Model
 
         if (isset($data['score_types'])) {
             foreach ($data['score_types'] as $scoreTypeId) {
+                $scoreType = ScoreType::find($scoreTypeId);
                 $weight = $data['weights'][$scoreTypeId] ?? 0;
-                if ($weight > 0) {
-                    $subject->scoreTypes()->attach($scoreTypeId, ['weight' => $weight]);
+
+                if ($scoreType->type === 'multi') {
+                    $quantity = $data['sub_scores'][$scoreTypeId] ?? 1;
+                    $subWeight = $weight / $quantity;
+
+                    for ($i = 1; $i <= $quantity; $i++) {
+                        $subject->scoreTypes()->attach($scoreTypeId, [
+                            'weight' => $subWeight,
+                            'name' => "{$scoreType->name}{$i}",
+                        ]);
+                    }
+                } else {
+                    // Trường hợp single
+                    $subject->scoreTypes()->attach($scoreTypeId, [
+                        'weight' => $weight,
+                        'name' => $scoreType->name,
+                    ]);
                 }
             }
         }
@@ -151,11 +167,14 @@ class Subject extends Model
         if (isset($data['prerequisites'])) {
             $subject->prerequisites()->sync($data['prerequisites']);
         }
+
         return $subject;
     }
 
+
     public function updateSubject(array $data)
     {
+        // Cập nhật thông tin cơ bản
         $this->update([
             'code' => $data['code'],
             'name' => $data['name'],
@@ -164,22 +183,15 @@ class Subject extends Model
             'major_id' => $data['major_id'] ?? null,
         ]);
 
-        $this->scoreTypes()->detach();
-        if (isset($data['score_types'])) {
-            foreach ($data['score_types'] as $scoreTypeId) {
-                $weight = $data['weights'][$scoreTypeId] ?? 0;
-                if ($weight > 0) {
-                    $this->scoreTypes()->attach($scoreTypeId, ['weight' => $weight]);
-                }
-            }
-        }
-
+        // Cập nhật môn tiên quyết nếu có
         if (isset($data['prerequisites'])) {
             $this->prerequisites()->sync($data['prerequisites']);
         } else {
             $this->prerequisites()->detach();
         }
+        return $this;
     }
+
 
     public static function detailSubject($id)
     {

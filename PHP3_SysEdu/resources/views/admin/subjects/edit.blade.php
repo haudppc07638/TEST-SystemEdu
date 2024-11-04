@@ -81,24 +81,63 @@
                                     <label for="score_types" class="form-label">Chọn Loại Điểm và Trọng Số</label>
                                     <div class="row">
                                         @foreach ($scoreTypes as $scoreType)
-                                            <div class="col-md-4 mt-2">
+                                            <div class="col-md-3 mt-2">
                                                 <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input"
+                                                    <input type="checkbox" class="form-check-input score-type-checkbox"
                                                         id="score_type_{{ $scoreType->id }}" name="score_types[]"
                                                         value="{{ $scoreType->id }}"
                                                         {{ in_array($scoreType->id, old('score_types', [])) || $subject->scoreTypes->contains($scoreType->id) ? 'checked' : '' }}>
-                                                    <label class="form-check-label"
-                                                        for="score_type_{{ $scoreType->id }}">{{ $scoreType->name }}</label>
-                                                    <input type="text" name="weights[{{ $scoreType->id }}]"
-                                                        class="form-control mt-2" placeholder="Trọng số (%)" min="0"
-                                                        max="100"
-                                                        value="{{ old('weights.' . $scoreType->id, $subject->scoreTypes->find($scoreType->id)->pivot->weight ?? '') }}">
+                                                    <label class="form-check-label" for="score_type_{{ $scoreType->id }}">
+                                                        {{ $scoreType->name }}
+                                                    </label>
+
+                                                    @php
+                                                        if ($scoreType->type === 'multi') {
+                                                            // Tính tổng weight cho loại điểm đa thành phần
+                                                            $totalWeight = $subject
+                                                                ->scoreTypes()
+                                                                ->where('score_type_id', $scoreType->id)
+                                                                ->sum('subject_score_types.weight');
+                                                        } else {
+                                                            $totalWeight =
+                                                                $subject->scoreTypes->find($scoreType->id)->pivot
+                                                                    ->weight ?? '';
+                                                        }
+                                                    @endphp
+
+                                                    <input type="number" name="weights[{{ $scoreType->id }}]"
+                                                        class="form-control mt-2 weight-input" placeholder="Trọng số (%)"
+                                                        min="0" max="100"
+                                                        value="{{ old('weights.' . $scoreType->id, $totalWeight) }}"
+                                                        {{ in_array($scoreType->id, old('score_types', [])) || $subject->scoreTypes->contains($scoreType->id) ? '' : 'disabled' }}>
+
+                                                    @if ($scoreType->type === 'multi')
+                                                        @php
+                                                            $subCount = $subject
+                                                                ->scoreTypes()
+                                                                ->where('score_type_id', $scoreType->id)
+                                                                ->count();
+                                                        @endphp
+                                                        <input type="number" name="sub_scores[{{ $scoreType->id }}]"
+                                                            class="form-control mt-2 sub-score-input"
+                                                            placeholder="Số lượng {{ $scoreType->name }}" min="1"
+                                                            value="{{ old('sub_scores.' . $scoreType->id, $subCount) }}"
+                                                            {{ in_array($scoreType->id, old('score_types', [])) || $subject->scoreTypes->contains($scoreType->id) ? '' : 'disabled' }}>
+                                                    @endif
+
                                                     @error('weights.' . $scoreType->id)
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
+
+                                                    @if ($scoreType->type === 'multi')
+                                                        @error('sub_scores.' . $scoreType->id)
+                                                            <span class="text-danger">{{ $message }}</span>
+                                                        @enderror
+                                                    @endif
                                                 </div>
                                             </div>
                                         @endforeach
+
                                         @error('score_types')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -107,6 +146,7 @@
                                         @enderror
                                     </div>
                                 </div>
+
 
                                 <div class="row mb-3">
                                     <label for="prerequisites" class="col-sm-2 col-form-label">Môn tiên quyết</label>
@@ -152,6 +192,20 @@
 @push('script')
     <script>
         $(document).ready(function() {
+            $('.score-type-checkbox').on('change', function() {
+                let scoreTypeId = $(this).val();
+                let weightInput = $(`input[name='weights[${scoreTypeId}]']`);
+                let subScoreInput = $(`input[name='sub_scores[${scoreTypeId}]']`);
+
+                if ($(this).is(':checked')) {
+                    weightInput.prop('disabled', false);
+                    subScoreInput.prop('disabled', false);
+                } else {
+                    weightInput.prop('disabled', true).val('');
+                    subScoreInput.prop('disabled', true).val(1);
+                }
+            });
+
             $('#prerequisites').select2({
                 placeholder: "Chọn môn tiên quyết",
                 allowClear: true

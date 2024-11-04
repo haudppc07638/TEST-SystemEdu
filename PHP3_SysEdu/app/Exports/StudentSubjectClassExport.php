@@ -77,11 +77,25 @@ class StudentSubjectClassExport implements FromCollection, WithHeadings, WithEve
             ->with('scoreType')
             ->get();
 
-        // Lấy danh sách sinh viên cùng với điểm
+        // Nhóm các loại điểm đa thành phần
+        $groupedScoreTypes = [];
+        foreach ($scoreTypes as $scoreType) {
+            $scoreTypeId = $scoreType->scoreType->id;
+            if (!isset($groupedScoreTypes[$scoreTypeId])) {
+                $groupedScoreTypes[$scoreTypeId] = [
+                    'name' => $scoreType->scoreType->name,
+                    'type' => $scoreType->scoreType->type,
+                    'details' => [$scoreType]
+                ];
+            } else {
+                $groupedScoreTypes[$scoreTypeId]['details'][] = $scoreType;
+            }
+        }
+
         return StudentSubjectClass::with(['student', 'scores.subjectScoreType'])
             ->where('subject_class_id', $this->subjectClassId)
             ->get()
-            ->map(function ($studentSubjectClass, $index) use ($scoreTypes) {
+            ->map(function ($studentSubjectClass, $index) use ($groupedScoreTypes) {
                 $row = [
                     'stt' => $index + 1,
                     'full_name' => $studentSubjectClass->student->full_name,
@@ -89,22 +103,47 @@ class StudentSubjectClassExport implements FromCollection, WithHeadings, WithEve
                     'email' => $studentSubjectClass->student->email,
                 ];
 
-                foreach ($scoreTypes as $scoreType) {
-                    $score = $studentSubjectClass->scores
-                        ->where('subject_score_type_id', $scoreType->id)
-                        ->first();
-                    $row[$scoreType->scoreType->name] = $score ? $score->score : '';
+                foreach ($groupedScoreTypes as $type) {
+                    if ($type['type'] === 'multi') {
+                        foreach ($type['details'] as $index => $scoreType) {
+                            $score = $studentSubjectClass->scores
+                                ->where('subject_score_type_id', $scoreType->id)
+                                ->first();
+                            $row[$type['name'] . ($index + 1)] = $score ? $score->score : '';
+                        }
+                    } else {
+                        $score = $studentSubjectClass->scores
+                            ->where('subject_score_type_id', $type['details'][0]->id)
+                            ->first();
+                        $row[$type['name']] = $score ? $score->score : '';
+                    }
                 }
-                // dd($row);
+                // dd($row);    
                 return $row;
             });
     }
 
     public function headings(): array
     {
-        // Lấy danh sách loại điểm cho môn học
         $subjectClass = SubjectClass::findOrFail($this->subjectClassId);
-        $scoreTypes = SubjectScoreType::where('subject_id', $subjectClass->subject_id)->with('scoreType')->get();
+        $scoreTypes = SubjectScoreType::where('subject_id', $subjectClass->subject_id)
+            ->with('scoreType')
+            ->get();
+
+        // Nhóm các loại điểm đa thành phần
+        $groupedScoreTypes = [];
+        foreach ($scoreTypes as $scoreType) {
+            $scoreTypeId = $scoreType->scoreType->id;
+            if (!isset($groupedScoreTypes[$scoreTypeId])) {
+                $groupedScoreTypes[$scoreTypeId] = [
+                    'name' => $scoreType->scoreType->name,
+                    'type' => $scoreType->scoreType->type,
+                    'details' => [$scoreType]
+                ];
+            } else {
+                $groupedScoreTypes[$scoreTypeId]['details'][] = $scoreType;
+            }
+        }
 
         $headings = [
             'STT',
@@ -113,9 +152,14 @@ class StudentSubjectClassExport implements FromCollection, WithHeadings, WithEve
             'Email',
         ];
 
-        // Thêm tên các loại điểm vào tiêu đề
-        foreach ($scoreTypes as $scoreType) {
-            $headings[] = $scoreType->scoreType->name;
+        foreach ($groupedScoreTypes as $type) {
+            if ($type['type'] === 'multi') {
+                for ($i = 0; $i < count($type['details']); $i++) {
+                    $headings[] = $type['name'] . ($i + 1);
+                }
+            } else {
+                $headings[] = $type['name'];
+            }
         }
 
         return $headings;

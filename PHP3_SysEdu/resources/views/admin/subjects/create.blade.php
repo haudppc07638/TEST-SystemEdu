@@ -80,26 +80,48 @@
                                     <label for="score_types" class="form-label">Chọn Loại Điểm và Trọng Số</label>
                                     <div class="row">
                                         @foreach ($scoreTypes as $scoreType)
-                                            <div class="col-md-4 mt-2">
+                                            <div class="col-md-3 mt-2">
                                                 <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input"
+                                                    <input type="checkbox" class="form-check-input score-type-checkbox"
                                                         id="score_type_{{ $scoreType->id }}" name="score_types[]"
                                                         value="{{ $scoreType->id }}"
                                                         {{ in_array($scoreType->id, old('score_types', [])) ? 'checked' : '' }}>
-                                                    <label class="form-check-label"
-                                                        for="score_type_{{ $scoreType->id }}">{{ $scoreType->name }}</label>
-                                                    <input type="text" name="weights[{{ $scoreType->id }}]"
-                                                        class="form-control mt-2" placeholder="Trọng số (%)" min="0"
-                                                        max="100" value="{{ old('weights.' . $scoreType->id) }}">
+
+                                                    <label class="form-check-label" for="score_type_{{ $scoreType->id }}">
+                                                        {{ $scoreType->name }}
+                                                    </label>
+
+                                                    <input type="number" name="weights[{{ $scoreType->id }}]"
+                                                        class="form-control mt-2 weight-input" placeholder="Trọng số (%)"
+                                                        min="0" max="100"
+                                                        value="{{ old('weights.' . $scoreType->id) }}"
+                                                        {{ in_array($scoreType->id, old('score_types', [])) ? '' : 'disabled' }}>
+
+                                                    @if ($scoreType->type === 'multi')
+                                                        <input type="number" name="sub_scores[{{ $scoreType->id }}]"
+                                                            class="form-control mt-2 sub-score-input"
+                                                            placeholder="Số lượng {{ $scoreType->name }}" min="1"
+                                                            value="{{ old('sub_scores.' . $scoreType->id) }}"
+                                                            {{ in_array($scoreType->id, old('score_types', [])) ? '' : 'disabled' }}>
+                                                    @endif
+
                                                     @error('weights.' . $scoreType->id)
                                                         <span class="text-danger">{{ $message }}</span>
                                                     @enderror
+
+                                                    @if ($scoreType->type === 'multi')
+                                                        @error('sub_scores.' . $scoreType->id)
+                                                            <span class="text-danger">{{ $message }}</span>
+                                                        @enderror
+                                                    @endif
                                                 </div>
                                             </div>
                                         @endforeach
+
                                         @error('score_types')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
+
                                         @error('weights')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -123,7 +145,8 @@
                                 <div class="row mb-3">
                                     <label for="description" class="col-sm-2 col-form-label">Mô tả</label>
                                     <div class="col-sm-10">
-                                        <textarea name="description" rows='5' class="form-control id="description" placeholder="Nhập mô tả về môn học">{{ old('description') }}</textarea>
+                                        <textarea name="description" rows='5' class="form-control id="description"
+                                            placeholder="Nhập mô tả về môn học">{{ old('description') }}</textarea>
                                         @error('description')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -155,6 +178,26 @@
             $('#score_types').select2({
                 placeholder: "Chọn loại điểm",
                 allowClear: true
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('.score-type-checkbox');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const weightInput = this.closest('.form-check').querySelector('.weight-input');
+                    const subScoreInput = this.closest('.form-check').querySelector(
+                        '.sub-score-input');
+
+                    if (this.checked) {
+                        weightInput.removeAttribute('disabled');
+                        if (subScoreInput) subScoreInput.removeAttribute('disabled');
+                    } else {
+                        weightInput.setAttribute('disabled', 'disabled');
+                        if (subScoreInput) subScoreInput.setAttribute('disabled', 'disabled');
+                    }
+                });
             });
         });
     </script>

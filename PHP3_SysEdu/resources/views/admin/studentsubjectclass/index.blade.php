@@ -44,11 +44,36 @@
                                     <tr>
                                         <th class="fs-6">#</th>
                                         <th class="fs-6">MSV</th>
-                                        <th class="fs-6">Họ và tên</th>
-                                        <!-- Các loại điểm của môn -->
-                                        @foreach ($scoreTypes as $scoreType)
-                                            <th class="fs-6">{{ $scoreType->scoreType->name }}({{ $scoreType->weight }}%)
-                                            </th>
+                                        <th class="fs-6">Họ tên</th>
+                                        @php
+                                            $groupedScoreTypes = [];
+                                            foreach ($scoreTypes as $scoreType) {
+                                                $scoreTypeId = $scoreType->scoreType->id;
+                                                if (!isset($groupedScoreTypes[$scoreTypeId])) {
+                                                    $groupedScoreTypes[$scoreTypeId] = [
+                                                        'name' => $scoreType->scoreType->name,
+                                                        'type' => $scoreType->scoreType->type,
+                                                        'details' =>
+                                                            $scoreType->scoreType->type === 'multi'
+                                                                ? [$scoreType]
+                                                                : [$scoreType],
+                                                    ];
+                                                } else {
+                                                    if ($scoreType->scoreType->type === 'multi') {
+                                                        $groupedScoreTypes[$scoreTypeId]['details'][] = $scoreType;
+                                                    }
+                                                }
+                                            }
+                                        @endphp
+
+                                        @foreach ($groupedScoreTypes as $type)
+                                            @if ($type['type'] === 'multi')
+                                                @foreach ($type['details'] as $index => $detail)
+                                                    <th class="fs-6">{{ $type['name'] }}{{ $index + 1 }}</th>
+                                                @endforeach
+                                            @else
+                                                <th class="fs-6">{{ $type['name'] }}</th>
+                                            @endif
                                         @endforeach
                                         <th class="fs-6">Tổng Điểm</th>
                                         <th class="fs-6">Xếp Loại</th>
@@ -65,15 +90,31 @@
                                             <td class="fs-6">{{ $studentSubjectClass->student->code }}</td>
                                             <td class="fs-6">{{ $studentSubjectClass->student->full_name }}</td>
 
-                                            @foreach ($scoreTypes as $scoreType)
-                                                <td class="fs-6">
-                                                    @php
-                                                        $score = $studentSubjectClass->scores
-                                                            ->where('subject_score_type_id', $scoreType->id)
-                                                            ->first();
-                                                    @endphp
-                                                    {{ $score ? $score->score : '' }}
-                                                </td>
+                                            @foreach ($groupedScoreTypes as $type)
+                                                @if ($type['type'] === 'multi')
+                                                    @foreach ($type['details'] as $detail)
+                                                        <td class="fs-6">
+                                                            @php
+                                                                $score = $studentSubjectClass->scores
+                                                                    ->where('subject_score_type_id', $detail->id)
+                                                                    ->first();
+                                                            @endphp
+                                                            {{ $score ? $score->score : '' }}
+                                                        </td>
+                                                    @endforeach
+                                                @else
+                                                    <td class="fs-6">
+                                                        @php
+                                                            $score = $studentSubjectClass->scores
+                                                                ->where(
+                                                                    'subject_score_type_id',
+                                                                    $type['details'][0]->id,
+                                                                )
+                                                                ->first();
+                                                        @endphp
+                                                        {{ $score ? $score->score : '' }}
+                                                    </td>
+                                                @endif
                                             @endforeach
 
                                             <td class="fs-6">
@@ -103,19 +144,16 @@
                                                     </div>
                                                 </td>
                                             @endif
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            <!-- End Table with stripped rows -->
+
                         </div>
                     </div>
-                    </td>
-                    </tr>
-                    @endforeach
-                    </tbody>
-                    </table>
-                    <!-- End Table with stripped rows -->
 
                 </div>
-            </div>
-
-            </div>
             </div>
         </section>
     </main><!-- End #main -->

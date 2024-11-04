@@ -73,7 +73,7 @@ class Faculty extends Model
 
     public static function getAllFaculties()
     {
-        return Faculty::with('majors', 'employees')
+        return Faculty::with('majors')
         ->get();
     }
 

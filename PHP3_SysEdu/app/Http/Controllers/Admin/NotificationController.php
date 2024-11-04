@@ -24,22 +24,22 @@ class NotificationController extends Controller
     public function index()
     {
         $faculties = Faculty::getAllFaculties();
-        $notifications = Notification::getAllNotifications();
-        foreach ($notifications as $notification) {
-            // Định dạng ngày gửi theo định dạng 'H:i - d/m/Y'
-            $notification->formatted_date_sent = Carbon::parse($notification->date_sent)->format('d/m/Y');
-            // Xử lý dữ liệu recipients
-            if (is_string($notification->recipient)) {
-                $recipients = json_decode($notification->recipient, true);
-            } else {
-                $recipients = $notification->recipient;
-            }
-            // Chuyển đổi recipients thành chuỗi phân cách bằng dấu phẩy
-            $notification->formatted_recipient = is_array($recipients) ? implode(', ', $recipients) : $recipients;
-        }
+        // $notifications = Notification::getAllNotifications();
+        // foreach ($notifications as $notification) {
+   
+        //     $notification->formatted_date_sent = Carbon::parse($notification->date_sent)->format('d/m/Y');
+     
+        //     if (is_string($notification->recipient)) {
+        //         $recipients = json_decode($notification->recipient, true);
+        //     } else {
+        //         $recipients = $notification->recipient;
+        //     }
+        
+        //     $notification->formatted_recipient = is_array($recipients) ? implode(', ', $recipients) : $recipients;
+        // }
         return view('admin.notifications.index', [
             'faculties' => $faculties,
-            'notifications' => $notifications,
+            // 'notifications' => $notifications,  
         ]);
     }
 
@@ -129,7 +129,7 @@ class NotificationController extends Controller
             }
         } else {
             // Tạo job và lên lịch gửi thông báo hệ thống
-            SendSystemNotificationJob::dispatch($notification)->delay($sendAt);
+            SendSystemNotificationJob::dispatch($notification)->delay($sendAt->diffInSeconds(now()));
         }
     }
 

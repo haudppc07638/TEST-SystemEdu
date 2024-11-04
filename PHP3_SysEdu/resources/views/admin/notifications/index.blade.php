@@ -104,23 +104,21 @@
                         </div>
                     </div>
 
-                    <!-- Tiêu đề và nội dung -->
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label" for="title">Tiêu đề</label>
                         <div class="col-sm-10">
-                            <input type="text" id="title" name="title" placeholder="Nhập tiêu đề ..."
-                                class="form-control @error('title') is-invalid @enderror" value="{{ old('title') }}">
+                            <input type="text" class="form-control @error('title') is-invalid @enderror" name="title"
+                                id="title" value="{{ old('title') }}" required>
                             @error('title')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
-
+                    
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label" for="content">Nội dung</label>
                         <div class="col-sm-10">
-                            <textarea name="content" id="content" class="form-control quill-editor-full mb-3 @error('content') is-invalid @enderror"
-                                rows="4">{{ old('content') }}</textarea>
+                            <textarea name="content" cols="20" rows="10" id="content" class="form-control @error('content') is-invalid @enderror">{{ old('content') }}</textarea>
                             @error('content')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -135,7 +133,7 @@
                 </form>
             </div>
         </div>
-
+{{-- 
         <section class="section">
             <div class="row">
                 <div class="col-lg-12">
@@ -184,7 +182,7 @@
 
                 </div>
             </div>
-        </section>
+        </section> --}}
           
 
     </main><!-- End #main -->
@@ -192,18 +190,79 @@
 @endsection
 
 @push('style')
-   
+    <style>
+        .ck-editor__editable {
+            min-height: 200px;
+        }
+
+        .select2-container .select2-selection--multiple {
+            min-height: 38px;
+        }
+
+        .text-limited {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
 @endpush
 
 @push('script')
     <script id="faculty-majors-data" type="application/json">
-    @json($faculties->mapWithKeys(function($faculty) {
-        return [$faculty->id => $faculty->majors];
-    }))
-</script>
+        @json($faculties->mapWithKeys(function($faculty) {
+            return [$faculty->id => $faculty->majors];
+        }))
+    </script>
+
+    <script>
+        // Khởi tạo Select2
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: "Chọn khoa...",
+                allowClear: true
+            });
+        });
+
+        // Khởi tạo CKEditor
+        ClassicEditor
+            .create(document.querySelector('#content'), {
+                toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
+                    'undo', 'redo'
+                ],
+                heading: {
+                    options: [{
+                            model: 'paragraph',
+                            title: 'Paragraph',
+                            class: 'ck-heading_paragraph'
+                        },
+                        {
+                            model: 'heading1',
+                            view: 'h1',
+                            title: 'Heading 1',
+                            class: 'ck-heading_heading1'
+                        },
+                        {
+                            model: 'heading2',
+                            view: 'h2',
+                            title: 'Heading 2',
+                            class: 'ck-heading_heading2'
+                        },
+                        {
+                            model: 'heading3',
+                            view: 'h3',
+                            title: 'Heading 3',
+                            class: 'ck-heading_heading3'
+                        }
+                    ]
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
 
     <script src="{{ asset('assets/admin/js/notification.js') }}"></script>
 @endpush
-
 
 

@@ -27,11 +27,10 @@ class Notification extends Model
         return $this->belongsTo(Employee::class);
     }
 
-    public static function getAllNotifications(){
-        return self::with('employee')
-        ->orderBy('id', 'desc')
-        ->get();
-    }
+    // public static function getAllNotifications(){
+    //     return self::with('employee')
+    //     ->get();
+    // }
 
     public static function getNotificationById($id){
         return self::with('employee')

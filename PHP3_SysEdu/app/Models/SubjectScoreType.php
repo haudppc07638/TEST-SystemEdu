@@ -11,7 +11,7 @@ class SubjectScoreType extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['subject_id', 'score_type_id', 'weight'];
+    protected $fillable = ['subject_id', 'score_type_id', 'weight', 'name'];
 
     public function subject(): BelongsTo
     {
