@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class StudentMiddleware
+class TeacherMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,9 +16,13 @@ class StudentMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = Auth::guard('student')->user();
+        $user = Auth::guard('employee')->user();
         if (!$user){
             toastr()->error('Vui lòng đăng nhập để vào hệ thống !');
+            return redirect()->route('login');
+        }
+        if ($user->position != 'teacher'){
+            toastr()->error('Email bạn không có quyền đăng nhập trang này !');
             return redirect()->route('login');
         }
         return $next($request);

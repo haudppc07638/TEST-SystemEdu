@@ -6,28 +6,25 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Log;
-
 
 class AdminMiddleware
 {
-    public function handle(Request $request, Closure $next)
-    { 
-        if($request->routeIs('auth.google.employee')){
-            if(Auth::guard('employee')->check()){
-                return redirect()->route('admin.dashboard');
-            }
-            else{
-                return $next($request);
-            }      
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle(Request $request, Closure $next): Response
+    {
+        $user = Auth::guard('employee')->user();
+        if (!$user){
+            toastr()->error('Vui lòng đăng nhập để vào hệ thống !');
+            return redirect()->route('login');
         }
-        if(!Auth::guard('employee')->check()){
-            return redirect()->route('auth.employee');
+        if ($user->position != 'admin'){
+            toastr()->error('Email bạn không có quyền đăng nhập trang này !');
+            return redirect()->route('login');
         }
         return $next($request);
     }
-//     public function handle(Request $request, Closure $next): Response
-// {
-//         return $next($request);
-// }
 }

@@ -8,17 +8,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; 
 class LoginController extends Controller
 {
-    public function loginEmployee(){
+    public function index()
+    {
+        return view('auth.loginPortal');
+    }
+    public function loginAdmin(){
         return view('auth.employee');
     }
     public function loginStudent(){
         return view('auth.student');
     }
-    // public function loginForm(LoginRequest $request){
-    //     $request->validate([
-    //         'email' => 'required|string|email|max:255',
-    //         'password' => 'required|string',
-    //     ]);
-    //     return redirect()->route('admin.dashboard');
-    // }
+    public function loginTeacher(){
+        return view('auth.teacher');
+    }
 }

@@ -4,16 +4,18 @@ namespace App\View\Components\lecturer;
 
 use Closure;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Component;
 
 class header extends Component
 {
+    public $user;
     /**
      * Create a new component instance.
      */
     public function __construct()
     {
-        //
+        $this->user = Auth::guard('employee')->user();
     }
 
     /**

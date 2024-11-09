@@ -22,7 +22,7 @@ class LogoutController extends Controller
     public function logoutEmployee(Request $request)
     {
         Auth::guard('employee')->logout();
-
+        
         // Xóa session
         $request->session()->invalidate();
         $request->session()->regenerateToken();
