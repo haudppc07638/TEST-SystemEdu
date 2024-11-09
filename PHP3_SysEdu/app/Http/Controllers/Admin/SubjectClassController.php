@@ -64,6 +64,13 @@ class SubjectClassController extends Controller
                 ->withInput();
         }
 
+        if (!empty($data['major_class_id'])) {
+            if (SubjectClass::checkExistingClass($data['major_class_id'], $data['subject_id'])) {
+                toastr()->error('Lớp chuyên ngành này đã được đăng ký cho môn học này');
+                return redirect()->back()->withInput();
+            }
+        }
+
         $validatedData = $validator->validated();
 
         $subjectClass = SubjectClass::createSubjectClass($data);

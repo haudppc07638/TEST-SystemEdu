@@ -19,7 +19,13 @@ class Notification extends Model
         'type',
         'date_sent',
         'employee_id',
-        'recipient',
+        'recipients',
+        'status',
+    ];
+
+    protected $casts = [
+        'recipients' => 'array',
+        'date_sent' => 'datetime'
     ];
 
     public function employee(): BelongsTo
@@ -32,22 +38,23 @@ class Notification extends Model
     //     ->get();
     // }
 
-    public static function getNotificationById($id){
+    public static function getNotificationById($id)
+    {
         return self::with('employee')
-        ->findOrFail($id);
+            ->findOrFail($id);
     }
 
     public static function createNotificationStudent($title, $content, $type, $date_sent, $employeeId, $majorIds)
     {
-        $majors = Major::whereIn('id', $majorIds)->pluck('name')->toArray();
-
+        $majors = Major::whereIn('id', $majorIds)->pluck(column: 'name')->toArray();
+        // dd($majors);
         return self::create([
             'title' => $title,
             'content' => $content,
             'type' => $type,
             'date_sent' => $date_sent,
             'employee_id' => $employeeId,
-            'recipient' => json_encode($majors),
+            'recipients' => $majors,
         ]);
     }
 
@@ -61,7 +68,19 @@ class Notification extends Model
             'type' => $type,
             'date_sent' => $date_sent,
             'employee_id' => $employeeId,
-            'recipient' => json_encode($faculties),
+            'recipients' => $faculties,
         ]);
+    }
+
+    public static function getTeacherNotifications($majorId)
+    {
+        $major = Major::find($majorId);
+        $faculty = Faculty::find($major->faculty_id);
+
+        return self::with('employee')
+            ->where('type', 'system')
+            ->whereJsonContains('recipients', $faculty->name)
+            ->orderBy('date_sent', 'desc')
+            ->get();
     }
 }

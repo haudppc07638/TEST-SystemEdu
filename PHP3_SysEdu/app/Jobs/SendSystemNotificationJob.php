@@ -22,7 +22,17 @@ class SendSystemNotificationJob implements ShouldQueue
 
     public function handle()
     {
-        $notification = $this->notification;
-        // Xử lý gửi thông báo hệ thống tại đây
+        try {
+            $this->notification->update(['status' => 'sent']);
+        } catch (\Exception $e) {
+            $this->fail($e);
+        }
+    }
+
+    public function failed(\Exception $exception)
+    {
+        // Cập nhật trạng thái thành 'failed' nếu job thất bại
+        $this->notification->update(['status' => 'failed']);
+        toastr()->error('Gửi thông báo thất bại, vui lòng thử lại sau !');
     }
 }

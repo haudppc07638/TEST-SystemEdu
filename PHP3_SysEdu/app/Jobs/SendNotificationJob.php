@@ -25,12 +25,30 @@ class SendNotificationJob implements ShouldQueue
     }
 
     public function handle()
-    {
+{
+    try {
         $notification = $this->notification;
         $recipient = $this->recipient;
 
         $senderEmail = $notification->employee->email;
         $senderName = $notification->employee->fullname;
-        Mail::to($recipient)->send(new NotificationMail($notification->title, $notification->content, $senderEmail, $senderName));
+        
+        Mail::to($recipient)->send(new NotificationMail(
+            $notification->title, 
+            $notification->content, 
+            $senderEmail, 
+            $senderName
+        ));
+
+        $notification->update(['status' => 'sent']);
+    } catch (\Exception $e) {
+        $this->fail($e);
+    }
+}
+
+    public function failed(\Exception $exception)
+    {
+        $this->notification->update(['status' => 'failed']);
+        toastr()->error('Gửi thông báo thất bại, vui lòng thử lại sau !');
     }
 }

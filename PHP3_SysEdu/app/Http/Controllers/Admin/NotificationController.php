@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 
+
 class NotificationController extends Controller
 {
     /**
@@ -26,15 +27,15 @@ class NotificationController extends Controller
         $faculties = Faculty::getAllFaculties();
         // $notifications = Notification::getAllNotifications();
         // foreach ($notifications as $notification) {
-   
+
         //     $notification->formatted_date_sent = Carbon::parse($notification->date_sent)->format('d/m/Y');
-     
+
         //     if (is_string($notification->recipient)) {
         //         $recipients = json_decode($notification->recipient, true);
         //     } else {
         //         $recipients = $notification->recipient;
         //     }
-        
+
         //     $notification->formatted_recipient = is_array($recipients) ? implode(', ', $recipients) : $recipients;
         // }
         return view('admin.notifications.index', [
@@ -75,6 +76,7 @@ class NotificationController extends Controller
             $recipients = $students->pluck('email')->toArray(); // Lưu email sinh viên vào mảng
 
             // Lưu thông báo vào cơ sở dữ liệu
+            // dd($data['majors']);
             $notification = Notification::createNotificationStudent(
                 $data['title'],
                 $data['content'],
@@ -119,19 +121,19 @@ class NotificationController extends Controller
 
     private function dispatchNotification(array $recipients, Notification $notification)
     {
-        $sendAt = \Carbon\Carbon::parse($notification->date_sent);
-
+        $sendAt = Carbon::parse($notification->date_sent);
+        $delay = $sendAt->isFuture() ? $sendAt->diffInSeconds(now()) : 0;
+    
         // Lên lịch gửi thông báo qua email hoặc hệ thống
         if ($notification->type == 'email') {
             foreach ($recipients as $recipient) {
-                // Tạo job và lên lịch gửi email
-                SendNotificationJob::dispatch($notification, $recipient)->delay($sendAt);
+                SendNotificationJob::dispatch($notification, $recipient)->delay($delay);
             }
         } else {
-            // Tạo job và lên lịch gửi thông báo hệ thống
-            SendSystemNotificationJob::dispatch($notification)->delay($sendAt->diffInSeconds(now()));
+            SendSystemNotificationJob::dispatch($notification)->delay($delay);
         }
     }
+    
 
     public function detail($id)
     {

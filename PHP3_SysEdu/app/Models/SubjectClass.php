@@ -35,7 +35,8 @@ class SubjectClass extends Model
     {
         return $this->belongsto(Subject::class, 'subject_id');
     }
-    public function credit(): BelongsTo{
+    public function credit(): BelongsTo
+    {
         return $this->belongsTo(Credit::class, 'credit_id');
     }
     public function majorClass()
@@ -66,7 +67,7 @@ class SubjectClass extends Model
     {
         return $this->hasMany(SubjectLecturer::class);
     }
-    
+
     public function feedbacks()
     {
         return $this->hasMany(Feedback::class, 'subject_class_id');
@@ -80,7 +81,7 @@ class SubjectClass extends Model
     }
     public static function createSubjectClass($data)
     {
-        $data['price']= 0;
+        $data['price'] = 0;
         return self::create($data);
     }
 
@@ -123,13 +124,14 @@ class SubjectClass extends Model
     public static function getAvailableClassesForMajor($majorId, $currentDate, $subject_id)
     {
         return self::where('registration_deadline', '>=', $currentDate)
-                    ->where('subject_id', $subject_id)
-                   ->whereHas('subject', function ($query) use ($majorId) {
-                       $query->where('major_id', $majorId);
-                   })
-                   ->get();
+            ->where('subject_id', $subject_id)
+            ->whereHas('subject', function ($query) use ($majorId) {
+                $query->where('major_id', $majorId);
+            })
+            ->get();
     }
-    public static function getAllSubjectClass(){
+    public static function getAllSubjectClass()
+    {
         return self::all();
     }
 
@@ -140,7 +142,7 @@ class SubjectClass extends Model
      
         Log::info("Số tín chỉ: $subjectCredits, Giá tín chỉ: $creditPrice");
 
-        return $subjectCredits * $creditPrice;     
+        return $subjectCredits * $creditPrice;
     }
     protected static function boot()
     {
@@ -168,7 +170,7 @@ class SubjectClass extends Model
             ]);
         }
     }
-    
+
     public static function getAllDates()
     {
         return self::all()->mapWithKeys(function ($subjectClass) {
@@ -179,5 +181,12 @@ class SubjectClass extends Model
                 ],
             ];
         });
+    }
+
+    public static function checkExistingClass($majorClassId, $subjectId)
+    {
+        return self::where('major_class_id', $majorClassId)
+            ->where('subject_id', $subjectId)
+            ->exists();
     }
 }

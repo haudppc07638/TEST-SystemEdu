@@ -31,7 +31,7 @@ class SubjectClassRequest extends FormRequest
             'employee_id' => 'required',
             'subject_id' => 'required',
             'semester_id' => 'required',
-            'major_class_id' => 'required',
+            'major_class_id' => 'nullable|exists:major_classes,id',
             'credit_id' => 'required',     
         ];
     }
@@ -58,6 +58,7 @@ class SubjectClassRequest extends FormRequest
             'registration_deadline.date' => 'Hạn đăng ký phải là ngày hợp lệ.',
             'registration_deadline.before' => 'Hạn đăng ký phải trước ngày bắt đầu và ngày kết thúc.',
             'employee_id.required' => 'Giảng viên là bắt buộc.',
+            'major_class_id.exists' => 'Lớp chuyên ngành không tồn tại',
             'subject_id.required' => 'Môn học là bắt buộc.',
             'semester_id.required' => 'Học kỳ là bắt buộc.',
         ];

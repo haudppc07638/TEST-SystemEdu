@@ -27,9 +27,10 @@
                                 <div class="mb-3">
                                     <label for="subject_id" class="form-label">Môn Học</label>
                                     <select id="subject_id" name="subject_id" class="form-select select2">
-                                        <option value="" disabled selected>Chọn Môn</option>
+                                        <option value="">Chọn Môn</option>
                                         @foreach ($subjects as $subject)
-                                            <option value="{{ $subject->id }}">
+                                            <option value="{{ $subject->id }}"
+                                                {{ old('subject_id') == $subject->id ? 'selected' : '' }}>
                                                 {{ $subject->major ? $subject->major->name : 'Bộ môn cơ bản' }} |
                                                 {{ $subject->name }}
                                             </option>
@@ -43,7 +44,13 @@
                                 <div class="mb-3">
                                     <label for="employee_id" class="form-label">Giảng Viên</label>
                                     <select id="employee_id" name="employee_id" class="form-select select2">
-                                        <option value="" disabled selected>Chọn Giảng Viên</option>
+                                        <option value="">Chọn Giảng Viên</option>
+                                        @foreach ($employees as $employee)
+                                            <option value="{{ $employee->id }}"
+                                                {{ old('employee_id') == $employee->id ? 'selected' : '' }}>
+                                                {{ $employee->full_name }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                     @error('employee_id')
                                         <span class="text-danger">{{ $message }}</span>
@@ -51,9 +58,15 @@
                                 </div>
 
                                 <div class="mb-5">
-                                    <label for="major_class_id" class="form-label">Lớp Chuyên Nghành</label>
+                                    <label for="major_class_id" class="form-label">Lớp Chuyên Ngành</label>
                                     <select id="major_class_id" name="major_class_id" class="form-select select2">
-                                        <option value="" disabled selected>Chọn Lớp CN</option>
+                                        <option value="">Chọn Lớp CN</option>
+                                        @foreach ($majorClasses as $majorClass)
+                                            <option value="{{ $majorClass->id }}"
+                                                {{ old('major_class_id') == $majorClass->id ? 'selected' : '' }}>
+                                                {{ $majorClass->name }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                     @error('major_class_id')
                                         <span class="text-danger">{{ $message }}</span>
@@ -122,7 +135,7 @@
                                                     {{ $semester->block }} - {{ $semester->year }}
                                                 </option>
                                             @endforeach
-                                        </select>   
+                                        </select>
                                         @error('semester_id')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -184,19 +197,35 @@
 @push('script')
     <script>
         $(document).ready(function() {
+            // Khởi tạo select2
             $('.select2').select2({
                 width: '100%',
                 placeholder: "Chọn",
                 allowClear: true
             });
 
+            // Nếu có dữ liệu cũ, load lại danh sách
+            const oldSubjectId = '{{ old('subject_id') }}';
+            if (oldSubjectId) {
+                loadLecturers(oldSubjectId);
+                loadMajorClasses(oldSubjectId);
+            }
+
             $('#subject_id').on('change', function() {
                 const subjectId = $(this).val();
-                $('#employee_id').val(null).trigger('change');
-                $('#major_class_id').val(null).trigger('change');
-                loadLecturers(subjectId);
-                loadMajorClasses(subjectId);
-            })
+                if (subjectId) {
+                    loadLecturers(subjectId);
+                    loadMajorClasses(subjectId);
+                } else {
+                    resetSelects(['employee_id', 'major_class_id']);
+                }
+            });
+
+            function resetSelects(selectIds) {
+                selectIds.forEach(id => {
+                    $(`#${id}`).empty().append('<option value="">Chọn</option>').trigger('change');
+                });
+            }
 
             function loadLecturers(subjectId) {
                 $.ajax({
@@ -206,16 +235,18 @@
                         subject_id: subjectId
                     },
                     success: function(lecturers) {
-                        let options = '<option value="" disabled selected>Chọn Giảng Viên</option>';
+                        const oldEmployeeId = '{{ old('employee_id') }}';
+                        let options = '<option value="">Chọn Giảng Viên</option>';
                         lecturers.forEach(lecturer => {
+                            const selected = oldEmployeeId == lecturer.id ? 'selected' : '';
                             options +=
-                                `<option value="${lecturer.id}">${lecturer.full_name}</option>`;
+                                `<option value="${lecturer.id}" ${selected}>${lecturer.full_name}</option>`;
                         });
                         $('#employee_id').html(options).trigger('change');
                     },
                     error: function(xhr) {
                         console.error(xhr);
-                        alert('Không thể tải giảng viên. Vui lòng thử lại.');
+                        toastr.error('Không thể tải giảng viên. Vui lòng thử lại.');
                     }
                 });
             }
@@ -228,10 +259,12 @@
                         subject_id: subjectId
                     },
                     success: function(classes) {
-                        let options = '<option value="" disabled selected>Chọn Lớp CN</option>';
+                        const oldMajorClassId = '{{ old('major_class_id') }}';
+                        let options = '<option value="">Chọn Lớp CN</option>';
                         classes.forEach(majorClass => {
+                            const selected = oldMajorClassId == majorClass.id ? 'selected' : '';
                             options +=
-                                `<option value="${majorClass.id}">${majorClass.name}</option>`;
+                                `<option value="${majorClass.id}" ${selected}>${majorClass.name}</option>`;
                         });
                         $('#major_class_id').html(options).trigger('change');
                     }

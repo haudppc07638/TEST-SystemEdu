@@ -7,6 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="telephone=no" name="format-detection">
     <title>{{ $title }}</title>
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.css" />
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
+
 </head>
 
 <body class="body">
@@ -97,9 +100,9 @@
                                                                                 <tr>
                                                                                     <td align="left"
                                                                                         class="esd-block-text es-p10t es-p10b es-m-txt-l">
-                                                                                        <p>
-                                                                                            {{$content}}
-                                                                                            <br>
+                                                                                       
+                                                                                            {!!$content!!}
+                                                                                            
                                                                                         </p>
                                                                                     </td>
                                                                                 </tr>
@@ -143,18 +146,18 @@
                                                                                     <td align="left"
                                                                                         class="esd-block-image es-m-txt-c es-p10t"
                                                                                         style="font-size: 0px">
-                                                                                        <a target="_blank"
-                                                                                            href="https://viewstripo.email">
+                                                                                        <a target="_blank">
                                                                                             <img src="https://ennjpye.stripocdn.email/content/guids/cc855092-9bf2-4a96-9c83-4499425d2324/images/syseduicon.png"
                                                                                                 alt=""
                                                                                                 width="80"
-                                                                                                style="display:block">
+                                                                                                style="display:block padding-left: 20px">
                                                                                         </a>
                                                                                     </td>
                                                                                 </tr>
                                                                                 <tr>
                                                                                     <td align="left"
-                                                                                        class="esd-block-text es-p10t es-p10b">
+                                                                                        class="esd-block-text es-p10t es-p10b"
+                                                                                        style="padding-left: 20px">
                                                                                         <p>
                                                                                             Chúng tôi làm việc với niềm
                                                                                             đam mê đón nhận thử thách và
