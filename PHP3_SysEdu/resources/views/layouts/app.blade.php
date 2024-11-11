@@ -20,7 +20,6 @@
     <link href="{{ asset('assets/client/css/tailwind.output.css') }}" rel="stylesheet">
 
     @stack('style')
-
     
   </head>
   <body>

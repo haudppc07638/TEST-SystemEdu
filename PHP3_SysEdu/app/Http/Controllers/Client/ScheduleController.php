@@ -45,7 +45,7 @@ class ScheduleController extends Controller
                 $startDate = now()->subDays(30);
                 break;
             case '60 days before':
-                $startDate = now()->subDays(60);
+                $startDate = now()->subDays(value: 60);
                 break;
             case '90 days before':
                 $startDate = now()->subDays(90);
@@ -63,8 +63,10 @@ class ScheduleController extends Controller
                         ->where('student_id', $user->id);
                 });
         })
-            ->whereBetween('schedule_day', [$startDate, $endDate])
-            ->paginate(10);
+            ->whereBetween('date', [$startDate, $endDate])
+            ->orderBy('date', 'asc')
+            ->paginate(30)
+            ->appends(['time_range' => $timeRange]);
 
         return view('client.schedule', compact('schedules'));
     }

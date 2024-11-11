@@ -4,25 +4,38 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ScheduleRequest;
+use App\Http\Requests\Admin\UpdateScheduleRequest;
 use App\Models\Classroom;
 use App\Models\Schedule;
 use App\Models\SubjectClass;
+use App\Models\TeacherFreeSlot;
 use App\Models\TimeSlot;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
 {
-    public function create()
+    public function create(Request $request)
     {
-        $subjectClasses = SubjectClass::all();
-        $timeSlots = TimeSlot::all();
+        $subjectClassId = $request->get('subject_class_id');
+        $subjectClass = SubjectClass::findOrFail($subjectClassId);
+        $employeeId = $subjectClass->employee_id;
+    
+        $teacherFreeSlots = TeacherFreeSlot::where('employee_id', $employeeId)->pluck('time_slot_id')->toArray();
+        if (!empty($teacherFreeSlots)) {
+            $timeSlots = TimeSlot::whereIn('id', $teacherFreeSlots)->get();
+        } else {
+            $timeSlots = TimeSlot::all();
+        }
+    
         $classrooms = Classroom::all();
-
-        $dates = SubjectClass::getAllDates();
-
-        return view('admin.schedules.create', compact('subjectClasses', 'timeSlots', 'classrooms', 'dates'));
+    
+        return view('admin.schedules.create', compact('subjectClass', 'timeSlots', 'classrooms'));
     }
+    
+
 
     public function store(ScheduleRequest $request)
     {
@@ -50,13 +63,50 @@ class ScheduleController extends Controller
         Schedule::createSchedule($request->all(), $request->schedule_type);
 
         toastr()->success('Tạo lịch tự động thành công.');
-        return redirect()->route('admin.schedules.index');
+        $subjectClassId = $request->subject_class_id;
+
+        return redirect()->route('admin.schedules.view-schedule', ['subject_class_id' => $subjectClassId]);
     }
 
-    public function index()
+    public function edit($id)
     {
-        $schedules = Schedule::getPaginatedSchedules();
-        return view('admin.schedules.index', compact('schedules'));
+        $schedule = Schedule::find($id);
+        if ($schedule && $schedule->date) {
+            $schedule->date = Carbon::parse($schedule->date)  ;
+        }
+         
+        $subjectClasses = SubjectClass::all();
+        $timeSlots = TimeSlot::all();
+        $classrooms = Classroom::all();
+
+        return view('admin.schedules.edit', compact('schedule', 'subjectClasses', 'timeSlots', 'classrooms'));
+    }
+
+
+    public function update(UpdateScheduleRequest $request, $id)
+    {
+        $schedule = Schedule::findOrFail($id);
+
+        $schedule->update([
+            'subject_class_id' => $request->subject_class_id,
+            'time_slot_id' => $request->time_slot_id,
+            'classroom_id' => $request->classroom_id,
+            'date' => $request->date,
+        ]);
+
+        toastr()->success('Cập nhật lịch học thành công.');
+        $subjectClassId = $request->subject_class_id;
+
+        return redirect()->route('admin.schedules.view-schedule', ['subject_class_id' => $subjectClassId]);
+    }
+
+
+    public function viewSchedule($subjectClassId)
+    {
+        $subjectClass = SubjectClass::findOrFail($subjectClassId);
+        $schedules = Schedule::getSchedulesBySubjectClassId($subjectClassId);
+        
+        return view('admin.schedules.index', compact('subjectClass', 'schedules'));
     }
 }
 

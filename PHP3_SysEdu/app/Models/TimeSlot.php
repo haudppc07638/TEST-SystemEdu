@@ -18,5 +18,15 @@ class TimeSlot extends Model
     public function Schedule(): HasMany{
         return $this->hasMany(Schedule::class);
     }
-    ///
+    
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class, 'teacher_free_slots', 'time_slot_id', 'employee_id');
+    }
+
+    public function scheduleHistories()
+    {
+        return $this->hasMany(ScheduleHistory::class);
+    }
+
 }

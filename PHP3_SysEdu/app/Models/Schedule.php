@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\DB;
 
 class Schedule extends Model
 {
@@ -42,12 +43,17 @@ class Schedule extends Model
 
     public function subjectClass(): BelongsTo
     {
-        return $this->belongsto(SubjectClass::class, 'subject_class_id');
+        return $this->belongsTo(SubjectClass::class, 'subject_class_id');
     }
 
     public function subject(): BelongsTo
     {
-        return $this->subjectClass->belongsto(Subject::class, 'subject_id');
+        return $this->subjectClass->belongsTo(Subject::class, 'subject_id');
+    }
+
+    public function histories()
+    {
+        return $this->hasMany(ScheduleHistory::class);
     }
 
     public static function getAllSchedules()
@@ -146,6 +152,29 @@ class Schedule extends Model
     public static function getPaginatedSchedules($perPage = 10)
     {
         return self::orderBy('id', 'desc')->paginate($perPage);
+    }
+
+    public static function getSchedulesBySubjectClassId($subjectClassId, $perPage = 20)
+    {
+        return self::where('subject_class_id', $subjectClassId)
+            ->orderBy('date', 'asc')
+            ->paginate($perPage);
+    }
+
+    protected static function booted()
+    {
+        static::updating(function ($schedule) {
+            DB::table('schedule_histories')->insert([
+                'schedule_id' => $schedule->id,
+                'date' => $schedule->getOriginal('date'),
+                'subject_class_id' => $schedule->getOriginal('subject_class_id'),
+                'classroom_id' => $schedule->getOriginal('classroom_id'),
+                'time_slot_id' => $schedule->getOriginal('time_slot_id'),
+                'substitute_employee_id' => $schedule->getOriginal('substitute_employee_id'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        });
     }
 
 }

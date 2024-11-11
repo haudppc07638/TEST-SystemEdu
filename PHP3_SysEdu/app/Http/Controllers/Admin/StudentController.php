@@ -79,7 +79,6 @@ class StudentController extends Controller
         $validator = Validator::make($data, $rules, $messages);
 
         if ($validator->stopOnFirstFailure()->fails()) {
-            dd($validator);
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();

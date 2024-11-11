@@ -35,6 +35,7 @@
                                     <th>Môn học</th>
                                     <th>Học kỳ</th>
                                     <th>Học Phí</th>
+                                    <th>Lớp chuyên ngành</th>
                                     <th>Tác vụ</th>
                                 </tr>
                             </thead>
@@ -51,12 +52,17 @@
                                     <td>{{ $subjectClass->subject->name ?? 'Chưa có' }}</td>
                                     <td>{{ $subjectClass->semester->block ?? 'Chưa có' }}</td>
                                     <td>{{ $subjectClass->price }}</td>
+                                    <td>{{ $subjectClass->majorClass->name ?? 'Chưa có' }}</td>
                                     <td>
                                         <div class="dropdown">
                                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                                                 <i class="bx bx-dots-vertical-rounded"></i>
                                             </button>
                                             <div class="dropdown-menu">
+                                                <a href="{{ route('admin.schedules.view-schedule', ['subject_class_id' => $subjectClass->id]) }}" class="dropdown-item bg-info">
+                                                    <i class="bi bi-calendar"></i> Xem Lịch Học
+                                                </a>                                            
+                                                <a class="dropdown-item" href="{{ route('admin.schedules.create', ['subject_class_id' => $subjectClass->id]) }}"><i class="bi bi-calendar-plus"></i> Tạo lịch</a>
                                                 <a class="dropdown-item" href="{{ route('admin.studentsubjectclass.index', $subjectClass->id) }}"><i class="bi bi-pen"></i> Nhập điểm</a>
                                                 <a class="dropdown-item" href="{{ route('admin.subjectclasses.edit', $subjectClass->id) }}"><i class="bx bx-edit-alt me-2"></i> Chỉnh sửa</a>
                                                 <form action="{{ route('admin.subjectclasses.destroy', $subjectClass->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa môn học này không?');">

@@ -58,7 +58,7 @@
              </ul>
          </li><!-- End Components Nav -->
 
-         <li class="nav-item">
+         {{-- <li class="nav-item">
              <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
                  <i class="bi bi-journal-text"></i><span>Lịch học</span><i class="bi bi-chevron-down ms-auto"></i>
              </a>
@@ -74,7 +74,14 @@
                      </a>
                  </li>
              </ul>
-         </li><!-- End Schedule Nav -->
+         </li> --}}
+
+         <li class="nav-item">
+            <a class="nav-link collapsed" href="{{ route('admin.semesters.index') }}">
+                <i class="bi bi-journal"></i>
+                <span>Học Kỳ</span>
+            </a>
+        </li><!-- End Class Page Nav -->
 
          <li class="nav-item">
              <a class="nav-link collapsed" href="{{ route('admin.faculties') }}">

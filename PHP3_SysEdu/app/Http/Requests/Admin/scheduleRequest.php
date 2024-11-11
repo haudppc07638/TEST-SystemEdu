@@ -16,7 +16,6 @@ class ScheduleRequest extends FormRequest
 
     public function rules(): array
     {
-        // Các biến cần thiết
         $scheduleId = $this->route('id');
         $scheduleType = $this->input('schedule_type');
         $classroomId = $this->input('classroom_id');
@@ -27,13 +26,26 @@ class ScheduleRequest extends FormRequest
         $requestEndDate = Carbon::parse($this->input('end_date'));
 
         return [
+            'start_date' => 'required|date|after_or_equal:today',
+            'end_date' => 'required|date|after:start_date',
             'schedule_type' => 'required|in:odd,even',
             'time_slot_id' => [
                 'required',
                 'exists:time_slots,id',
-                function ($attribute, $value, $fail) use ($scheduleId, $scheduleType, $classroomId, $requestStartDate, $requestEndDate) {
-                    $this->checkTeacherScheduleConflict($value, $classroomId, $scheduleId, $requestStartDate, $requestEndDate, $fail);
-                    $this->checkScheduleConflict($value, $classroomId, $scheduleId, $scheduleType, $requestStartDate, $requestEndDate, $fail);
+                function ($attribute, $value, $fail) use ($scheduleId, $scheduleType, $classroomId, $requestStartDate, $requestEndDate, $subjectClassId) {
+                    $errors = [];
+                    $this->checkStudentScheduleConflict($value, $scheduleId, $subjectClassId, $requestStartDate, $requestEndDate, function ($message) use (&$errors) {
+                        $errors[] = $message;
+                    });
+                    $this->checkTeacherScheduleConflict($value, $classroomId, $scheduleId, $requestStartDate, $requestEndDate, function ($message) use (&$errors) {
+                        $errors[] = $message;
+                    });
+                    $this->checkScheduleConflict($value, $classroomId, $scheduleId, $scheduleType, $requestStartDate, $requestEndDate, function ($message) use (&$errors) {
+                        $errors[] = $message;
+                    });
+                    if (!empty($errors)) {
+                        $fail(implode(' ⚠️ ', $errors));
+                    }
                 },
             ],
             'classroom_id' => [
@@ -50,24 +62,18 @@ class ScheduleRequest extends FormRequest
                     $this->checkSubjectClassDates($value, $requestStartDate, $requestEndDate, $fail);
                 },
             ],
-            'start_date' => 'required|date|after_or_equal:today',
-            'end_date' => 'required|date|after:start_date',
         ];
     }
-
 
     protected function checkScheduleConflict($timeSlotId, $classroomId, $scheduleId, $scheduleType, $startDate, $endDate, $fail)
     {
         $currentDate = $startDate->copy();
         while ($currentDate->lessThanOrEqualTo($endDate)) {
-            // Chỉ kiểm tra những ngày chẵn/lẻ tương ứng với loại lịch
             if ($this->isScheduleTypeMismatch($currentDate, $scheduleType)) {
-                // Bỏ qua các ngày không phù hợp
                 $currentDate->addDay();
                 continue;
             }
 
-            // Kiểm tra xem đã có lịch nào ở phòng học này trong thời gian này chưa
             $existingSchedule = DB::table('schedules')
                 ->where('classroom_id', $classroomId)
                 ->where('time_slot_id', $timeSlotId)
@@ -79,7 +85,6 @@ class ScheduleRequest extends FormRequest
                 })
                 ->exists();
 
-            // Nếu đã có lịch thì trả về lỗi
             if ($existingSchedule) {
                 return $fail('Ca học này đã được đặt cho phòng học vào ngày ' . $currentDate->toDateString() . ' vào khung giờ này.');
             }
@@ -92,17 +97,13 @@ class ScheduleRequest extends FormRequest
     {
         $currentDate = $startDate->copy();
         while ($currentDate->lessThanOrEqualTo($endDate)) {
-            // Chỉ kiểm tra những ngày chẵn/lẻ tương ứng với loại lịch
             if ($this->isScheduleTypeMismatch($currentDate, $scheduleType)) {
-                // Bỏ qua các ngày không phù hợp
                 $currentDate->addDay();
                 continue;
             }
 
-            // Ghi log để theo dõi thông tin
             Log::info("Checking classroom conflict for date: {$currentDate->toDateString()} with classroom_id: $classroomId and time_slot_id: $timeSlotId");
 
-            // Kiểm tra xem đã có lịch nào ở phòng học này trong thời gian này chưa
             $existingSchedule = DB::table('schedules')
                 ->where('classroom_id', $classroomId)
                 ->where('time_slot_id', $timeSlotId)
@@ -114,7 +115,6 @@ class ScheduleRequest extends FormRequest
                 })
                 ->exists();
 
-            // Nếu đã có lịch thì trả về lỗi
             if ($existingSchedule) {
                 return $fail('Phòng học này đã có lịch vào ngày ' . $currentDate->toDateString() . ' vào khung giờ này.');
             }
@@ -136,13 +136,11 @@ class ScheduleRequest extends FormRequest
 
         $currentDate = $requestStartDate->copy();
         while ($currentDate->lessThanOrEqualTo($requestEndDate)) {
-            // Kiểm tra ngày có phù hợp với loại lịch không
             if ($this->isScheduleTypeMismatch($currentDate, $scheduleType)) {
                 $currentDate->addDay();
                 continue;
             }
 
-            // Kiểm tra trùng lịch dựa trên subject_class_id thay vì employee_id trong schedules
             $existingSchedule = DB::table('schedules')
                 ->where('time_slot_id', $timeSlotId)
                 ->whereDate('date', $currentDate->toDateString())
@@ -162,11 +160,6 @@ class ScheduleRequest extends FormRequest
         }
     }
 
-
-
-
-
-
     protected function checkSubjectClassDates($subjectClassId, $requestStartDate, $requestEndDate, $fail)
     {
         $subjectClass = DB::table('subject_classes')->where('id', $subjectClassId)->first();
@@ -184,22 +177,58 @@ class ScheduleRequest extends FormRequest
 
     protected function isScheduleTypeMismatch($date, $scheduleType)
     {
-        $dayOfWeek = $date->dayOfWeek; // 0 = Chủ nhật, 1 = Thứ hai, ..., 6 = Thứ bảy
+        $dayOfWeek = $date->dayOfWeek;
 
         if ($scheduleType === 'odd') {
-            // Các ngày lẻ (odd): thứ Hai (1), thứ Tư (3), thứ Sáu (5)
             return !($dayOfWeek == 1 || $dayOfWeek == 3 || $dayOfWeek == 5);
         } elseif ($scheduleType === 'even') {
-            // Các ngày chẵn (even): thứ Ba (2), thứ Năm (4), thứ Bảy (6)
             return !($dayOfWeek == 2 || $dayOfWeek == 4 || $dayOfWeek == 6);
         }
 
-        return true; // Trả về true nếu không thuộc loại nào
+        return true;
     }
 
+    protected function checkStudentScheduleConflict($timeSlotId, $scheduleId, $subjectClassId, $requestStartDate, $requestEndDate, $fail)
+    {
+        $currentDate = $requestStartDate->copy();
+        $studentIds = DB::table('student_subject_classes')
+            ->where('subject_class_id', $subjectClassId)
+            ->pluck('student_id')
+            ->toArray();
+ 
+        while ($currentDate->lessThanOrEqualTo($requestEndDate)) {
+            if ($this->isScheduleTypeMismatch($currentDate, $this->input('schedule_type'))) {
+                $currentDate->addDay();
+                continue;
+            }
 
+            foreach ($studentIds as $studentId) {
+                $subjectClassIds = DB::table('student_subject_classes')
+                    ->where('student_id', $studentId)
+                    ->pluck('subject_class_id');
 
+                $existingSchedule = DB::table('schedules')
+                    ->where('time_slot_id', $timeSlotId)
+                    ->whereDate('date', $currentDate->toDateString())
+                    ->whereIn('subject_class_id', $subjectClassIds)
+                    ->where(function ($query) use ($scheduleId) {
+                        if ($scheduleId) {
+                            $query->where('id', '<>', $scheduleId);
+                        }
+                    })
+                    ->exists();
 
+                if ($existingSchedule) {
+                    $studentName = DB::table('students')->where('id', $studentId)->value('code');
+
+                    return $fail('Sinh viên ' . $studentName . ' đã có lịch vào ngày ' . $currentDate->toDateString() . ' trong khung giờ này.');
+                }
+            }
+
+            $currentDate->addDay();
+        }
+    }
+    
     public function messages()
     {
         return [
@@ -219,9 +248,6 @@ class ScheduleRequest extends FormRequest
             'end_date.required' => 'Ngày kết thúc không được để trống',
             'end_date.date' => 'Ngày kết thúc không hợp lệ',
             'end_date.after' => 'Ngày kết thúc phải sau ngày bắt đầu',
-
-            'schedule_type.required' => 'Bạn phải chọn loại lịch',
-            'schedule_type.in' => 'Loại lịch không hợp lệ',
         ];
     }
 }

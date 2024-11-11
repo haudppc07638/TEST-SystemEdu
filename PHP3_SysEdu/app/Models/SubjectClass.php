@@ -47,9 +47,9 @@ class SubjectClass extends Model
     {
         return $this->belongsto(Semester::class);
     }
-    public function schedule(): HasMany
+    public function schedules()
     {
-        return $this->hasMany(Schedule::class);
+        return $this->hasMany(Schedule::class, 'subject_class_id'); // Giả sử 'subject_class_id' là tên khóa ngoại trong bảng schedules
     }
     public function employee(): BelongsTo
     {
@@ -71,6 +71,11 @@ class SubjectClass extends Model
     public function feedbacks()
     {
         return $this->hasMany(Feedback::class, 'subject_class_id');
+    }
+
+    public function scheduleHistories()
+    {
+        return $this->hasMany(ScheduleHistory::class);
     }
 
     public static function validate($data, $request)

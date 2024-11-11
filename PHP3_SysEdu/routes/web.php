@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\FeedbackController;
 use App\Http\Controllers\Admin\ScoreTypeController;
 use App\Http\Controllers\Admin\SubjectLecturerController;
 use App\Http\Controllers\Teacher\StudentLookupController;
+use App\Http\Controllers\Admin\TeacherFreeSlotController;
 
 // auth route ==============================================================================
 
@@ -126,13 +127,12 @@ Route::middleware(['admin'])->group(function () {
         Route::get('detail/{id}', [StudentController::class, 'showDetail'])->name('detail');
     });
 
-    Route::prefix('schedules')->name('admin.schedules.')->group(function () {
-        Route::get('/', [AdminScheduleController::class, 'index'])->name('index');
+        Route::prefix('schedules')->name('admin.schedules.')->group(function () {
+        Route::get('view-schedule/{subject_class_id}', [AdminScheduleController::class, 'viewSchedule'])->name('view-schedule');
         Route::get('create', [AdminScheduleController::class, 'create'])->name('create');
         Route::post('create', [AdminScheduleController::class, 'store'])->name('create.post');
         Route::get('edit/{id}', [AdminScheduleController::class, 'edit'])->name('edit');
         Route::put('{id}', [AdminScheduleController::class, 'update'])->name('update');
-        Route::delete('{id}', [AdminScheduleController::class, 'destroy'])->name('destroy');
         Route::get('/export-schedules-pdf', [AdminScheduleController::class, 'exportPdf'])->name('export-pdf');
     });
 
@@ -239,6 +239,11 @@ Route::middleware(['admin'])->group(function () {
         Route::get('subject-lecturers/filter', [SubjectLecturerController::class, 'filter'])->name('filter');
     });
 
+    Route::prefix('teacherFreeSlot')->name('admin.teacher_free_slots.')->group(function () {
+        Route::get('/', [TeacherFreeSlotController::class, 'index'])->name('index');
+        Route::get('update/{id}', [TeacherFreeSlotController::class, 'createOrUpdate'])->name('createOrUpdate');
+        Route::post('update/{id}', [TeacherFreeSlotController::class, 'storeOrUpdate'])->name('storeOrUpdate');
+    });
 
     // Ajax
     Route::get('/majors-by-faculty', [DashboardController::class, 'getMajorsByFaculty'])->name('majors.by.faculty');

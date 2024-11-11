@@ -1,44 +1,79 @@
 @extends('layouts.master')
 
-@section('title', 'Chỉnh sửa Lịch Học')
+@section('title', 'Danh Sách Lịch Học')
 
 @section('main')
     <main id="main" class="main">
-        <h1>Danh Sách Lịch Học</h1>
+        <div class="pagetitle">
+            <h1>Danh Sách Lịch Học của Lớp: {{ $subjectClass->name }}</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
+                    <li class="breadcrumb-item">Lớp Môn</li>
+                    <li class="breadcrumb-item active">Danh sách lịch học</li>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
 
-        <a href="{{ route('admin.schedules.create') }}" class="btn btn-success">Tạo Lịch Mới</a>
-
-        <table class="table table-bordered mt-3">
-            <thead>
-                <tr>
-                    <th>Khung Giờ</th>
-                    <th>Phòng Học</th>
-                    <th>Lớp Môn Học</th>
-                    <th>Ngày Học</th>
-                    <th>Thao Tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($schedules as $schedule)
+        @if ($schedules->isEmpty())
+            <h4 class="text-center">Lớp môn này chưa có lịch học.</h4>
+            <div class="text-center mt-3">
+                <a href="{{ route('admin.subjectclasses.index') }}" class="btn btn-secondary">Quay lại</a>
+            </div>
+        @else
+            <table class="table table-bordered mt-3">
+                <thead>
                     <tr>
-                        <td>{{ $schedule->timeSlot->start_time }} - {{ $schedule->timeSlot->end_time }}</td>
-                        <td>{{ $schedule->classroom->code }}</td>
-                        <td>{{ $schedule->subjectClass->name }}</td>
-                        <td>{{ $schedule->date }}</td>
-                        <td>
-                            <a href="{{ route('admin.schedules.edit', $schedule->id) }}" class="btn btn-warning">Sửa</a>
-                            <form action="{{ route('admin.schedules.destroy', $schedule->id) }}" method="POST"
-                                style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Xóa</button>
-                            </form>
-                        </td>
+                        <th>Stt</th>
+                        <th>Ngày</th>
+                        <th>Phòng Học</th>
+                        <th>Mã Môn</th>
+                        <th>Môn học</th>
+                        <th>Lớp</th>
+                        <th>Giảng viên</th>
+                        <th>Ca</th>
+                        <th>Thao Tác</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
-
-        {{ $schedules->links() }} <!-- Phân trang -->
+                </thead>
+                <tbody>
+                    @foreach ($schedules as $index => $schedule)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ \Carbon\Carbon::parse($schedule->date)->translatedFormat('l, d/m/Y') }}</td>
+                            <td>{{ $schedule->classroom->code ?? 'Chưa có' }}</td>
+                            <td>{{ $schedule->subjectClass->subject->code ?? 'Chưa có' }}</td>
+                            <td>{{ $schedule->subjectClass->subject->name ?? 'Chưa có' }}</td>
+                            <td>{{ $schedule->subjectClass->name ?? 'Chưa có' }}</td>
+                            <td>{{ $schedule->subjectClass->employee->full_name ?? 'Chưa có' }}</td>
+                            <td>{{ $schedule->timeSlot->slot ?? 'Chưa có' }}</td>
+                            <td>
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
+                                        data-bs-toggle="dropdown">
+                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="{{ route('admin.schedules.edit', $schedule->id) }}">
+                                            <i class="bx bx-edit-alt me-2"></i> Sửa
+                                        </a>
+                                        {{-- <form action="{{ route('admin.schedules.destroy', $schedule->id) }}" method="POST"
+                                            onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="bx bx-trash me-2"></i> Xóa
+                                            </button>
+                                        </form> --}}
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-center">
+                {{ $schedules->links() }} 
+            </div>
+        @endif
     </main>
 @endsection

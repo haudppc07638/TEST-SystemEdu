@@ -2,6 +2,40 @@
 
 @section('title', 'Lịch học | SysEdu')
 
+@push('style')
+<style>
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .pagination > li {
+        list-style: none;
+    }
+
+    .pagination > li > a, .pagination > li > span {
+        padding: 8px 12px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        margin: 0 2px;
+        color: #555;
+        text-decoration: none;
+    }
+
+    .pagination > li > a:hover {
+        background-color: #f0f0f0;
+    }
+
+    .pagination > .active > span {
+        background-color: #4a5568;
+        color: white;
+        border-color: #4a5568;
+    }
+</style>
+@endpush
+
 @section('main')
 
     <main class="h-full pb-16 overflow-y-auto">
@@ -28,7 +62,7 @@
                         <option value="90 days before" {{ request('time_range') == '90 days before' ? 'selected' : '' }}>90 ngày trước</option>
                     </select>
                 </label>
-            </form>            
+            </form>                        
             {{-- <div class="flex justify-end mb-4">
                 <a href="{{ route('schedules.export-pdf', ['time_range' => request('time_range')]) }}" class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">PDF</a>
             </div> --}}
@@ -41,6 +75,7 @@
                                 <th class="px-4 py-3">Stt</th>
                                 <th class="px-4 py-3">Ngày</th>
                                 <th class="px-4 py-3">Phòng</th>
+                                <th class="px-4 py-3">Mã Môn</th>
                                 <th class="px-4 py-3">Môn học</th>
                                 <th class="px-4 py-3">Lớp</th>
                                 <th class="px-4 py-3">Giảng viên</th>
@@ -52,11 +87,12 @@
                             @foreach ($schedules as $index => $schedule)
                                 <tr class="text-gray-700">
                                     <td class="px-4 py-3">{{ $index + 1 }}</td>
-                                    <td class="px-4 py-3 text-sm">{{ \Carbon\Carbon::parse($schedule->schedule_day)->translatedFormat('l, d/m/Y') }}</td>
+                                    <td class="px-4 py-3 text-sm">{{ \Carbon\Carbon::parse($schedule->date)->translatedFormat('l, d/m/Y') }}</td>
                                     <td class="px-4 py-3 text-xs">{{ $schedule->classroom->code ?? 'Chưa có' }}</td>
+                                    <td class="px-4 py-3 text-sm">{{ $schedule->subjectClass->subject->code ?? 'Chưa có' }}</td>
                                     <td class="px-4 py-3 text-sm">{{ $schedule->subjectClass->subject->name ?? 'Chưa có' }}</td>
                                     <td class="px-4 py-3 text-sm">{{ $schedule->subjectClass->name ?? 'Chưa có' }}</td>
-                                    <td class="px-4 py-3 text-sm">{{ $schedule->subjectClass->employee->fullname ?? 'Chưa có' }}</td>
+                                    <td class="px-4 py-3 text-sm">{{ $schedule->subjectClass->employee->full_name ?? 'Chưa có' }}</td>
                                     <td class="px-4 py-3 text-sm">{{ $schedule->timeSlot->slot ?? 'Chưa có' }}</td>
                                     <td class="px-4 py-3 text-sm">{{ $schedule->timeSlot->start_time ?? 'Chưa có' }} - {{ $schedule->timeSlot->end_time ?? 'Chưa có' }}</td>
                                 </tr>
@@ -65,11 +101,11 @@
                     </table>
                 </div>
                 <div class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9">
-                    <span class="flex items-center col-span-3">Showing {{ $schedules->count() }} of {{ $schedules->total() }}</span>
+                    <span class="flex items-center col-span-3">Hiển thị {{ $schedules->count() }} trên {{ $schedules->total() }}</span>
                     <span class="col-span-2"></span>
                     <!-- Pagination -->
                     <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
-                        {{ $schedules->links() }}
+                        {{ $schedules->links('pagination::bootstrap-4') }}
                     </span>
                 </div>
             </div>

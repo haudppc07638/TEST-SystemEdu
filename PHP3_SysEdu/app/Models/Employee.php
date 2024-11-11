@@ -82,8 +82,17 @@ class Employee extends Authenticatable
         return $this->hasMany(SubjectLecturer::class);
     }
 
-    public static function getAvailableTeachers($major_id)
+    public function timeSlots()
     {
+        return $this->belongsToMany(TimeSlot::class, 'teacher_free_slots', 'employee_id', 'time_slot_id');
+    }
+
+    public function substituteScheduleHistories()
+    {
+        return $this->hasMany(ScheduleHistory::class, 'substitute_employee_id');
+    }
+
+    public static function getAvailableTeachers($major_id){
         return self::where('position', 'teacher')
             ->whereDoesntHave('classes', function ($query) {
                 $query->where('status', 0);

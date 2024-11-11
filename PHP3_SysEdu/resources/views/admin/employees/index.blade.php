@@ -67,6 +67,7 @@
                                                         <i class="bx bx-id-card me-2"></i>
                                                         Xem chi tiết
                                                     </a>
+                                                    <a class="dropdown-item" href="{{ route('admin.teacher_free_slots.createOrUpdate', ['id' => $employee->id]) }}"><i class="bi bi-calendar-plus"></i> Cập nhật ca rảnh</a>
                                                     <a class="dropdown-item"
                                                         href="{{ route('admin.employees.edit', ['id' => $employee->id]) }}">
                                                         <i class="bx bx-edit-alt me-2"></i>
