@@ -31,6 +31,7 @@ class GoogleController extends Controller
         $userType = session('google_user_type');
         if ($userType == 'admin') {
             $user = Employee::where('email', $googleUser->getEmail())->where('position', 'admin')->first();
+            
             if (!$user) {
                 toastr()->error('Email bạn không có quyền đăng nhập trang này !');
                 return redirect()->route('login');

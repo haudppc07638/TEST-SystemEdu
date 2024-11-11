@@ -32,6 +32,7 @@ use App\Http\Controllers\Client\ScoreController;
 use App\Http\Controllers\Admin\FeedbackController;
 use App\Http\Controllers\Admin\ScoreTypeController;
 use App\Http\Controllers\Admin\SubjectLecturerController;
+use App\Http\Controllers\Teacher\StudentLookupController;
 
 // auth route ==============================================================================
 
@@ -276,5 +277,9 @@ Route::middleware(['teacher'])->group(function () {
     Route::prefix('gv')->group(function () {
         Route::get('/', [TeacherHomeController::class, 'index'])->name('home');
         Route::get('/notifications/{id}', [TeacherHomeController::class, 'show'])->name('notifications.show');
+
+        Route::get('/student-lookup', [StudentLookupController::class, 'index'])->name('student.index');
+        Route::get('/student-lookup/search', [StudentLookupController::class, 'search'])->name('student.search');
+        Route::get('/student-lookup/{id}', [StudentLookupController::class, 'show'])->name('student.show');
     });
 });

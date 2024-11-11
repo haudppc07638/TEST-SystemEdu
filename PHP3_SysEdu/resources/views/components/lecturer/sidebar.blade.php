@@ -4,14 +4,14 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item">
-            <a class="nav-link " href="{{ route('admin.dashboard') }}">
+            <a class="nav-link " href="{{ route('home') }}">
                 <i class="bi bi-grid"></i>
                 <span>Thông báo tin tức</span>
             </a>
         </li><!-- End Dashboard Nav -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="{{ route('admin.students.index') }}">
+            <a class="nav-link collapsed" href="{{ route('student.index') }}">
                 <i class="bi bi-person-square"></i>
                 <span>Tra cứu sinh viên</span>
             </a>

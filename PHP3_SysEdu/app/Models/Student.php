@@ -213,4 +213,38 @@ class Student extends Authenticatable
             ->firstOrFail();
     }
 
+    public function getGroupedSubjectResults()
+    {
+        return $this->studentSubjectClasses
+            ->load(['subjectClass.subject', 'scores.subjectScoreType'])
+            ->groupBy(function ($item) {
+                return $item->subjectClass->subject->id;
+            })
+            ->map(function ($attempts) {
+                return $attempts->sortByDesc('created_at');
+            });
+    }
+
+    public static function searchStudents($searchTerm)
+    {
+        return self::where(function ($query) use ($searchTerm) {
+            $query->where('full_name', 'LIKE', "%{$searchTerm}%")
+                ->orWhere('code', 'LIKE', "%{$searchTerm}%")
+                ->orWhere('email', 'LIKE', "%{$searchTerm}%");
+        })
+        ->with(['major', 'stuClass'])
+        ->get();
+    }
+
+    public static function getDetailedStudent($id)
+    {
+        return self::with([
+            'major',
+            'stuClass',
+            'studentSubjectClasses.subjectClass.subject',
+            'studentSubjectClasses.scores.subjectScoreType',
+            'totalTuition'
+        ])->findOrFail($id);
+    }
+
 }
