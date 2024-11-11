@@ -23,16 +23,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // Cho phép chọn cả hai hình thức gửi
             typeSelect.querySelector('option[value="system"]').disabled = false;
             typeSelect.querySelector('option[value="email"]').disabled = false;
-        } else if (recipientType === 'teachers') {
-            studentsFields.style.display = 'none';
-            teachersFields.style.display = 'block';
-
-            // Chỉ cho phép chọn email
-            typeSelect.querySelector('option[value="system"]').disabled = true;
-            if (typeSelect.value === 'system') {
-                typeSelect.value = 'email'; // Nếu chọn hệ thống, tự động chuyển về email
-            }
-            typeSelect.querySelector('option[value="email"]').disabled = false;
         }
 
     }
