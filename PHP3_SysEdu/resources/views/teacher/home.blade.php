@@ -20,7 +20,7 @@
                                         @forelse($notifications as $notification)
                                             <li class="list-group-item border-0 py-2">
                                                 <i class="bi bi-bell text-primary me-2"></i>
-                                                <a href="{{ route('teacher.notifications.show', $notification->id) }}" 
+                                                <a href="{{ route('notifications.show', $notification->id) }}" 
                                                    class="text-primary text-decoration-none">
                                                     {{ $notification->title }}
                                                     <small class="text-muted ms-2">
@@ -37,7 +37,7 @@
                                     
                                     @if($notifications->count() > 10)
                                         <div class="text-center mt-4">
-                                            <a href="{{ route('teacher.notifications.index') }}" class="btn btn-primary">
+                                            <a href="{{ route('notifications.index') }}" class="btn btn-primary">
                                                 Xem thêm...
                                             </a>
                                         </div>

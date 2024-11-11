@@ -57,8 +57,7 @@ Route::get('auth/callback/google', [GoogleController::class, 'handleGoogleCallba
 Route::get('profile', [ProfileController::class, 'profileEmployee'])->name('admin.profile');
 Route::get('ho-so', [ProfileController::class, 'profileStudent'])->name('profile');
 
-Route::post('/logout', [LogoutController::class, 'logoutEmployee'])->name('admin.logout');
-Route::post('/logout', [LogoutController::class, 'logoutEmployee'])->name('teacher.logout');
+Route::post('/logout', [LogoutController::class, 'logoutEmployee'])->name('employee.logout');
 Route::post('/dang-xuat', [LogoutController::class, 'logoutStudent'])->name('logout');
 //end auth route ==============================================================================
 

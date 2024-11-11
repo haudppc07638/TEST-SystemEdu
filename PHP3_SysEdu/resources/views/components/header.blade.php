@@ -127,7 +127,7 @@
 
 
                     <li>
-                        <form class="dropdown-item d-flex align-items-center" action="{{ route('admin.logout') }}"
+                        <form class="dropdown-item d-flex align-items-center" action="{{ route('employee.logout') }}"
                             method="POST">
                             @csrf
                             <button type="submit" class="border-0 bg-transparent"><i class="bi bi-box-arrow-right"></i>
