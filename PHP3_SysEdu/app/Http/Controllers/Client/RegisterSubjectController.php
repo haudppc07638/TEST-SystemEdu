@@ -9,6 +9,10 @@ use App\Models\SubjectClass;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Tuition;
 use App\Models\TotalTuition;
+use App\Models\PrerequisiteSubject;
+use App\Models\SubjectHistory;
+use App\Models\Student;
+use Illuminate\Support\Facades\Log;
 
 class RegisterSubjectController extends Controller
 {
@@ -17,7 +21,7 @@ class RegisterSubjectController extends Controller
         $student = Auth::guard('student')->user();
 
         $subjects = Subject::getAvailableSubjectsForStudent($student->major_id);
-
+        // dd($subjects);
         return view('client.register-subject', [
             'subjects' => $subjects
         ]);
@@ -27,10 +31,11 @@ class RegisterSubjectController extends Controller
     {
         $student = Auth::guard('student')->user();
         $currentDate = now()->toDateString();
-
+        
         $availableClasses = SubjectClass::getAvailableClassesForMajor($student->major_id, $currentDate, $id);
         $registeredClass = StudentSubjectClass::getRegisteredClassForSubject($student->id, $id);
-
+        // dd($availableClasses);
+        // dd($registeredClass);
         return view('client.detail-subject', [
             'subjectClasses' => $availableClasses,
             'registeredClass' => $registeredClass,
@@ -41,15 +46,25 @@ class RegisterSubjectController extends Controller
     {
         $student = Auth::guard(name: 'student')->user();
         $subjectClass = SubjectClass::findOrFail(id: $id);
+        $registeredClasses = Student::getCurrentSemesterRegisteredClasses($student->id);
         // $studentSubjectClass = StudentSubjectClass::findOrFail($studentSubjectClassId);
 
         if ($subjectClass->isFull()) {
             toastr()->warning(message: 'Lớp học đã đầy. Không thể tham gia. Vui lòng chọn lớp khác !');
             return redirect()->route('client.subject.classes.show', $subjectClass->subject_id);
         }
-        
-        $studentSubjectClasses = StudentSubjectClass::insertStudentSubjectClass($student->id, $id);
+        if ($subjectClass->conflictsWith($student->id)) {
+            toastr()->error('Lịch học của lớp bị trùng với một lớp bạn đã đăng ký!');
+            return redirect()->route('client.subject.classes.show', $subjectClass->subject_id);
+        }
+        $missingPrerequisites = $subjectClass->checkPrerequisites($student->id);
 
+        if ($missingPrerequisites) {
+            toastr()->error('Bạn chưa hoàn thành môn tiên quyết: ' . implode(', ', $missingPrerequisites));
+            return redirect()->route('client.subject.classes.show', $subjectClass->subject_id);
+        }
+        $studentSubjectClasses = StudentSubjectClass::insertStudentSubjectClass($student->id, $id);
+        // dd($studentSubjectClasses);
         if ($studentSubjectClasses) {
             
             Tuition::insertTuitionJoinClass($studentSubjectClasses->id);

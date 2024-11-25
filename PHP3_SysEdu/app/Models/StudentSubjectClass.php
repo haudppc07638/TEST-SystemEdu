@@ -81,6 +81,23 @@ class StudentSubjectClass extends Model
         $studentSubClass->update($data);
         return $studentSubClass;
     }
+    public static function insertStudentSubjectClass($studentId, $subjectClassId)
+    {
+        $studentSubjectClass = self::create([
+            'student_id' => $studentId,
+            'subject_class_id' => $subjectClassId,
+            'total_score' => 0,
+            'classification' => 'Chưa phân loại',
+        ]);
+        $type = SubjectHistory::determineTypeBasedOnStatus($studentSubjectClass);
+
+        SubjectHistory::create([
+            'student_subject_class_id' => $studentSubjectClass->id,
+            'type' => $type,
+        ]);
+    
+        return $studentSubjectClass;
+    }
 
     public static function cancelStudentSubjectClass($studentId, $subjectClassId)
     {
@@ -227,4 +244,30 @@ class StudentSubjectClass extends Model
             ['status' => $status]
         );
     }
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($studentSubjectClass) {
+            Tuition::where('student_subject_class_id', $studentSubjectClass->id)->delete();
+
+            TotalTuition::insertTuitionSubject($studentSubjectClass->student_id);
+        });
+    }
+
+// protected static function bootSubject()
+// {
+//     parent::boot();
+
+//     static::created(function (StudentSubjectClass $studentSubjectClass) {
+//         $type = SubjectHistory::determineTypeBasedOnStatus($studentSubjectClass);
+
+//         Log::info('SubjectHistory type determined:', ['type' => $type]);
+
+//         SubjectHistory::create([
+//             'student_subject_class_id' => $studentSubjectClass->id,
+//             'type' => $type,
+//         ]);
+//     });
+// }
 }

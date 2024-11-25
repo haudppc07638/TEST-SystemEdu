@@ -21,10 +21,13 @@
                 <select name="semester" id="semester" class="block w-full mt-1 text-sm form-select">
                     <option value="">Chọn kỳ học</option>
                     @foreach($showHistorys as $showHistory)
-                        <option value="{{ $showHistory->subjectclass->semester->id }}" {{ $showHistory->subjectclass->semester->id == request('semester') ? 'selected' : '' }}>
+                    @if($showHistory->subjectclass && $showHistory->subjectclass->semester)
+                        <option value="{{ $showHistory->subjectclass->semester->id }}" 
+                                {{ $showHistory->subjectclass->semester->id == request('semester') ? 'selected' : '' }}>
                             {{ $showHistory->subjectclass->semester->block }}
                         </option>
-                    @endforeach
+                    @endif
+                @endforeach
                 </select>
             </label>
         
@@ -60,39 +63,37 @@
                 <th class="px-4 py-3">Trạng thái</th>
               </tr>
             </thead>
-            @forelse ($showHistorys as $showHistory)
+                @foreach ($showHistorys as $showHistory)
     <tbody class="bg-white divide-y dark:divide-gray-700">
-        <tr class="text-gray-700 ">
+        <tr class="text-gray-700">
             <td class="px-4 py-3">
-                {{$showHistory->subjectclass->id}}
+                {{ $showHistory->studentSubjectClass->subjectClass->id ?? 'N/A' }}
             </td>
             <td class="px-4 py-3 text-sm">
-                {{$showHistory->subjectclass->subject->name}}
+                {{ $showHistory->studentSubjectClass->subjectClass->subject->name ?? 'N/A' }}
             </td>
             <td class="px-4 py-3 text-xs">
-                {{$showHistory->subjectclass->subject->code}}
+                {{ $showHistory->studentSubjectClass->subjectClass->subject->code ?? 'N/A' }}
             </td>
             <td class="px-4 py-3 text-sm">
-                {{$showHistory->subjectclass->semester->block}}
+                {{ $showHistory->studentSubjectClass->subjectClass->semester->block ?? 'N/A' }}
             </td>
             <td class="px-4 py-3 text-sm">
-                {{$showHistory->total_score}}
+                {{ $showHistory->studentSubjectClass->total_score ?? 'N/A' }}
             </td>
             <td class="px-4 py-3 text-sm">
-              {{$showHistory->classfication}}
-          </td>
+                {{ $showHistory->classfication ?? 'N/A' }}
+            </td>
             <td class="px-4 py-3 text-xs">
                 <span class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-700">
-                  {{ ucfirst(strtolower($showHistory->status)) }}
+                    {{ ucfirst(strtolower($showHistory->studentSubjectClass->status ?? 'N/A')) }}
                 </span>
             </td>
         </tr>
     </tbody>
-@empty
-    <tr>
-        <td colspan="6">Không có dữ liệu</td>
-    </tr>
-@endforelse
+    @endforeach
+
+
 
           </table>
         </div>

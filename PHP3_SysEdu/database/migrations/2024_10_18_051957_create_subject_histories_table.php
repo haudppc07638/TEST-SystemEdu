@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('subject_histories', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->foreignId('student_subject_class_id')->constrained('student_subject_classes');
+            $table->foreignId('student_subject_class_id')->constrained('student_subject_classes')->onDelete('cascade');
             $table->string('status');
             $table->timestamps();
             $table->softDeletes();

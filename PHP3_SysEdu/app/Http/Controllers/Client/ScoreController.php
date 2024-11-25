@@ -17,19 +17,24 @@ class ScoreController extends Controller
         $major = $user->major;
         $today = Carbon::today();
 
-        $currentSemester = Semester::where('start_day', '<=', $today)
-                                   ->where('end_day', '>=', $today)
+        // Fetch the current semester based on the date
+        $currentSemester = Semester::where('start_date', '<=', $today)
+                                   ->where('end_date', '>=', $today)
                                    ->first();
 
+        // If no semester is found, return an error
         if (!$currentSemester) {
             return redirect()->back()->with('error', 'Không có kỳ học nào đang diễn ra.');
         }
+
+        // Fetch the scores for the current student, filtered by current semester
         $scores = StudentSubjectClass::whereHas('subjectClass', function ($query) use ($currentSemester) {
+            // Make sure we only retrieve classes for the current semester
             $query->where('semester_id', $currentSemester->id);
         })
-        ->with('subjectClass.semester', 'subjectClass.subject')
-        ->where('student_id', $user->id)
-        ->paginate(10);
+        ->with('subjectClass.semester', 'subjectClass.subject')  // Eager load related data
+        ->where('student_id', $user->id)  // Filter by the logged-in student
+        ->paginate(10);  // Paginate the results
 
         return view('client.score', compact('scores', 'currentSemester', 'major'));
     }

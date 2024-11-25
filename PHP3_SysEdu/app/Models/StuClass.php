@@ -46,7 +46,7 @@ class StuClass extends Model
     {
         return self::with(['major'])
             ->where('major_id', $id)
-            ->select('id', 'training_system', 'name', 'quantity', 'status', 'major_id', 'start_date', 'employee_id')
+            ->select('id', 'training_system', 'name', 'quantity', 'status', 'major_id','start_date', 'employee_id')
             ->latest()
             ->get();
     }

@@ -36,7 +36,7 @@ class Tuition extends Model
 
             if ($totalTuition) {
                 // Add price and credit
-                $totalTuition->total_amount += $subject->price;
+                $totalTuition->total_amount += $subjectClass->price;
                 $totalTuition->total_credit += $subject->credit;
                 $totalTuition->save(); // Save changes
             }
@@ -66,7 +66,7 @@ class Tuition extends Model
         foreach ($tuitions as $tuition) {
             $subjectClass = $tuition->studentSubjectClasses->subjectClass;
             if ($subjectClass && $subjectClass->subject) {
-                $totalAmount += $subjectClass->subject->price;
+                $totalAmount += $subjectClass->price;
                 $totalCredit += $subjectClass->subject->credit;
             }
         }

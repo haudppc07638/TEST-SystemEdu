@@ -18,6 +18,11 @@ class Semester extends Model
         'start_day', 
         'end_day'
     ];
+    public function isCurrentSemester()
+    {
+        $currentDate = \Carbon\Carbon::now();
+        return $currentDate->between($this->start_date, $this->end_date);
+    }
     public function subjectClasses(): HasMany{
         return $this->hasMany(SubjectClass::class);
     }

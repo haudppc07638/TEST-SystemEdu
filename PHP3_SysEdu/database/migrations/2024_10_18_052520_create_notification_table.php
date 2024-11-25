@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notifications', function (Blueprint $table) {
+        Schema::create('notification', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
             $table->text('content');
             $table->enum('type', ['email','system']);
             $table->dateTime('date_sent');
             $table->json('recipients');
-            $table->enum('status', ['pending', 'sent', 'failed'])->default('pending')->after('date_sent');
+            // $table->enum('status', ['pending', 'sent', 'failed'])->default('pending');
             $table->foreignId('employee_id')->constrained('employees');
             $table->timestamps();
             $table->softDeletes();

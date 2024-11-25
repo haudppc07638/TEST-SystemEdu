@@ -27,16 +27,25 @@ class TotalTuition extends Model
         $student = Student::with('studentSubjectClasses.subjectClass.subject')->findOrFail($id);
         $totalData = Tuition::getTotalTuitionAndCredits($id);      
         Log::info("Total Amount: {$totalData['total_amount']}, Total Credit: {$totalData['total_credit']}");
-        static::updateOrCreate( [
-                'id' => $id,
-                'student_id'    =>  $student->id,
+        static::updateOrCreate(
+            ['student_id' => $student->id],
+            [
                 'total_amount'  => $totalData['total_amount'],        
                 'total_credit'  => $totalData['total_credit'],       
-                'tuition_status' => 'unpaid',  
+                'payment_status' => 'unpaid',  
+                'payment_date'   => null,
+            
             ]);
         return true;
        
-    }     
+    }
+    public static function getTotalByStudentId($studentId)
+    {
+        $totalTuition = self::where('student_id', $studentId)
+            ->sum('total_amount');
+
+        return $totalTuition;
+    }
  
 }
 

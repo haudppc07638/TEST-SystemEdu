@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class Subject extends Model
 {
@@ -26,10 +27,9 @@ class Subject extends Model
     {
         return $this->belongsTo(Major::class);
     }
-
     public function subjectClasses(): HasMany
     {
-        return $this->hasMany(SubjectClass::class);
+        return $this->hasMany(SubjectClass::class, 'subject_id');
     }
 
     public function subjectLecturers()
@@ -117,11 +117,15 @@ class Subject extends Model
     public static function getAvailableSubjectsForStudent($majorId)
     {
         $today = now()->toDateString();
-        return self::where('major_id', $majorId)
-            ->whereHas('subjectClasses', function ($query) use ($today) {
-                $query->where('registration_deadline', '>=', $today);
-            })
-            ->get();
+    
+        return self::where(function ($query) use ($majorId) {
+                    $query->where('major_id', $majorId)
+                          ->orWhereNull('major_id');
+                })
+                ->whereHas('subjectClasses', function ($query) use ($today) {
+                    $query->where('registration_deadline', '>=', $today);
+                })
+                ->get();
     }
 
     public function getSubjectByMajor($major_id)
@@ -219,5 +223,19 @@ class Subject extends Model
         $subject = Subject::with('scoreTypes')->find($subjectClassId);
         $scoreTypes = $subject->scoreTypes;
         return $scoreTypes;
+    }
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function (StudentSubjectClass $studentSubjectClass) {
+            $subjectHistory = new SubjectHistory();
+            $type = $subjectHistory->determineTypeBasedOnStatus($studentSubjectClass);
+            Log::info('SubjectHistory type determined:', ['type' => $type]);
+            SubjectHistory::insert([
+                'student_subject_class_id' => $studentSubjectClass->id,
+                'type' => $type,
+            ]);
+        });
     }
 }

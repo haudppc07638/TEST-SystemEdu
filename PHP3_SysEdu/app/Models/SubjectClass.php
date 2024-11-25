@@ -77,7 +77,10 @@ class SubjectClass extends Model
     {
         return $this->hasMany(ScheduleHistory::class);
     }
-
+    public function students()
+    {
+        return $this->belongsToMany(Student::class, 'student_subject_classes', 'subject_class_id', 'student_id');
+    }
     public static function validate($data, $request)
     {
         $rules = $request->rules();
@@ -114,10 +117,63 @@ class SubjectClass extends Model
     {
         return StudentSubjectClass::where('subject_class_id', $this->id)->count();
     }
-
+    public function isRegistered($studentId)
+    {
+    return $this->studentSubjectClasses()
+                ->where('student_id', $studentId)
+                ->exists();
+    }
+    public function isRetakeEligible($studentId)
+    {
+    return SubjectHistory::where('student_id', $studentId)
+                         ->where('subject_id', $this->subject_id)
+                         ->where('type', 'passed')
+                         ->exists();
+    }
     public function isFull()
     {
         return $this->registeredStudentsCount() >= $this->quantity;
+    }
+    public function conflictsWith($studentId)
+    {
+    $scheduleDates = $this->schedules->pluck('date')->toArray();
+    $timeSlotIds = $this->schedules->pluck('time_slot_id')->toArray();
+
+    $conflictingSchedules = Schedule::whereHas('subjectClass.studentSubjectClasses', function ($query) use ($studentId) {
+        $query->where('student_id', $studentId);
+    })
+    ->whereIn('date', $scheduleDates)
+    ->whereIn('time_slot_id', $timeSlotIds)
+    ->exists();
+
+    return $conflictingSchedules;
+    }
+    public function checkPrerequisites($studentId)
+    {
+        $prerequisites = PrerequisiteSubject::where('subject_id', $this->subject_id)->pluck('prerequisite_id');
+
+    if ($prerequisites->isEmpty()) {
+        return null;
+    }
+
+    $completedPrerequisites = SubjectHistory::where('type', 'passed')
+        ->whereHas('studentSubjectClass', function ($query) use ($studentId, $prerequisites) {
+            $query->where('student_id', $studentId)
+                ->whereHas('subjectClass', function ($query) use ($prerequisites) {
+                    $query->whereIn('subject_id', $prerequisites);
+                });
+        })
+        ->get()
+        ->pluck('studentSubjectClass.subjectClass.subject_id');
+
+    $missingPrerequisites = $prerequisites->diff($completedPrerequisites);
+
+    if ($missingPrerequisites->isNotEmpty()) {
+        $missingSubjectCodes = Subject::whereIn('id', $missingPrerequisites)->pluck('code')->toArray();
+        return $missingSubjectCodes;
+    }
+
+    return null;
     }
 
     public function studentsCountText()
@@ -127,14 +183,18 @@ class SubjectClass extends Model
     }
 
     public static function getAvailableClassesForMajor($majorId, $currentDate, $subject_id)
-    {
-        return self::where('registration_deadline', '>=', $currentDate)
-            ->where('subject_id', $subject_id)
-            ->whereHas('subject', function ($query) use ($majorId) {
-                $query->where('major_id', $majorId);
-            })
-            ->get();
-    }
+{
+    return self::where('registration_deadline', '>=', $currentDate)
+        ->where('subject_id', $subject_id)
+        ->whereHas('subject', function ($query) use ($majorId) {
+            $query->where(function ($query) use ($majorId) {
+                $query->where('major_id', $majorId)
+                      ->orWhereNull('major_id');
+            });
+        })
+        ->get();
+}
+
     public static function getAllSubjectClass()
     {
         return self::all();

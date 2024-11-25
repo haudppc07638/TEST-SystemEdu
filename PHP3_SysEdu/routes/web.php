@@ -36,6 +36,7 @@ use App\Http\Controllers\Teacher\StudentLookupController;
 use App\Http\Controllers\Admin\TeacherFreeSlotController;
 use App\Http\Controllers\Teacher\AttendanceController;
 
+use App\Http\Controllers\Client\HomeController;
 // auth route ==============================================================================
 
 Route::get('/', [LoginController::class, 'index'])->name('login');
@@ -259,6 +260,9 @@ Route::middleware(['admin'])->group(function () {
 Route::middleware(['student'])->group(function () {
 
     Route::get('trang-chu', [ClientHomeController::class, 'index'])->name('home');
+    
+    // Route::get('/generate-vietqr', [HomeController::class, 'generateVietQr'])->name('vietqr');
+    Route::get('/generate-vietqr/{studentId}', [HomeController::class, 'generateVietQr'])->name('vietqr');
 
     Route::get('diem', [ClientGradeController::class, 'index'])->name('grades');
 

@@ -36,7 +36,7 @@
               {{$tuiton->studentSubjectClasses->subjectclass->subject->code}}
           </td>
           <td class="px-4 py-3 text-xs">
-            {{$tuiton->studentSubjectClasses->subjectclass->subject->price}}
+            {{$tuiton->studentSubjectClasses->subjectclass->price}}
         </td>
         <td class="px-4 py-3 text-xs">
           {{$tuiton->studentSubjectClasses->subjectclass->subject->credit}}
@@ -55,8 +55,16 @@
  <td class="px-4 py-3">
         Tổng Tín Chỉ: {{ ucfirst(strtolower($totalTuition->total_credit)) }} <br>
         Tổng Học Phí: {{ ucfirst(strtolower($totalTuition->total_amount)) }} <br>
-        <button class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">Thanh Toán</button>
+        <a href="{{ route('vietqr', ['studentId' => $student->id]) }}"class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">Thanh Toán</a>
   </td>
 
 @endforeach
+{{-- <h1>Quét mã QR để thanh toán</h1>
+    <div class="qr-code">
+        @if(isset($qrCodeUrl))
+            <img src="{{ $qrCodeUrl }}" alt="Mã QR" width="200" height="200">
+        @else
+            <p>Không có mã QR để hiển thị</p>
+        @endif
+    </div> --}}
 @endsection

@@ -109,6 +109,14 @@ class Student extends Authenticatable
             'classes' => StuClass::select('id', 'name')->get(),
         ];
     }
+    public static function getCurrentSemesterRegisteredClasses($studentId)
+    {
+    return StudentSubjectClass::where('student_id', $studentId)
+        ->whereHas('subjectClass.semester', function ($query) {
+            $query->where('start_date', '<=', now())
+                  ->where('end_date', '>=', now());
+        })->get();
+    }
 
     public static function validate($data, $request)
     {
