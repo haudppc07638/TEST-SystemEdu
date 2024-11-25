@@ -23,22 +23,23 @@ class Schedule extends Model
         'time_slot_id',
         'substitute_employee_id',
     ];
-    public function subjectClasses(): BelongsTo{
+    public function subjectClasses(): BelongsTo
+    {
         return $this->belongsto(SubjectClass::class);
     }
     public static function getSchedules()
     {
         return self::select('id')
-        ->get();
+            ->get();
     }
     public function timeSlot(): BelongsTo
     {
-        return $this->belongsTo(TimeSlot::class,'time_slot_id');
+        return $this->belongsTo(TimeSlot::class, 'time_slot_id');
     }
 
     public function classroom(): BelongsTo
     {
-        return $this->belongsTo(Classroom::class,'classroom_id');
+        return $this->belongsTo(Classroom::class, 'classroom_id');
     }
 
     public function subjectClass(): BelongsTo
@@ -54,6 +55,18 @@ class Schedule extends Model
     public function histories()
     {
         return $this->hasMany(ScheduleHistory::class);
+    }
+
+    public function attendances()
+    {
+        return $this->hasManyThrough(
+            Attendance::class,
+            StudentSubjectClass::class,
+            'subject_class_id',
+            'student_subject_class_id',
+            'subject_class_id',
+            'id'
+        );
     }
 
     public static function getAllSchedules()
@@ -80,7 +93,6 @@ class Schedule extends Model
             'time_slots' => TimeSlot::paginate(),
             'subject_classes' => SubjectClass::all()
         ];
-        
     }
 
     public static function validate($data, $rules, $messages)
@@ -177,4 +189,24 @@ class Schedule extends Model
         });
     }
 
+    public function getAttendanceStatus($date)
+    {
+        return $this->attendances()
+            ->where('date', $date)
+            ->get()
+            ->pluck('status', 'student_subject_class_id');
+    }
+
+    public static function getScheduleWithStudents($scheduleId, $date)
+    {
+        $schedule = self::with([
+            'timeSlot',
+            'subjectClass.studentSubjectClasses.student',
+            'subjectClass.studentSubjectClasses.attendances' => function ($query) use ($date) {
+                $query->where('date', $date);
+            }
+        ])->findOrFail($scheduleId);
+
+        return $schedule;
+    }
 }

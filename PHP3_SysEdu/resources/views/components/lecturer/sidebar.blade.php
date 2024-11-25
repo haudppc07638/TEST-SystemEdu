@@ -4,7 +4,7 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
         <li class="nav-item">
-            <a class="nav-link " href="{{ route('home') }}">
+            <a class="nav-link " href="{{ route('teacher.home') }}">
                 <i class="bi bi-grid"></i>
                 <span>Thông báo tin tức</span>
             </a>
@@ -18,7 +18,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" href="{{ route('admin.employees.index') }}">
+            <a class="nav-link collapsed" href="{{ route('classes') }}">
                 <i class="bi bi-person-rolodex"></i>
                 <span>Lớp của tôi</span>
             </a>

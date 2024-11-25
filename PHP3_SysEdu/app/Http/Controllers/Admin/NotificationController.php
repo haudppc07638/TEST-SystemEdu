@@ -15,7 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
-
+use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
@@ -25,22 +25,25 @@ class NotificationController extends Controller
     public function index()
     {
         $faculties = Faculty::getAllFaculties();
-        // $notifications = Notification::getAllNotifications();
-        // foreach ($notifications as $notification) {
+        $pendingNotifications = Notification::where('status', 'pending')->paginate(10); // Thông báo đang lên lịch gửi
+        $sentNotifications = Notification::where('status', 'sent')->paginate(10); // Thông báo đã gửi
 
-        //     $notification->formatted_date_sent = Carbon::parse($notification->date_sent)->format('d/m/Y');
+        foreach ($pendingNotifications as $notification) {
+            $notification->formatted_date_sent = Carbon::parse($notification->date_sent)->format('d/m/Y');
+            $recipients = is_string($notification->recipients) ? json_decode($notification->recipients, true) : $notification->recipients;
+            $notification->formatted_recipient = is_array($recipients) ? implode(', ', $recipients) : $recipients;
+        }
 
-        //     if (is_string($notification->recipient)) {
-        //         $recipients = json_decode($notification->recipient, true);
-        //     } else {
-        //         $recipients = $notification->recipient;
-        //     }
+        foreach ($sentNotifications as $notification) {
+            $notification->formatted_date_sent = Carbon::parse($notification->date_sent)->format('d/m/Y');
+            $recipients = is_string($notification->recipients) ? json_decode($notification->recipients, true) : $notification->recipients;
+            $notification->formatted_recipient = is_array($recipients) ? implode(', ', $recipients) : $recipients;
+        }
 
-        //     $notification->formatted_recipient = is_array($recipients) ? implode(', ', $recipients) : $recipients;
-        // }
         return view('admin.notifications.index', [
             'faculties' => $faculties,
-            // 'notifications' => $notifications,  
+            'pendingNotifications' => $pendingNotifications,
+            'sentNotifications' => $sentNotifications,
         ]);
     }
 
@@ -123,7 +126,7 @@ class NotificationController extends Controller
     {
         $sendAt = Carbon::parse($notification->date_sent);
         $delay = $sendAt->isFuture() ? $sendAt->diffInSeconds(now()) : 0;
-    
+
         // Lên lịch gửi thông báo qua email hoặc hệ thống
         if ($notification->type == 'email') {
             foreach ($recipients as $recipient) {
@@ -133,7 +136,24 @@ class NotificationController extends Controller
             SendSystemNotificationJob::dispatch($notification)->delay($delay);
         }
     }
-    
+
+    public function edit($id)
+    {
+        $notification = Notification::getNotificationById($id);
+        return view('admin.notifications.edit', [
+            'notification' => $notification,
+        ]);
+    }
+
+    public function update(NotificationRequest $request, $id)
+    {
+        $notification = Notification::findOrFail($id);
+        $validated = $request->validated();
+        $notification->update($validated);
+        
+        toastr()->success('Thông báo đã được cập nhật thành công');
+        return redirect()->route('admin.notifications.index');
+    }
 
     public function detail($id)
     {
@@ -148,8 +168,8 @@ class NotificationController extends Controller
 
         // Chuyển đổi recipients thành một danh sách các giá trị
         $notification->recipients_list = is_array($recipients) ? $recipients : [];
-
         $notification->formatted_recipient = is_array($recipients) ? implode(', ', $recipients) : $recipients;
+
         return view('admin.notifications.detail', [
             'notification' => $notification
         ]);

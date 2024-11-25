@@ -1445,3 +1445,11 @@ nav .dt-paging-button.disabled {
   right: 15px;
   z-index: 998;
 }
+
+.text-red {
+  color: red;
+}
+
+.text-green {
+  color: green;
+}

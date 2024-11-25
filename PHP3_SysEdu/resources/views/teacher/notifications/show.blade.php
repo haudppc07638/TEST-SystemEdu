@@ -13,9 +13,12 @@
                     {{ $notification->date_sent->format('H:i d/m/Y') }}
                 </small>
             </div>
-            <div class="card-body">
+            <div class="card-body mt-2">
                 {!! $notification->content !!}
             </div>
+        </div>
+        <div>
+            <a href="{{ route('teacher.home') }}" class="btn btn-secondary float-left">Quay lại</a>
         </div>
     </div>
 </main>

@@ -10,11 +10,11 @@ class ClassroomSeeder extends Seeder
     public function run(): void
     {
         DB::table('classrooms')->insert([
-            ['code' => 'A101'],
-            ['code' => 'A102'],
-            ['code' => 'B201'],
-            ['code' => 'B202'],
-            ['code' => 'C301'],
+            ['code' => 'A101', 'capacity' => 40],
+            ['code' => 'A102', 'capacity' => 40],
+            ['code' => 'B201', 'capacity' => 40],
+            ['code' => 'B202', 'capacity' => 40],
+            ['code' => 'C301', 'capacity' => 40],
         ]);
     }
 }

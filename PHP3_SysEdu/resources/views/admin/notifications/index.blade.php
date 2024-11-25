@@ -40,7 +40,8 @@
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label" for="faculties">Khoa</label>
                             <div class="col-sm-10">
-                                <select id="faculties" name="faculties" class="form-select" onchange="updateMajors()">
+                                <select id="faculties" name="faculties" class="form-select"
+                                    onchange="updateMajors()">
                                     <option value="">-- Chọn Khoa --</option>
                                     @foreach ($faculties as $faculty)
                                         <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
@@ -68,7 +69,8 @@
                             <div class="col-sm-10">
                                 <div id="faculties">
                                     <!-- Các checkbox cho khoa sẽ được hiển thị ở đây -->
-                                    <select id="faculties" name="faculties[]" class="form-select" multiple aria-label="multiple select example">
+                                    <select id="faculties" name="faculties[]" class="form-select" multiple
+                                        aria-label="multiple select example">
                                         @foreach ($faculties as $faculty)
                                             <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
                                         @endforeach
@@ -114,11 +116,12 @@
                             @enderror
                         </div>
                     </div>
-                    
+
                     <div class="row mb-3">
                         <label class="col-sm-2 col-form-label" for="content">Nội dung</label>
                         <div class="col-sm-10">
-                            <textarea name="content" cols="20" rows="10" id="content" class="form-control @error('content') is-invalid @enderror">{{ old('content') }}</textarea>
+                            <textarea name="content" cols="20" rows="10" id="content"
+                                class="form-control @error('content') is-invalid @enderror">{{ old('content') }}</textarea>
                             @error('content')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -133,57 +136,138 @@
                 </form>
             </div>
         </div>
-{{-- 
+
         <section class="section">
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-title p-4">
-                            <h4>Các thông báo đã gửi</h4>
-                        </div>
-                        <div class="card-body">
-                            <table id="tableNotification" class="table datatable" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Tiêu đề</th>
-                                        <th>Nội dung</th>
-                                        <th>Loại</th>
-                                        <th>Ngày gửi</th>
-                                        <th>Người gửi</th>
-                                        <th>Gửi đến</th>
-                                        <th>Xem</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-
-                                    @foreach ($notifications as $index => $notification)
-                                        <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td class="text-limited">{{ $notification->title }}</td>
-                                            <td class="text-limited">{{ $notification->content }}</td>
-                                            <td>{{ $notification->type }}</td>
-                                            <td>{{ $notification->formatted_date_sent }}</td>
-                                            <td>{{ $notification->employee->fullname }}</td>
-                                            <td class="text-limited">{{ $notification->formatted_recipient }}</td>
-                                            <td>
-                                                <a href="{{ route('admin.notifications.detail', $notification->id) }}">
-                                                    <i class="bi fs-5 bi-box-arrow-in-down-left"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            <!-- End Table with stripped rows -->
-
-                        </div>
+                    <div class="pagetitle">
+                        <h1>Quản lý thông báo</h1>
                     </div>
 
+                    <div class="card">
+                        <div class="card-body mt-3">
+                            <!-- Tab navigation -->
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link active" id="pending-tab" data-bs-toggle="tab" href="#pending"
+                                        role="tab" aria-controls="pending" aria-selected="true">Thông báo đang lên
+                                        lịch</a>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" id="sent-tab" data-bs-toggle="tab" href="#sent"
+                                        role="tab" aria-controls="sent" aria-selected="false">Thông báo đã gửi</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content" id="myTabContent">
+                                <!-- Tab cho thông báo đang lên lịch -->
+                                <div class="tab-pane fade show active" id="pending" role="tabpanel"
+                                    aria-labelledby="pending-tab">
+                                    <table class="table datatable" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Tiêu đề</th>
+                                                <th>Loại</th>
+                                                <th>Ngày gửi</th>
+                                                <th>Người gửi</th>
+                                                <th>Gửi đến</th>
+                                                <th>Hành động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($pendingNotifications as $index => $notification)
+                                                <tr>
+                                                    <td>{{ $index + 1 }}</td>
+                                                    <td class="text-limited">{{ $notification->title }}</td>
+                                                    <td>{{ $notification->type }}</td>
+                                                    <td>{{ $notification->formatted_date_sent }}</td>
+                                                    <td>{{ $notification->employee->full_name }}</td>
+                                                    <td class="text-limited">{{ $notification->formatted_recipient }}</td>
+                                                    <td>
+                                                        <div class="dropdown">
+                                                            <button type="button"
+                                                                class="btn p-0 dropdown-toggle hide-arrow"
+                                                                data-bs-toggle="dropdown">
+                                                                <i class="bx bx-dots-vertical-rounded"></i>
+                                                            </button>
+                                                            <div class="dropdown-menu">
+                                                                <a class="dropdown-item"
+                                                                    href="{{ route('admin.notifications.detail', $notification->id) }}">
+                                                                    <i class="bx bx-id-card me-2"></i>
+                                                                    Xem chi tiết
+                                                                </a>
+
+                                                                <a class="dropdown-item"
+                                                                    href="{{ route('admin.notifications.edit', $notification->id) }}">
+                                                                    <i class="bx bx-edit-alt me-2"></i>
+                                                                    Chỉnh sửa
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                    <div class="mt-3">
+                                        {{ $pendingNotifications->links() }} <!-- Phân trang -->
+                                    </div>
+                                </div>
+
+                                <!-- Tab cho thông báo đã gửi -->
+                                <div class="tab-pane fade" id="sent" role="tabpanel" aria-labelledby="sent-tab">
+                                    <table class="table datatable" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Tiêu đề</th>
+                                                <th>Loại</th>
+                                                <th>Ngày gửi</th>
+                                                <th>Người gửi</th>
+                                                <th>Gửi đến</th>
+                                                <th>Tác vụ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($sentNotifications as $index => $notification)
+                                                <tr>
+                                                    <td>{{ $index + 1 }}</td>
+                                                    <td class="text-limited">{{ $notification->title }}</td>
+                                                    <td>{{ $notification->type }}</td>
+                                                    <td>{{ $notification->formatted_date_sent }}</td>
+                                                    <td>{{ $notification->employee->full_name }}</td>
+                                                    <td class="text-limited">{{ $notification->formatted_recipient }}</td>
+                                                    <td>
+                                                       <div class="dropdown">
+                                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
+                                                            data-bs-toggle="dropdown">
+                                                            <i class="bx bx-dots-vertical-rounded"></i>
+                                                        </button>
+                                                        <div class="dropdown-menu">
+                                                            <a class="dropdown-item"
+                                                                href="{{ route('admin.notifications.detail', $notification->id) }}">
+                                                                <i class="bx bx-id-card me-2"></i>
+                                                                Xem chi tiết
+                                                            </a>
+                                                        </div> 
+                                                    </td>
+
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                    <div class="mt-3">
+                                        {{ $sentNotifications->links() }} <!-- Phân trang -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </section> --}}
-          
+        </section>
+
 
     </main><!-- End #main -->
 
@@ -216,14 +300,6 @@
     </script>
 
     <script>
-        // Khởi tạo Select2
-        $(document).ready(function() {
-            $('.select2').select2({
-                placeholder: "Chọn khoa...",
-                allowClear: true
-            });
-        });
-
         // Khởi tạo CKEditor
         ClassicEditor
             .create(document.querySelector('#content'), {
@@ -276,5 +352,3 @@
 
     <script src="{{ asset('assets/admin/js/notification.js') }}"></script>
 @endpush
-
-

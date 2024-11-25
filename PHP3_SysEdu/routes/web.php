@@ -34,6 +34,7 @@ use App\Http\Controllers\Admin\ScoreTypeController;
 use App\Http\Controllers\Admin\SubjectLecturerController;
 use App\Http\Controllers\Teacher\StudentLookupController;
 use App\Http\Controllers\Admin\TeacherFreeSlotController;
+use App\Http\Controllers\Teacher\AttendanceController;
 
 // auth route ==============================================================================
 
@@ -127,7 +128,7 @@ Route::middleware(['admin'])->group(function () {
         Route::get('detail/{id}', [StudentController::class, 'showDetail'])->name('detail');
     });
 
-        Route::prefix('schedules')->name('admin.schedules.')->group(function () {
+    Route::prefix('schedules')->name('admin.schedules.')->group(function () {
         Route::get('view-schedule/{subject_class_id}', [AdminScheduleController::class, 'viewSchedule'])->name('view-schedule');
         Route::get('create', [AdminScheduleController::class, 'create'])->name('create');
         Route::post('create', [AdminScheduleController::class, 'store'])->name('create.post');
@@ -168,6 +169,8 @@ Route::middleware(['admin'])->group(function () {
         Route::get('/', [NotificationController::class, 'index'])->name('index');
         Route::post('send', [NotificationController::class, 'send'])->name('send');
         Route::get('detail/{id}', [NotificationController::class, 'detail'])->name('detail');
+        Route::get('/{id}/edit', [NotificationController::class, 'edit'])->name('edit');
+        Route::put('/{id}/edit', [NotificationController::class, 'update'])->name('update');
     });
 
 
@@ -280,11 +283,21 @@ Route::middleware(['student'])->group(function () {
 Route::middleware(['teacher'])->group(function () {
 
     Route::prefix('gv')->group(function () {
-        Route::get('/', [TeacherHomeController::class, 'index'])->name('home');
+        Route::get('/', [TeacherHomeController::class, 'index'])->name('teacher.home');
         Route::get('/notifications/{id}', [TeacherHomeController::class, 'show'])->name('notifications.show');
 
         Route::get('/student-lookup', [StudentLookupController::class, 'index'])->name('student.index');
         Route::get('/student-lookup/search', [StudentLookupController::class, 'search'])->name('student.search');
         Route::get('/student-lookup/{id}', [StudentLookupController::class, 'show'])->name('student.show');
+
+        Route::prefix('classes')->group(function() {
+            Route::get('/', [AttendanceController::class, 'classList'])->name('classes');
+            Route::get('/{subjectClass}', [AttendanceController::class, 'classDetail'])->name('attendance.class.detail');
+            Route::get('/{subjectClass}/attendance', [AttendanceController::class, 'takeAttendance'])->name('attendance.take');
+            Route::post('/{subjectClass}/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
+            Route::post('/{subjectClass}/import', [AttendanceController::class, 'importGrades'])->name('attendance.import');
+            Route::get('/{subjectClass}/export', [AttendanceController::class, 'exportGrades'])->name('attendance.export');
+            Route::get('/{subjectClass}/export-exam-list', [AttendanceController::class, 'exportExamList'])->name('export.examList');
+        });
     });
 });

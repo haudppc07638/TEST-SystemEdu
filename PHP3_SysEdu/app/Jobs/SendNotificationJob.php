@@ -25,26 +25,26 @@ class SendNotificationJob implements ShouldQueue
     }
 
     public function handle()
-{
-    try {
-        $notification = $this->notification;
-        $recipient = $this->recipient;
+    {
+        try {
+            $notification = $this->notification;
+            $recipient = $this->recipient;
 
-        $senderEmail = $notification->employee->email;
-        $senderName = $notification->employee->fullname;
-        
-        Mail::to($recipient)->send(new NotificationMail(
-            $notification->title, 
-            $notification->content, 
-            $senderEmail, 
-            $senderName
-        ));
+            $senderEmail = $notification->employee->email;
+            $senderName = $notification->employee->fullname;
 
-        $notification->update(['status' => 'sent']);
-    } catch (\Exception $e) {
-        $this->fail($e);
+            Mail::to($recipient)->send(new NotificationMail(
+                $notification->title,
+                $notification->content,
+                $senderEmail,
+                $senderName
+            ));
+
+            $notification->update(['status' => 'sent']);
+        } catch (\Exception $e) {
+            $this->fail($e);
+        }
     }
-}
 
     public function failed(\Exception $exception)
     {

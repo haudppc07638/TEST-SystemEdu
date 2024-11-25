@@ -21,21 +21,29 @@ class NotificationRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'date_sent' => 'required|date|after:now',
         ];
-    }
 
-    public function messages(){
+        // Kiểm tra nếu phương thức là PUT
+        if ($this->isMethod('put')) {
+            $rules['date_sent'] = 'nullable|date|after:now';
+        } else {
+            $rules['date_sent'] = 'required|date|after:now';
+        }
+
+        return $rules;
+    }
+    public function messages()
+    {
         return [
             'title.required' => 'Vui lòng nhập tiêu đề.',
             'title.string' => 'Tiêu đề phải là 1 chuỗi ký tự',
             'title.max' => 'Tiêu đề không được quá 255 ký tự',
             'content.required' => 'Vui lòng nhập nội dung.',
             'content.string' => 'Nội dung phải là 1 chuỗi ký tự.',
-            'date_sent.required' =>'Vui lòng chọn thời gian gửi',
+            'date_sent.required' => 'Vui lòng chọn thời gian gửi',
             'date_sent.after' => 'Thời gian gửi phải lớn hơn thời gian hiện tại.',
         ];
     }

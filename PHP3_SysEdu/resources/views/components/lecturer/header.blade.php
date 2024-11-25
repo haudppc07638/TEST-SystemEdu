@@ -2,7 +2,7 @@
 <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-        <a href="{{ route('admin.dashboard') }}" class="logo d-flex align-items-center">
+        <a href="{{ route('teacher.home') }}" class="logo d-flex align-items-center">
             <img src="{{ asset('assets/images/syseduicon.png') }}" alt="">
             <span class="d-none d-lg-block">SysEdu</span>
         </a>

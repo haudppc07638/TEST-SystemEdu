@@ -19,27 +19,32 @@ class SubjectClassController extends Controller
 {
     public function index()
     {
-        $subjectClasses = SubjectClass::all();
+        $subjectClasses = SubjectClass::latest()->get();
         return view('admin.subjectclasses.index', ['subjectClasses' => $subjectClasses]);
     }
 
     public function create()
     {
         $subjects = Subject::with('major')->get();
-        $semesters = Semester::getSemester(); 
+        $semesters = Semester::getSemester();
         $employees = Employee::getNameEmployees();
         $credits = Credit::getAllCredit();
-        $majorClass = StuClass::getNameClasses();
-       
-        return view('admin.subjectclasses.create',[
-            'subjects'  =>$subjects,
-            'semesters'=>$semesters,
-            'employees' =>$employees,
+
+        // Lấy danh sách lớp chuyên ngành và đếm số lượng sinh viên cho mỗi lớp
+        $majorClasses = StuClass::getNameClasses()->map(function ($majorClass) {
+            $majorClass->student_count = StuClass::studentCount($majorClass->id); // Gọi phương thức để đếm số lượng sinh viên
+            return $majorClass;
+        });
+
+        return view('admin.subjectclasses.create', [
+            'subjects' => $subjects,
+            'semesters' => $semesters,
+            'employees' => $employees,
             'credits' => $credits,
-            'majorClasses' => $majorClass,
+            'majorClasses' => $majorClasses,
         ]);
     }
-    
+
     public function store(SubjectClassRequest $request)
     {
         $rules = $request->rules();
@@ -74,7 +79,7 @@ class SubjectClassController extends Controller
         $validatedData = $validator->validated();
 
         $subjectClass = SubjectClass::createSubjectClass($data);
-        
+
         $subjectClass->addStudents($data['major_class_id']);
 
         toastr()->success('Lớp học được tạo thành công');
@@ -84,13 +89,13 @@ class SubjectClassController extends Controller
     public function edit($id)
     {
         $subjectClass = SubjectClass::findOrFail($id);
-    
+
         $subjects = Subject::getCodeSubject();
         $semesters = Semester::getSemester();
         $employees = Employee::getNameEmployees();
         $credits = Credit::getAllCredit();
         $majorClass = StuClass::getNameClasses();
-    
+
         return view('admin.subjectclasses.edit', [
             'subjectClass' => $subjectClass,
             'subjects' => $subjects,
@@ -100,7 +105,7 @@ class SubjectClassController extends Controller
             'majorClasses' => $majorClass,
         ]);
     }
-    
+
     public function update(SubjectClassRequest $request, $id)
     {
         $rules = $request->rules();
@@ -133,16 +138,15 @@ class SubjectClassController extends Controller
     public function destroy($id)
     {
         try {
-        $subjectClass = SubjectClass::findOrFail($id);
-        $subjectClass->delete();
-        toastr()->success('Lớp học được xóa thành công.');
-        return redirect()->route('admin.subjectclasses.index');
-    }
-    catch (QueryException $e) {
-        if ($e->getCode()) {
+            $subjectClass = SubjectClass::findOrFail($id);
+            $subjectClass->delete();
+            toastr()->success('Lớp học được xóa thành công.');
+            return redirect()->route('admin.subjectclasses.index');
+        } catch (QueryException $e) {
+            if ($e->getCode()) {
+                return redirect()->route('admin.subjectclasses.index');
+            }
             return redirect()->route('admin.subjectclasses.index');
         }
-        return redirect()->route('admin.subjectclasses.index');
     }
-}
 }

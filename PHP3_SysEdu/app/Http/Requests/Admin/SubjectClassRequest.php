@@ -2,15 +2,16 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\StuClass;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class SubjectClassRequest extends FormRequest
 {
-    
+
     public function authorize(): bool
     {
-        
+
         return true;
     }
 
@@ -21,10 +22,12 @@ class SubjectClassRequest extends FormRequest
      */
     public function rules(): array
     {
-        $subjectclassId=$this->route('id');
+        $subjectclassId = $this->route('id');
+        $majorClassId = $this->input('major_class_id');
+        $studentCount = StuClass::studentCount($majorClassId);
         return [
-            'quantity' => 'required|integer|min:1',
-            'name'=>['required',Rule::unique('subject_classes')->ignore($subjectclassId)],
+            'quantity' => 'required|integer|min:' . $studentCount,
+            'name' => ['required', Rule::unique('subject_classes')->ignore($subjectclassId)],
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
             'registration_deadline' => 'required|date|before:start_date|before:end_date',
@@ -32,7 +35,7 @@ class SubjectClassRequest extends FormRequest
             'subject_id' => 'required',
             'semester_id' => 'required',
             'major_class_id' => 'nullable|exists:major_classes,id',
-            'credit_id' => 'required',     
+            'credit_id' => 'required',
         ];
     }
 
@@ -44,11 +47,11 @@ class SubjectClassRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'=>'Tên là bắt buộc',
-            'name.unique'=>'Tên không được để giống nhau',
+            'name.required' => 'Tên là bắt buộc',
+            'name.unique' => 'Tên không được để giống nhau',
             'quantity.required' => 'Số lượng là bắt buộc.',
             'quantity.integer' => 'Số lượng phải là số nguyên.',
-            'quantity.min' => 'Số lượng phải lớn hơn hoặc bằng 1.',
+            'quantity.min' => 'Số lượng phải lớn hơn hoặc bằng số sinh viên của lớp bạn đã chọn.',
             'start_date.required' => 'Ngày bắt đầu là bắt buộc.',
             'start_date.date' => 'Ngày bắt đầu phải là ngày hợp lệ.',
             'end_date.required' => 'Ngày kết thúc là bắt buộc.',

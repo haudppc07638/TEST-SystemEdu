@@ -30,6 +30,7 @@
                                     <tr>
                                         <th>#</th>
                                         <th>Mã phòng học</th>
+                                        <th>Sức chứa</th>
                                         <th>Tác vụ</th>
                                     </tr>
                                 </thead>
@@ -38,6 +39,7 @@
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $classroom->code }}</td>
+                                            <td>{{ $classroom->capacity }}</td>
                                             </td>
                                             <td>
                                                 <div class="dropdown">

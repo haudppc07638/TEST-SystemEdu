@@ -33,6 +33,10 @@ class StudentSubjectClass extends Model
     {
         return $this->hasMany(Score::class, 'student_subject_class_id');
     }
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(Attendance::class, 'student_subject_class_id');
+    }
     public function subject(): HasManyThrough
     {
         return $this->hasManyThrough(
@@ -154,9 +158,9 @@ class StudentSubjectClass extends Model
         });
     }
 
-    protected function calculateTotalScore()
+    public function calculateTotalScore()
     {
-        $scores = $this->scores; 
+        $scores = $this->scores;
 
         if ($scores->isEmpty()) {
             $this->attributes['total_score'] = null;
@@ -207,5 +211,20 @@ class StudentSubjectClass extends Model
     protected function updateStatus()
     {
         $this->attributes['status'] = $this->attributes['total_score'] >= 5 ? 'passed' : 'failed';
+    }
+
+    public function getAttendanceForDate($date)
+    {
+        return $this->attendances()
+            ->where('date', $date)
+            ->first();
+    }
+
+    public function markAttendance($date, $status)
+    {
+        return $this->attendances()->updateOrCreate(
+            ['date' => $date],
+            ['status' => $status]
+        );
     }
 }

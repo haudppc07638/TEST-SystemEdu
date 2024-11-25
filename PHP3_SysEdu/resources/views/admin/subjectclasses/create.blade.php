@@ -64,7 +64,7 @@
                                         @foreach ($majorClasses as $majorClass)
                                             <option value="{{ $majorClass->id }}"
                                                 {{ old('major_class_id') == $majorClass->id ? 'selected' : '' }}>
-                                                {{ $majorClass->name }}
+                                                {{ $majorClass->name }} - Số lượng SV: {{ $majorClass->student_count }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -98,10 +98,12 @@
                                 <div class="row mb-3">
                                     <label for="credit_id" class="col-sm-2 col-form-label">Giá (1TC)</label>
                                     <div class="col-sm-10">
-                                        <select name="credit_id" id="credit_id" class="form-control @error('credit_id') is-invalid @enderror">
+                                        <select name="credit_id" id="credit_id"
+                                            class="form-control @error('credit_id') is-invalid @enderror">
                                             <option value="">Chọn Giá TC</option>
                                             @foreach ($credits as $credit)
-                                                <option value="{{ $credit->id }}" data-total-price="{{ $credit->total_price }}"
+                                                <option value="{{ $credit->id }}"
+                                                    data-total-price="{{ $credit->total_price }}"
                                                     {{ old('credit_id') == $credit->id ? 'selected' : '' }}>
                                                     {{ $credit->total_price }}
                                                 </option>
@@ -112,7 +114,7 @@
                                         @enderror
                                     </div>
                                 </div>
-                                
+
                                 <div class="row mb-3">
                                     <label for="credit_price" class="col-sm-2 col-form-label">Giá Tín Chỉ (Hiện tại)</label>
                                     <div class="col-sm-10">
@@ -250,37 +252,17 @@
                     }
                 });
             }
-
-            function loadMajorClasses(subjectId) {
-                $.ajax({
-                    url: '{{ route('admin.majorclasses.by.subject') }}',
-                    type: 'GET',
-                    data: {
-                        subject_id: subjectId
-                    },
-                    success: function(classes) {
-                        const oldMajorClassId = '{{ old('major_class_id') }}';
-                        let options = '<option value="">Chọn Lớp CN</option>';
-                        classes.forEach(majorClass => {
-                            const selected = oldMajorClassId == majorClass.id ? 'selected' : '';
-                            options +=
-                                `<option value="${majorClass.id}" ${selected}>${majorClass.name}</option>`;
-                        });
-                        $('#major_class_id').html(options).trigger('change');
-                    }
-                });
-            }
         });
-    document.addEventListener('DOMContentLoaded', function () {
-        const creditSelect = document.getElementById('credit_id');
-        const creditPriceInput = document.getElementById('credit_price');
+        document.addEventListener('DOMContentLoaded', function() {
+            const creditSelect = document.getElementById('credit_id');
+            const creditPriceInput = document.getElementById('credit_price');
 
-        creditSelect.addEventListener('change', function () {
-            const selectedOption = creditSelect.options[creditSelect.selectedIndex];
-            const totalPrice = selectedOption.getAttribute('data-total-price');
+            creditSelect.addEventListener('change', function() {
+                const selectedOption = creditSelect.options[creditSelect.selectedIndex];
+                const totalPrice = selectedOption.getAttribute('data-total-price');
 
-            creditPriceInput.value = totalPrice || '';
+                creditPriceInput.value = totalPrice || '';
+            });
         });
-    });
     </script>
 @endpush
