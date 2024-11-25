@@ -55,9 +55,7 @@
 
             <div class="form-group">
                 <label for="subject_class_id">Lớp Môn Học</label>
-                <select name="subject_class_id" id="subject_class_id"
-                    class="form-control @error('subject_class_id') is-invalid @enderror" required>
-                    <option value="">Chọn lớp môn học</option>
+                <select class="form-control" disabled>
                     @foreach ($subjectClasses as $subjectClass)
                         <option value="{{ $subjectClass->id }}"
                             {{ $schedule->subject_class_id == $subjectClass->id ? 'selected' : '' }}>
@@ -65,11 +63,20 @@
                         </option>
                     @endforeach
                 </select>
-                @error('subject_class_id')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+                <input type="hidden" name="subject_class_id" value="{{ $schedule->subject_class_id }}">
+            </div>            
 
+            <div class="form-group">
+                <label for="substitute_employee_id">Giáo viên dạy thế</label>
+                <select name="substitute_employee_id" id="substitute_employee_id" class="form-control">
+                    <option value="">Không chọn</option>
+                    @foreach ($teachers as $teacher)
+                        <option value="{{ $teacher->id }}" {{ $schedule->substitute_employee_id == $teacher->id ? 'selected' : '' }}>
+                            {{ $teacher->full_name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
 
             <button type="submit" class="btn btn-primary">Cập Nhật</button>
             <a href="{{ route('admin.schedules.view-schedule', ['subject_class_id' => $schedule->subject_class_id]) }}"

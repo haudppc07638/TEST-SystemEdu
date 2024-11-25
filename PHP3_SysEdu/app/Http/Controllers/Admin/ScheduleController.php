@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ScheduleRequest;
 use App\Http\Requests\Admin\UpdateScheduleRequest;
 use App\Models\Classroom;
+use App\Models\Employee;
 use App\Models\Schedule;
 use App\Models\SubjectClass;
 use App\Models\TeacherFreeSlot;
@@ -71,27 +72,33 @@ class ScheduleController extends Controller
     public function edit($id)
     {
         $schedule = Schedule::find($id);
+        if (Carbon::parse($schedule->date)->lt(Carbon::today())) {
+            toastr()->error('Không thể chỉnh sửa lịch đã qua ngày hiện tại.');
+            return redirect()->route('admin.schedules.view-schedule', ['subject_class_id' => $schedule->subject_class_id]);
+        }    
         if ($schedule && $schedule->date) {
             $schedule->date = Carbon::parse($schedule->date)  ;
         }
-         
+        
+        $teachers = Employee::all(['id', 'full_name']);
         $subjectClasses = SubjectClass::all();
         $timeSlots = TimeSlot::all();
         $classrooms = Classroom::all();
 
-        return view('admin.schedules.edit', compact('schedule', 'subjectClasses', 'timeSlots', 'classrooms'));
+        return view('admin.schedules.edit', compact('schedule', 'subjectClasses', 'timeSlots', 'classrooms', 'teachers'));
     }
 
 
     public function update(UpdateScheduleRequest $request, $id)
-    {
+    {   
+        Log::info('Update Request Data:', $request->all());
         $schedule = Schedule::findOrFail($id);
 
         $schedule->update([
-            'subject_class_id' => $request->subject_class_id,
             'time_slot_id' => $request->time_slot_id,
             'classroom_id' => $request->classroom_id,
             'date' => $request->date,
+            'substitute_employee_id' => $request->substitute_employee_id,
         ]);
 
         toastr()->success('Cập nhật lịch học thành công.');
@@ -105,8 +112,10 @@ class ScheduleController extends Controller
     {
         $subjectClass = SubjectClass::findOrFail($subjectClassId);
         $schedules = Schedule::getSchedulesBySubjectClassId($subjectClassId);
-        
-        return view('admin.schedules.index', compact('subjectClass', 'schedules'));
+        $editedCount = Schedule::countEditedSchedulesBySubjectClass($subjectClassId);
+
+        return view('admin.schedules.index', compact('subjectClass', 'schedules', 'editedCount'));
     }
+
 }
 

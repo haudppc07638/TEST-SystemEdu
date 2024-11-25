@@ -5,7 +5,7 @@
 @section('main')
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>Danh Sách Lịch Học của Lớp: {{ $subjectClass->name }}</h1>
+            <h1>Danh Sách Lịch Học Của Lớp: {{ $subjectClass->name }}</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
@@ -21,6 +21,10 @@
                 <a href="{{ route('admin.subjectclasses.index') }}" class="btn btn-secondary">Quay lại</a>
             </div>
         @else
+        <div>
+            <p><strong>Số lần thay đổi lịch:</strong> {{ $editedCount }}</p>
+        </div>
+        
             <table class="table table-bordered mt-3">
                 <thead>
                     <tr>
@@ -31,7 +35,9 @@
                         <th>Môn học</th>
                         <th>Lớp</th>
                         <th>Giảng viên</th>
+                        <th>Giảng viên dạy thế</th>
                         <th>Ca</th>
+                        <th>Trang Thái</th>
                         <th>Thao Tác</th>
                     </tr>
                 </thead>
@@ -44,8 +50,34 @@
                             <td>{{ $schedule->subjectClass->subject->code ?? 'Chưa có' }}</td>
                             <td>{{ $schedule->subjectClass->subject->name ?? 'Chưa có' }}</td>
                             <td>{{ $schedule->subjectClass->name ?? 'Chưa có' }}</td>
-                            <td>{{ $schedule->subjectClass->employee->full_name ?? 'Chưa có' }}</td>
+                            <td>
+                                @if($schedule->subjectClass->employee)
+                                    {{ $schedule->subjectClass->employee->full_name }}
+                                    @if($schedule->subjectClass->employee->code)
+                                        - {{ $schedule->subjectClass->employee->code }}
+                                    @endif
+                                @else
+                                    Chưa có
+                                @endif
+                            </td>
+                            <td>
+                                @if($schedule->substituteEmployee)
+                                    {{ $schedule->substituteEmployee->full_name }}
+                                    @if($schedule->substituteEmployee->code)
+                                        - {{ $schedule->substituteEmployee->code }}
+                                    @endif
+                                @else
+                                    Chưa có
+                                @endif
+                            </td>                            
                             <td>{{ $schedule->timeSlot->slot ?? 'Chưa có' }}</td>
+                            <td>
+                                @if ($schedule->isEdited())
+                                    <span class="badge bg-success">Chuyển Lịch</span>
+                                @else
+                                    <span class="badge bg-secondary">Bình thường</span>
+                                @endif
+                            </td>
                             <td>
                                 <div class="dropdown">
                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow"

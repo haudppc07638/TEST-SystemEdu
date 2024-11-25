@@ -11,19 +11,38 @@ use App\Models\TotalTuition;
 use Illuminate\Support\Facades\Http;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Student;
+use App\Models\FeedbackResult;
+// class HomeController extends Controller
+// {
+//     public function index() {
+//         $student = Auth::guard(name: 'student')->user();
+//         $tuition = Tuition::getSubjectStudentRegister();
+//         $totalTuition = TotalTuition::getTotal();
+//         return view('client.home',[
+//             'student' => $student,
+
 class HomeController extends Controller
 {
-    public function index() {
-        $student = Auth::guard(name: 'student')->user();
+    public function index()
+    {
+        $student = Auth::guard('student')->user();
+        $studentSubjectClasses = StudentSubjectClass::getIncompleteFeedbackClasses($student->id);
+
         $tuition = Tuition::getSubjectStudentRegister();
         $totalTuition = TotalTuition::getTotal();
-        return view('client.home',[
+
+        if ($studentSubjectClasses->isNotEmpty()) {
+            return view('client.home-feedback', [
+                'studentSubjectClasses' => $studentSubjectClasses,
+            ]);
+        }
+        return view('client.home', [
             'student' => $student,
             'tuitionView' => $tuition,
-            'totalTuitionView' => $totalTuition
-    
-    ]);
+            'totalTuitionView' => $totalTuition,
+        ]);
     }
+
     public function tuition($id){
         $studentSubjectClass = StudentSubjectClass::findOrFail($id);
         $tuition = Tuition::insertTuitionJoinClass($studentSubjectClass->id);

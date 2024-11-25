@@ -102,7 +102,7 @@
                     <span class="ml-4">Trợ Giúp</span>
                 </a>
             </li>
-            <li class="relative px-6 py-3">
+            {{-- <li class="relative px-6 py-3">
                 <span
                     class="{{ request()->routeIs('showForStudent') ? 'absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg' : '' }}"
                     aria-hidden="true"></span>
@@ -114,7 +114,7 @@
                     </svg>
                     <span class="ml-4">Phản hồi</span>
                 </a>
-            </li>
+            </li> --}}
         </ul>
     </div>
 </aside>

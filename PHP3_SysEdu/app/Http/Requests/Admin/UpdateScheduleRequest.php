@@ -22,7 +22,15 @@ class UpdateScheduleRequest extends FormRequest
         $date = Carbon::parse($this->input('date'));
 
         return [
-            'date' => 'required|date',
+            'date' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) {
+                    if (Carbon::parse($value)->lt(Carbon::today())) {
+                        $fail('Ngày phải lớn hơn hoặc bằng ngày hiện tại.');
+                    }
+                },
+            ],
             'time_slot_id' => [
                 'required',
                 'exists:time_slots,id',
@@ -40,18 +48,35 @@ class UpdateScheduleRequest extends FormRequest
                 },
             ],
             'subject_class_id' => 'required|exists:subject_classes,id',
+            'substitute_employee_id' => 'nullable|exists:employees,id',
         ];
     }
 
     protected function checkTeacherScheduleConflict($timeSlotId, $scheduleId, $subjectClassId, $date, $fail)
     {
+        $substituteEmployeeId = $this->input('substitute_employee_id');
+
+        if ($substituteEmployeeId) {
+            $employeeId = $substituteEmployeeId;
+        } else {
+            $employeeId = DB::table('subject_classes')
+                ->where('id', $subjectClassId)
+                ->value('employee_id');
+        }
+
+        if (!$employeeId) {
+            $fail('Không tìm thấy thông tin giáo viên để kiểm tra lịch.');
+            return;
+        }
+
         $existingSchedule = DB::table('schedules')
-            ->where('time_slot_id', $timeSlotId)
-            ->whereDate('date', $date->toDateString())
-            ->where('subject_class_id', $subjectClassId)
+            ->join('subject_classes', 'schedules.subject_class_id', '=', 'subject_classes.id')
+            ->where('schedules.time_slot_id', $timeSlotId)
+            ->whereDate('schedules.date', $date->toDateString())
+            ->where('subject_classes.employee_id', $employeeId)
             ->where(function ($query) use ($scheduleId) {
                 if ($scheduleId) {
-                    $query->where('id', '<>', $scheduleId);
+                    $query->where('schedules.id', '<>', $scheduleId);
                 }
             })
             ->exists();
@@ -60,6 +85,7 @@ class UpdateScheduleRequest extends FormRequest
             $fail('Giáo viên đã có lịch vào ngày ' . $date->toDateString() . ' trong khung giờ này.');
         }
     }
+
 
     protected function checkStudentScheduleConflict($timeSlotId, $scheduleId, $subjectClassId, $date, $fail)
     {

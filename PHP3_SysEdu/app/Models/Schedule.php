@@ -68,6 +68,15 @@ class Schedule extends Model
             'id'
         );
     }
+    public function substituteEmployee(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'substitute_employee_id');
+    }
+
+    public function isEdited()
+    {
+        return $this->histories()->exists();
+    }
 
     public static function getAllSchedules()
     {
@@ -209,4 +218,45 @@ class Schedule extends Model
 
         return $schedule;
     }
+    public function scopeUpcomingSchedules($query, $subjectClassId = null, $date = null)
+    {
+        $query->where('date', '>=', Carbon::today()->toDateString());
+        if ($subjectClassId) {
+            $query->where('subject_class_id', $subjectClassId);
+        }
+        if ($date) {
+            $query->whereDate('date', $date);
+        }
+
+        return $query->orderBy('date', 'asc');
+    }
+
+    public static function getSchedulesByTeacher($teacherId, $subjectClassId = null, $date = null)
+    {
+        return self::whereHas('subjectClass', function ($query) use ($teacherId) {
+                $query->where('employee_id', $teacherId);
+            })
+            ->when($subjectClassId, function ($query) use ($subjectClassId) {
+                $query->where('subject_class_id', $subjectClassId);
+            })
+            ->when($date, function ($query) use ($date) {
+                $query->whereDate('date', $date);
+            })
+            ->with([
+                'subjectClass.subject',
+                'subjectClass.employee',
+                'classroom',
+                'timeSlot'
+            ])
+            ->paginate(20);
+    }
+
+    public static function countEditedSchedulesBySubjectClass($subjectClassId)
+    {
+        return self::where('subject_class_id', $subjectClassId)
+            ->whereHas('histories')
+            ->count();
+    }
+
+
 }

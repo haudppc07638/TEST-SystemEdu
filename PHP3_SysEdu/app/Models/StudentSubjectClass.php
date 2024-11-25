@@ -37,6 +37,10 @@ class StudentSubjectClass extends Model
     {
         return $this->hasMany(Attendance::class, 'student_subject_class_id');
     }
+    public function feedbackResults()
+    {
+        return $this->hasMany(FeedbackResult::class, 'student_subject_class_id');
+    }
     public function subject(): HasManyThrough
     {
         return $this->hasManyThrough(
@@ -270,4 +274,15 @@ class StudentSubjectClass extends Model
 //         ]);
 //     });
 // }
+    public static function getIncompleteFeedbackClasses($studentId)
+    {
+        return self::with(['subjectClass', 'feedbackResults'])  // Lấy thông tin lớp môn và feedbackResults
+            ->where('student_id', $studentId)  // Lọc theo student_id
+            ->whereHas('feedbackResults', function ($query) use ($studentId) {
+                // Kiểm tra xem lớp môn đó đã có feedback
+                $query->where('student_id', $studentId)  // Lọc theo student_id
+                      ->whereNull('results');  // Chỉ lấy những phản hồi chưa có kết quả
+            })
+            ->get();  // Trả về các lớp môn mà sinh viên chưa điền feedback
+    }
 }

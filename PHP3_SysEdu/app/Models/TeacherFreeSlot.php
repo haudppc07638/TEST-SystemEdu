@@ -40,7 +40,18 @@ class TeacherFreeSlot extends Model
     public static function addFreeTimeSlots($employeeId, array $selectedTimeSlots, $startDay, $endDay)
     {
         foreach ($selectedTimeSlots as $timeSlotId) {
-            if (!self::where('employee_id', $employeeId)->where('time_slot_id', $timeSlotId)->exists()) {
+            $freeSlot = self::where('employee_id', $employeeId)
+                            ->where('time_slot_id', $timeSlotId)
+                            ->first();
+
+            if ($freeSlot) {
+                // Nếu bản ghi đã tồn tại, cập nhật ngày bắt đầu và kết thúc
+                $freeSlot->update([
+                    'start_day' => $startDay,
+                    'end_day' => $endDay,
+                ]);
+            } else {
+                // Nếu chưa có bản ghi, tạo mới
                 self::create([
                     'employee_id' => $employeeId,
                     'time_slot_id' => $timeSlotId,
@@ -50,4 +61,5 @@ class TeacherFreeSlot extends Model
             }
         }
     }
+
 }

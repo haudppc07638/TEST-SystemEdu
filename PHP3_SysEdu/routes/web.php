@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Client\StudentFeedbackController;
+use App\Http\Controllers\Teacher\TeacherFreeController;
+use App\Http\Controllers\Teacher\TeacherScheduleController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\EducationalHistoryController;
 use App\Http\Controllers\Admin\ClassroomController;
@@ -213,10 +216,11 @@ Route::middleware(['admin'])->group(function () {
 
     Route::prefix('feedbacks')->name('admin.feedbacks.')->group(function () {
         Route::get('/', [FeedbackController::class, 'index'])->name('index');
-        Route::get('create', [FeedbackController::class, 'create'])->name('create');
-        Route::post('create', [FeedbackController::class, 'store'])->name('store');
-        Route::get('show/{studentId}', [FeedbackController::class, 'showForStudent'])->name('show');
-        Route::post('submit/{id}', [FeedbackController::class, 'submitStudentFeedback'])->name('submit');
+        Route::get('/create', [FeedbackController::class, 'create'])->name('create');
+        Route::post('/store', [FeedbackController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [FeedbackController::class, 'edit'])->name('edit');
+        Route::post('/update/{id}', [FeedbackController::class, 'update'])->name('update');
+        Route::post('/delete/{id}', [FeedbackController::class, 'destroy'])->name('delete');
     });
 
     Route::prefix('credits')->name('admin.credits.')->group(function () {
@@ -248,7 +252,6 @@ Route::middleware(['admin'])->group(function () {
         Route::get('update/{id}', [TeacherFreeSlotController::class, 'createOrUpdate'])->name('createOrUpdate');
         Route::post('update/{id}', [TeacherFreeSlotController::class, 'storeOrUpdate'])->name('storeOrUpdate');
     });
-
     // Ajax
     Route::get('/majors-by-faculty', [DashboardController::class, 'getMajorsByFaculty'])->name('majors.by.faculty');
     Route::get('admin/lecturers-by-subject', [SubjectLecturerController::class, 'getLecturersBySubject'])->name('admin.lecturers.by.subject');
@@ -279,8 +282,9 @@ Route::middleware(['student'])->group(function () {
 
     Route::get('/bang-diem-theo-ky', [ScoreController::class, 'index'])->name('scores');
 
-    Route::get('feedback', [FeedbackController::class, 'showForStudent'])->name('showForStudent');
-    Route::post('feedback/{id}', [FeedbackController::class, 'submitStudentFeedback'])->name('submitStudentFeedback');
+    Route::get('feedback/classes', [StudentFeedbackController::class, 'listClassesForFeedback'])->name('student.feedback.classes');
+    Route::get('feedback/{studentSubjectClassId}/form', [StudentFeedbackController::class, 'showFeedbackForm'])->name('student.feedback.form');
+    Route::post('feedback/{studentSubjectClassId}/store', [StudentFeedbackController::class, 'storeFeedback'])->name('student.feedback.store');
 });
 
 //teacher
@@ -293,15 +297,19 @@ Route::middleware(['teacher'])->group(function () {
         Route::get('/student-lookup', [StudentLookupController::class, 'index'])->name('student.index');
         Route::get('/student-lookup/search', [StudentLookupController::class, 'search'])->name('student.search');
         Route::get('/student-lookup/{id}', [StudentLookupController::class, 'show'])->name('student.show');
-
-        Route::prefix('classes')->group(function() {
-            Route::get('/', [AttendanceController::class, 'classList'])->name('classes');
-            Route::get('/{subjectClass}', [AttendanceController::class, 'classDetail'])->name('attendance.class.detail');
-            Route::get('/{subjectClass}/attendance', [AttendanceController::class, 'takeAttendance'])->name('attendance.take');
-            Route::post('/{subjectClass}/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
-            Route::post('/{subjectClass}/import', [AttendanceController::class, 'importGrades'])->name('attendance.import');
-            Route::get('/{subjectClass}/export', [AttendanceController::class, 'exportGrades'])->name('attendance.export');
-            Route::get('/{subjectClass}/export-exam-list', [AttendanceController::class, 'exportExamList'])->name('export.examList');
-        });
+        Route::get('/schedules', [TeacherScheduleController::class, 'index'])->name('schedules.index');
+        Route::get('/schedules/filter', [TeacherScheduleController::class, 'filter'])->name('teacher.schedules.filter');
+        Route::get('/free-slot', [TeacherFreeController::class, 'index'])->name('teacher.free_slot.index');
+        Route::post('/free-slot', [TeacherFreeController::class, 'update'])->name('teacher.free_slot.update');
+        
+    Route::prefix('classes')->group(function() {
+        Route::get('/', [AttendanceController::class, 'classList'])->name('classes');
+        Route::get('/{subjectClass}', [AttendanceController::class, 'classDetail'])->name('attendance.class.detail');
+        Route::get('/{subjectClass}/attendance', [AttendanceController::class, 'takeAttendance'])->name('attendance.take');
+        Route::post('/{subjectClass}/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
+        Route::post('/{subjectClass}/import', [AttendanceController::class, 'importGrades'])->name('attendance.import');
+        Route::get('/{subjectClass}/export', [AttendanceController::class, 'exportGrades'])->name('attendance.export');
+        Route::get('/{subjectClass}/export-exam-list', [AttendanceController::class, 'exportExamList'])->name('export.examList');
+    });
     });
 });
