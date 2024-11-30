@@ -11,38 +11,21 @@ use App\Models\TotalTuition;
 use Illuminate\Support\Facades\Http;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\Student;
-use App\Models\FeedbackResult;
-// class HomeController extends Controller
-// {
-//     public function index() {
-//         $student = Auth::guard(name: 'student')->user();
-//         $tuition = Tuition::getSubjectStudentRegister();
-//         $totalTuition = TotalTuition::getTotal();
-//         return view('client.home',[
-//             'student' => $student,
-
+use App\Mail\PaymentSuccessMail;
+use Illuminate\Support\Facades\Mail;
 class HomeController extends Controller
 {
-    public function index()
-    {
-        $student = Auth::guard('student')->user();
-        $studentSubjectClasses = StudentSubjectClass::getIncompleteFeedbackClasses($student->id);
-
+    public function index() {
+        $student = Auth::guard(name: 'student')->user();
         $tuition = Tuition::getSubjectStudentRegister();
         $totalTuition = TotalTuition::getTotal();
-
-        if ($studentSubjectClasses->isNotEmpty()) {
-            return view('client.home-feedback', [
-                'studentSubjectClasses' => $studentSubjectClasses,
-            ]);
-        }
-        return view('client.home', [
+        return view('client.home',[
             'student' => $student,
             'tuitionView' => $tuition,
-            'totalTuitionView' => $totalTuition,
-        ]);
+            'totalTuitionView' => $totalTuition
+    
+    ]);
     }
-
     public function tuition($id){
         $studentSubjectClass = StudentSubjectClass::findOrFail($id);
         $tuition = Tuition::insertTuitionJoinClass($studentSubjectClass->id);
@@ -91,11 +74,27 @@ class HomeController extends Controller
         
             if (isset($responseData['code']) && $responseData['code'] === '00') {
                 $qrCodeUrl = $responseData['data']['qrDataURL'];
-                // dd($qrCodeUrl);
-                return view('vietqr.index', compact('qrCodeUrl'));
-            } else {
-                return back()->with('error', 'Lỗi từ API: ' . ($responseData['desc'] ?? 'Không rõ lỗi.'));
+                TotalTuition::where('student_id', $student->id)
+                 ->update([
+                'payment_status' => 'paid',
+                'payment_date' => now(),
+            ]);
+
+            TotalTuition::where('student_id', $student->id)->update([
+                'payment_status' => 'paid',
+                'payment_date' => now(),
+            ]);
+        
+            try {
+                Mail::to($student->email)->send(new PaymentSuccessMail($student, $amount));
+            } catch (\Exception $e) {
+                return back()->with('error', 'Thanh toán thành công nhưng không thể gửi email: ' . $e->getMessage());
             }
+        
+            return view('vietqr.index', compact('qrCodeUrl'))->with('success', 'Thanh toán thành công và email đã được gửi!');
+        } else {
+            return back()->with('error', 'Lỗi từ API: ' . ($responseData['desc'] ?? 'Không rõ lỗi.'));
+        }
         }
     }
     
