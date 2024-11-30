@@ -43,7 +43,7 @@ class ClassController extends Controller
         foreach ($classes as $class) {
             $studentQuantities[$class->id] = StuClass::studentCount($class->id);
         }
-
+    
         $major = Major::getNameMajorById($id);
         return view('admin.classes.classes', [
             'classes' => $classes,
@@ -72,7 +72,7 @@ class ClassController extends Controller
     {
         $rules = $request->rules();
         $messages = $request->messages();
-        $data = $request->only(['name', 'training_system', 'major_id', 'start_date', 'quantity', 'employee_id']);
+        $data = $request->only(['name', 'major_id', 'start_date', 'quantity', 'employee_id']);
 
         $validator = Validator::make($data, $rules, $messages);
         if ($validator->stopOnFirstFailure()->fails()) {
@@ -125,7 +125,7 @@ class ClassController extends Controller
     {
         $rules = $request->rules();
         $messages = $request->messages();
-        $data = $request->only(['name', 'training_system', 'major_id', 'start_date', 'quantity', 'employee_id']);
+        $data = $request->only(['name', 'major_id', 'start_date', 'quantity', 'employee_id']); // Bỏ training_system
 
         $validator = Validator::make($data, $rules, $messages);
         if ($validator->stopOnFirstFailure()->fails()) {

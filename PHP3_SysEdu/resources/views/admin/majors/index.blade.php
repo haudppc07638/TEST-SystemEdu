@@ -33,7 +33,7 @@
                                         <th>Khoa</th>
                                         <th>Chuyên ngành</th>
                                         <th>Mã</th>
-                                        <th>Số tín chỉ</th>
+                                        <th>Tổng tín chỉ</th>
                                         <th>Tác vụ</th>
                                     </tr>
                                 </thead>

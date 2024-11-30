@@ -54,6 +54,15 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+
+                    <div class="col-md-12">
+                        <label class="form-label">Tổng tín chỉ</label>
+                        <input type="number" class="form-control @error('total_credits') is-invalid @enderror" name="total_credits"
+                            value="{{ old('total_credits') }}">
+                        @error('total_credits')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                 
                     <div class="col-12">
                         <div class="col-sm-10">

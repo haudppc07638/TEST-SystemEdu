@@ -28,12 +28,13 @@ class MajorRequest extends FormRequest
             'name' => 'required|string|max:100',
             'faculty_id' => 'required|exists:faculties,id',
             'code' => ['required', 'string', 'max:15', Rule::unique('majors')->ignore($majorId)],
+            'total_credits' => 'required|integer|min:1',
         ];
     }
 
     /**
      * Get custom messages for validator errors.
-     *dd
+     *
      * @return array<string, string>
      */
     public function messages()
@@ -50,6 +51,10 @@ class MajorRequest extends FormRequest
             'code.string' => 'Mã chuyên ngành phải là 1 chuỗi ký tự',
             'code.unique' => 'Mã chuyên ngành đã tồn tại',
             'code.max' => 'Mã chuyên ngành không được quá 15 ký tự',
+
+            'total_credits.required' => 'Tổng tín chỉ không được để trống', 
+            'total_credits.integer' => 'Tổng tín chỉ phải là một số nguyên',
+            'total_credits.min' => 'Tổng tín chỉ phải lớn hơn hoặc bằng 1', 
         ];
     }
 }

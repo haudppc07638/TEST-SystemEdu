@@ -14,6 +14,8 @@ use Illuminate\Database\QueryException;
 
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\Admin\SubjectClassRequest;
+use App\Models\StudentSubjectClass;
+use App\Models\Tuition;
 
 class SubjectClassController extends Controller
 {
@@ -82,6 +84,9 @@ class SubjectClassController extends Controller
 
         $subjectClass->addStudents($data['major_class_id']);
 
+        // Thêm học sinh vào bảng thanh toán
+        $this->addStudentsToTuition($subjectClass->id);
+
         toastr()->success('Lớp học được tạo thành công');
         return redirect()->route('admin.subjectclasses.index');
     }
@@ -147,6 +152,18 @@ class SubjectClassController extends Controller
                 return redirect()->route('admin.subjectclasses.index');
             }
             return redirect()->route('admin.subjectclasses.index');
+        }
+    }
+
+    protected function addStudentsToTuition($subjectClassId)
+    {
+        $students = StudentSubjectClass::where('subject_class_id', $subjectClassId)->get();
+    
+        foreach ($students as $student) {
+
+            Tuition::create([
+                'student_subject_class_id' => $student->id, 
+            ]);
         }
     }
 }

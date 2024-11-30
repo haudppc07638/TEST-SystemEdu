@@ -103,9 +103,9 @@
                                             <option value="">Chọn Giá TC</option>
                                             @foreach ($credits as $credit)
                                                 <option value="{{ $credit->id }}"
-                                                    data-total-price="{{ $credit->total_price }}"
+                                                    data-total-price="{{ $credit->price }}"
                                                     {{ old('credit_id') == $credit->id ? 'selected' : '' }}>
-                                                    {{ $credit->total_price }}
+                                                    {{ $credit->price }}
                                                 </option>
                                             @endforeach
                                         </select>

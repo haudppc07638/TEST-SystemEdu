@@ -89,7 +89,6 @@ class SubjectClass extends Model
     }
     public static function createSubjectClass($data)
     {
-        $data['price'] = 0;
         return self::create($data);
     }
 

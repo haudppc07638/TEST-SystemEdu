@@ -29,15 +29,6 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="vat" class="col-sm-2 col-form-label">Thuế (VAT)</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control @error('vat') is-invalid @enderror" id="vat" name="vat" value="{{ old('vat') }}">
-                        @error('vat')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-                <div class="row mb-3">
                     <div class="col-sm-10 offset-sm-2">
                         <button type="submit" class="btn btn-primary">Thêm mới</button>
                     </div>

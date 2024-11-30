@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Admin\CreditRequest;
 use App\Models\Credit;
-use Illuminate\Support\Facades\Validator;
 
 class CreditController extends Controller
 {
@@ -15,7 +14,7 @@ class CreditController extends Controller
     public function index()
     {
         $credit = Credit::getAllCredit();
-        return view('admin.credits.index',[
+        return view('admin.credits.index', [
             'creditView' => $credit
         ]);
     }
@@ -31,12 +30,10 @@ class CreditController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreditRequest $request) // Sử dụng CreditRequest
     {
-        $data = $request->only(['price', 'vat']);
-        if (empty($data['vat'])) {
-            $data['vat'] = 0;
-        }
+        $data = $request->only(['price']);
+        $data['vat'] = 0; // Đặt vat mặc định là 0
         $credit = Credit::createCredit($data);
 
         toastr()->success('Thêm thành công: ' . $credit->totalPrice);
@@ -63,12 +60,10 @@ class CreditController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CreditRequest $request, string $id) // Sử dụng CreditRequest
     {
-        $data = $request->only(['price', 'vat']);
-        if($data['vat'] == ''){
-            $data['vat'] = 0;
-        }
+        $data = $request->only(['price']); // Bỏ vat
+        $data['vat'] = 0; // Đặt vat mặc định là 0
         Credit::updateCredit($id, $data);
         toastr()->success('Cập nhật thành công ');
         return redirect()->route('admin.credits.index');

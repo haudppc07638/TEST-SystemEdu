@@ -23,7 +23,6 @@ class ClassesRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:10',
-            'training_system' => 'required|string|max:100',
             'employee_id' => $this->isMethod('put') ? ['nullable'] : ['required'],
             'start_date' => [
                 'required',
@@ -45,10 +44,6 @@ class ClassesRequest extends FormRequest
             'name.required' => 'Tên lớp không được để trống',
             'name.string' => 'Tên lớp phải là 1 chuỗi ký tự',
             'name.max' => 'Tên lớp không được nhập quá 10 ký tự',
-
-            'training_system.required' => 'Hệ đào tạo không được để trống',
-            'training_system.string' => 'Hệ đào tạo là 1 chuỗi ký tự',
-            'training_system.max' => 'Hệ đào tạo không được nhập quá 100 ký tự',
 
             'employee_id.required' => 'Nhân viên không được để trống',
 

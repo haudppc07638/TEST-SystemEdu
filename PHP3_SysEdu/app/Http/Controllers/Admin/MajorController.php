@@ -15,7 +15,6 @@ class MajorController extends Controller
      */
     public function index()
     {
-        Major::updateTotalCreditsForAllMajors();
         $majors = Major::getAllMajor();
         return view('admin.majors.index', ['majorsView' => $majors]);
     }
@@ -34,7 +33,7 @@ class MajorController extends Controller
      */
     public function store(MajorRequest $request)
     {
-        $data = $request->only(['name', 'faculty_id', 'code']);
+        $data = $request->only(['name', 'faculty_id', 'code', 'total_credits']);
         $validator = Major::validate($data, $request);
 
         if ($validator->fails()) {
@@ -64,11 +63,11 @@ class MajorController extends Controller
      */
     public function update(MajorRequest $request, string $id)
     {
-        $data = $request->only(['name', 'faculty_id', 'code']);
+        $data = $request->only(['name', 'faculty_id', 'code', 'total_credits']); // Thêm total_credits
         $validator = Major::validate($data, $request);
 
         if ($validator->fails()) {
-            return redirect()->route('admin.majors.edit')
+            return redirect()->route('admin.majors.edit', $id) // Thêm $id vào route
                 ->withErrors($validator)
                 ->withInput();
         }

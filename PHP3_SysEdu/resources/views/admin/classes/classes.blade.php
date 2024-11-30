@@ -6,15 +6,15 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Quản Lý Lớp Chuyên Ngành<h1>
-                    <nav>
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.html">Trang Chủ</a></li>
-                            <li class="breadcrumb-item">Khoa</li>
-                            <li class="breadcrumb-item">Chuyên ngành</li>
-                            <li class="breadcrumb-item active">Lớp chuyên ngành </li>
-                        </ol>
-                    </nav>
+            <h1>Quản Lý Lớp Chuyên Ngành</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Trang Chủ</a></li>
+                    <li class="breadcrumb-item">Khoa</li>
+                    <li class="breadcrumb-item">Chuyên ngành</li>
+                    <li class="breadcrumb-item active">Lớp chuyên ngành</li>
+                </ol>
+            </nav>
         </div><!-- End Page Title -->
 
         <section class="section">
@@ -31,7 +31,6 @@
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Hê đào tạo</th>
                                         <th>Tên</th>
                                         <th>Chuyên ngành</th>
                                         <th>Cố vấn</th>
@@ -45,7 +44,6 @@
                                     @foreach ($classes as $index => $class)
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
-                                            <td>{{ $class->training_system }}</td>
                                             <td>{{ $class->name }}</td>
                                             <td>{{ $class->major->name }}</td>
                                             <td>{{ $class->employee->full_name }}</td>
@@ -92,13 +90,11 @@
                                             </td>
                                         </tr>
                                     @endforeach
-
                                 </tbody>
                             </table>
                             <!-- End Table with stripped rows -->
                         </div>
                     </div>
-
                 </div>
             </div>
         </section>

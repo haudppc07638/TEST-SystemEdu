@@ -30,21 +30,6 @@
                     <input type="text" value="{{ $major->name }}" class="form-control" readonly>
                 </div>
 
-                <!-- Hệ đào tạo -->
-                <div class="col-md-12">
-                    <label class="form-label">Hệ đào tạo</label>
-                    <select class="form-select @error('training_system') is-invalid @enderror" name="training_system">
-                        <option disabled selected>...Chọn hệ đào tạo...</option>
-                        <option value="Chính quy" {{ old('training_system') == 'Chính quy' ? 'selected' : '' }}>Chính quy</option>
-                        <option value="Vừa làm vừa học" {{ old('training_system') == 'Vừa làm vừa học' ? 'selected' : '' }}>Vừa làm vừa học</option>
-                        <option value="Đào tạo từ xa" {{ old('training_system') == 'Đào tạo từ xa' ? 'selected' : '' }}>Đào tạo từ xa</option>
-                        <option value="Liên thông" {{ old('training_system') == 'Liên thông' ? 'selected' : '' }}>Liên thông</option>
-                    </select>
-                    @error('training_system')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
-
                 <!-- Tên lớp -->
                 <div class="col-md-12 mb-2">
                     <label class="form-label">Tên lớp</label>

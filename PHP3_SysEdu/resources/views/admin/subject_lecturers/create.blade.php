@@ -57,7 +57,7 @@
 
                                     <div class="col-md-4">
                                         <select name="major_id" id="major_id" class="form-select">
-                                            <option value="">Môn cơ bản</option>
+                                            <option value="">Tất cả</option>
                                             @foreach ($majors as $major)
                                                 <option value="{{ $major->id }}"
                                                     {{ $majorId == $major->id ? 'selected' : '' }}>

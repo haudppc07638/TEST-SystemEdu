@@ -30,8 +30,6 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Giá Tiền (1TC)</th>
-                                    <th>Thuế</th>
-                                    <th>Tổng tiền</th>
                                     <th>Tác vụ</th>
                                 </tr>
                             </thead>
@@ -40,8 +38,7 @@
                                 <tr>
                                     <td>{{ $index +1 }}</td>
                                     <td>{{ number_format($credit->price) }}</td>
-                                    <td>{{ number_format($credit->vat) }}%</td>
-                                    <td>{{ number_format($credit->total_price) }}</td>
+                    
                                     <td>
                                         <div class="dropdown">
                                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
