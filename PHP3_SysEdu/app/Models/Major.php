@@ -41,11 +41,20 @@ class Major extends Model
         return $this->hasMany(Student::class);
     }
 
-    public static function getAllMajor()
+    public static function getAllMajor($facultyId = null, $search = null)
     {
-        return self::with('faculty')
-        ->orderBy('id', 'desc')
-        ->get();
+        return self::query()
+            ->when($facultyId, function ($query, $facultyId) {
+                $query->where('faculty_id', $facultyId);
+            })
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('code', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(5);
     }
 
     public static function getFacultiesForCreate()

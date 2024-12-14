@@ -19,10 +19,22 @@ use App\Models\Tuition;
 
 class SubjectClassController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $subjectClasses = SubjectClass::latest()->get();
-        return view('admin.subjectclasses.index', ['subjectClasses' => $subjectClasses]);
+        $subjects = Subject::select('id', 'name')->get();
+
+        $filters = [
+            'subject_id' => $request->get('subject_id', null),
+        ];
+    
+        $subjectClasses = SubjectClass::filterBySubject($filters)->paginate(10);
+    
+        return view('admin.subjectclasses.index', [
+            'subjectClasses' => $subjectClasses,
+            'subjects' => $subjects,
+            'subjectId' => $filters['subject_id'],
+        ]);
     }
 
     public function create()

@@ -10,14 +10,27 @@ use App\Models\ScoreType;
 use App\Models\SubjectScoreType;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
 
 class SubjectController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $subjects = Subject::getAllSubjects();
-        return view('admin.subjects.index', ['subjectView' => $subjects]);
-    }
+    $majors = Major::select('id', 'name')->get();
+
+    $majorId = $request->get('major_id', null);
+    $search = $request->get('search', null);
+
+    $subjects = Subject::getAllSubjects($majorId, $search);
+
+    return view('admin.subjects.index', [
+        'subjectView' => $subjects,
+        'majors' => $majors,
+        'majorId' => $majorId,
+        'search' => $search,
+    ]);
+}
+
 
     public function detail(string $id)
     {

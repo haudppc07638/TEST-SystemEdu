@@ -22,6 +22,25 @@
                 <div class="card">
                     <div class="card-body mt-3">
                         <a href="{{ route('admin.subjectclasses.create') }}" class="btn btn-primary m-2">Thêm mới</a>
+                        <form action="{{ route('admin.subjectclasses.index') }}" method="GET" class="mb-4">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <select name="subject_id" class="form-select">
+                                        <option value="">Tất cả môn học</option>
+                                        @foreach ($subjects as $subject)
+                                            <option value="{{ $subject->id }}" 
+                                                    {{ request('subject_id') == $subject->id ? 'selected' : '' }}>
+                                                {{ $subject->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-lg-4">
+                                    <button type="submit" class="btn btn-primary">Lọc</button>
+                                    <a href="{{ route('admin.subjectclasses.index') }}" class="btn btn-secondary">Reset</a>
+                                </div>
+                            </div>
+                        </form>
                         <table id="tableSubjectClass" class="table datatable">
                             <thead>
                                 <tr>

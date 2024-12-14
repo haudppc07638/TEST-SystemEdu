@@ -11,6 +11,7 @@ use App\Models\Student;
 use Illuminate\Support\Facades\Validator;
 use App\Services\ImageService;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
@@ -24,13 +25,25 @@ class StudentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {   
-        $students = Student::getAllStudents();
+    public function index(Request $request)
+    {
+        $majors = Major::select('id', 'name')->get();
+    
+        $filters = [
+            'major_id' => $request->get('major_id', null),
+        ];
+    
+        $students = Student::filterStudents($filters)->paginate(10);
+
+    
         return view('admin.students.index', [
-            'students' => $students
+            'students' => $students,
+            'majors' => $majors,
+            'majorId' => $filters['major_id'],
         ]);
     }
+    
+    
 
     /**
      * Show the form for creating a new resource.

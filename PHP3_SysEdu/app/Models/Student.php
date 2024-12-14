@@ -94,6 +94,16 @@ class Student extends Authenticatable
     {
         return self::with(['major', 'stuClass'])->orderBy('id', 'desc')->paginate($perPage);
     }
+    public static function filterStudents($filters = [])
+{
+    return self::query()
+        ->when($filters['major_id'] ?? null, function ($query, $majorId) {
+            $query->where('major_id', $majorId);
+        })
+        ->with(['major', 'stuClass'])
+        ->orderBy('id', 'desc');
+}
+
 
     public static function getStudentsForCreate()
     {

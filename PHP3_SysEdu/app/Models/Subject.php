@@ -58,10 +58,23 @@ class Subject extends Model
         return $this->hasMany(SubjectLecturer::class);
     }
 
-    public static function getAllSubjects()
+    public static function getAllSubjects($majorId = null, $search = null)
     {
-        return self::with('major')->latest()->get();
+    return self::query()
+        ->when($majorId, function ($query, $majorId) {
+            $query->where('major_id', $majorId);
+        })
+        ->when($search, function ($query, $search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('code', 'like', "%{$search}%");
+            });
+        })
+        ->with(['major', 'prerequisites'])
+        ->orderBy('id', 'desc')
+        ->paginate(10); 
     }
+
     public function setCreditAttribute($value)
     {
         $this->attributes['credit'] = $value;

@@ -30,13 +30,26 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $employees = Employee::getAllEmployees();
-        return view('admin.employees.index', [
-            'employees' => $employees
-        ]);
-    }
+    public function index(Request $request)
+{
+    $majors = Major::select('id', 'name')->get();
+    $departments = Department::select('id', 'name')->get();
+
+    $filters = [
+        'major_id' => $request->get('major_id', null),
+        'department_id' => $request->get('department_id', null),
+    ];
+
+    $employees = Employee::filterEmployees($filters)->paginate(10);
+
+    return view('admin.employees.index', [
+        'employees' => $employees,
+        'majors' => $majors,
+        'departments' => $departments,
+        'filters' => $filters,
+    ]);
+}
+
 
     /**
      * Show the form for creating a new resource.

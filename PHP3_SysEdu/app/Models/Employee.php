@@ -106,6 +106,18 @@ class Employee extends Authenticatable
             ->orderBy('id', 'desc')
             ->get();
     }
+    public static function filterEmployees($filters = [])
+{
+    return self::query()
+        ->when($filters['major_id'] ?? null, function ($query, $majorId) {
+            $query->where('major_id', $majorId);
+        })
+        ->when($filters['department_id'] ?? null, function ($query, $departmentId) {
+            $query->where('department_id', $departmentId);
+        })
+        ->with(['major', 'department'])
+        ->orderBy('id', 'desc');
+}
     public static function getEmployeeById($id)
     {
         return self::with('major', 'department')->findOrFail($id);

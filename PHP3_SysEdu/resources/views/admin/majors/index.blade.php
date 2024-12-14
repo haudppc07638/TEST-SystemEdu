@@ -24,6 +24,37 @@
                             <div class="card-title">
                                 <a href="{{ route('admin.majors.create') }}" type="submit" class="btn btn-primary m-2">Thêm mới</a>
                             </div>
+                            <div class="col-lg-12">
+                                <form action="{{ route('admin.majors.index') }}" method="GET" class="mb-4">
+                                    <div class="row">
+                                        <!-- Dropdown chọn khoa -->
+                                        <div class="col-lg-4">
+                                            <select name="faculty_id" class="form-select">
+                                                <option value="">Tất cả các khoa</option>
+                                                @foreach ($faculties as $faculty)
+                                                    <option value="{{ $faculty->id }}" 
+                                                            {{ request('faculty_id') == $faculty->id ? 'selected' : '' }}>
+                                                        {{ $faculty->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                            
+                                        <!-- Input tìm kiếm -->
+                                        <div class="col-lg-4">
+                                            <input type="text" name="search" class="form-control" 
+                                                   placeholder="Tìm kiếm chuyên ngành" value="{{ request('search') }}">
+                                        </div>
+                            
+                                        <!-- Nút lọc -->
+                                        <div class="col-lg-4">
+                                            <button type="submit" class="btn btn-primary">Lọc</button>
+                                            <a href="{{ route('admin.majors.index') }}" class="btn btn-secondary">Reset</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            
 
                             <!-- Table -->
                             <table id="tableMajor" class="table datatable">

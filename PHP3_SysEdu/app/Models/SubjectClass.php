@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Builder;
 
 class SubjectClass extends Model
 {
@@ -80,6 +81,15 @@ class SubjectClass extends Model
     public function students()
     {
         return $this->belongsToMany(Student::class, 'student_subject_classes', 'subject_class_id', 'student_id');
+    }
+    public function scopeFilterBySubject(Builder $query, array $filters): Builder
+    {
+        return $query
+            ->when($filters['subject_id'] ?? null, function ($query, $subjectId) {
+                $query->where('subject_id', $subjectId);
+            })
+            ->with(['employee', 'subject', 'semester', 'majorClass'])
+            ->orderBy('id', 'desc');
     }
     public static function validate($data, $request)
     {

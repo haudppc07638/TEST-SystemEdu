@@ -7,16 +7,28 @@ use App\Http\Requests\Admin\MajorRequest;
 use App\Models\Major;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\QueryException;
-
+use Illuminate\Http\Request;
+use App\Models\Faculty;
 class MajorController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $majors = Major::getAllMajor();
-        return view('admin.majors.index', ['majorsView' => $majors]);
+        $faculties = Faculty::select('id', 'name')->get();
+
+        $facultyId = $request->get('faculty_id', null);
+        $search = $request->get('search', null);
+        $search = $request->input('search');
+        Major::updateTotalCreditsForAllMajors();
+        $majors = Major::getAllMajor($facultyId,$search);
+        return view('admin.majors.index', [
+            'majorsView' => $majors,
+            'faculties' => $faculties,
+            'facultyId' => $facultyId,
+            'search' => $search,
+        ]);
     }
 
     /**

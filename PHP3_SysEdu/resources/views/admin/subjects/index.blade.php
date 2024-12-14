@@ -22,8 +22,35 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="card-title">
-                                <a href="{{ route('admin.subjects.create') }}" class="btn btn-primary m-2">Thêm mới</a>
+                                <a href="{{ route('admin.majors.create') }}" type="submit" class="btn btn-primary m-2">Thêm mới</a>
                             </div>
+                            <form action="{{ route('admin.subjects.index') }}" method="GET" class="mb-4">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <select name="major_id" class="form-select">
+                                            <option value="">Tất cả chuyên ngành</option>
+                                            @foreach ($majors as $major)
+                                                <option value="{{ $major->id }}" 
+                                                        {{ request('major_id') == $major->id ? 'selected' : '' }}>
+                                                    {{ $major->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                        
+                                    <div class="col-lg-4">
+                                        <input type="text" name="search" class="form-control" 
+                                               placeholder="Tìm kiếm môn học" value="{{ request('search') }}">
+                                    </div>
+                        
+                                    <div class="col-lg-4">
+                                        <button type="submit" class="btn btn-primary">Lọc</button>
+                                        <a href="{{ route('admin.subjects.index') }}" class="btn btn-secondary">Reset</a>
+                                    </div>
+                                </div>
+                            </form>
+                        
+                            <!-- Bảng danh sách môn học -->
                             <table id="tableSubject" class="table datatable">
                                 <thead>
                                     <tr>
@@ -81,9 +108,8 @@
                                     @endforeach
                                 </tbody>
                             </table>
-                            <!-- End Table with stripped rows -->
-
                         </div>
+                        
                     </div>
 
                 </div>

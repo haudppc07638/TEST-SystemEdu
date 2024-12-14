@@ -23,6 +23,28 @@
                             <div class="card-title">
                                 <a href="{{ route('admin.employees.create') }}" type="submit" class="btn btn-primary m-2">Thêm mới</a>
                             </div>
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <select id="majorFilter" class="form-select" name="major_id" onchange="filterEmployees()">
+                                        <option value="">Chọn chuyên ngành</option>
+                                        @foreach ($majors as $major)
+                                            <option value="{{ $major->id }}" {{ $filters['major_id'] == $major->id ? 'selected' : '' }}>
+                                                {{ $major->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <select id="departmentFilter" class="form-select" name="department_id" onchange="filterEmployees()">
+                                        <option value="">Chọn Phòng Ban</option>
+                                        @foreach ($departments as $department)
+                                            <option value="{{ $department->id }}" {{ $filters['department_id'] == $department->id ? 'selected' : '' }}>
+                                                {{ $department->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                         <table id="tableEmployee" class="table datatable">
                             <thead>
                                 <tr>
@@ -101,4 +123,16 @@
 @endpush
 
 @push('script')
+<script>
+    function filterEmployees() {
+        const majorId = document.getElementById('majorFilter').value;
+        const departmentId = document.getElementById('departmentFilter').value;
+
+        const url = new URL(window.location.href);
+        url.searchParams.set('major_id', majorId);
+        url.searchParams.set('department_id', departmentId);
+
+        window.location.href = url.toString();
+    }
+</script>
 @endpush
