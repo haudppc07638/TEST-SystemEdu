@@ -5,11 +5,11 @@
 @section('main')
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>Danh Sách Lịch Học Của Lớp: {{ $subjectClass->name }}</h1>
+            <h1>Danh sách lịch học của lớp: {{ $subjectClass->name }}</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                    <li class="breadcrumb-item">Lớp Môn</li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                    <li class="breadcrumb-item">Lớp môn</li>
                     <li class="breadcrumb-item active">Danh sách lịch học</li>
                 </ol>
             </nav>
@@ -73,7 +73,7 @@
                             <td>{{ $schedule->timeSlot->slot ?? 'Chưa có' }}</td>
                             <td>
                                 @if ($schedule->isEdited())
-                                    <span class="badge bg-success">Chuyển Lịch</span>
+                                    <span class="badge bg-success">Chuyển lịch</span>
                                 @else
                                     <span class="badge bg-secondary">Bình thường</span>
                                 @endif

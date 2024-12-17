@@ -5,7 +5,7 @@
 @section('main')
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>Đăng Ký Giảng Viên Cho Môn Học</h1>
+            <h1>Đăng ký giảng viên cho môn học</h1>
         </div>
 
         <section class="section">
@@ -16,9 +16,9 @@
                             <form action="{{ route('admin.subject_lecturers.storeOrUpdate') }}" method="POST">
                                 @csrf
                                 <div class="mb-3">
-                                    <label for="subject_id" class="form-label">Môn Học</label>
+                                    <label for="subject_id" class="form-label">Môn học</label>
                                     <select class="form-select" id="subject_id" name="subject_id" required>
-                                        <option value="" disabled selected>Chọn Môn</option>
+                                        <option value="" disabled selected>Chọn môn</option>
                                         @foreach ($subjects as $subject)
                                             <option value="{{ $subject->id }}"
                                                 {{ old('subject_id') == $subject->id ? 'selected' : '' }}>
@@ -28,7 +28,7 @@
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <label for="employee_ids" class="form-label">Giảng Viên</label>
+                                    <label for="employee_ids" class="form-label">Giảng viên</label>
                                     <select class="form-select" id="employee_ids" name="employee_ids[]" multiple required>
                                         @foreach ($employees as $employee)
                                             <option value="{{ $employee->id }}"
@@ -39,7 +39,7 @@
                                     </select>
                                 </div>
 
-                                <button type="submit" class="btn btn-primary">Đăng Ký</button>
+                                <button type="submit" class="btn btn-success">Đăng ký</button>
                             </form>
 
                         </div>
@@ -49,11 +49,11 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Danh Sách Môn Học và Giảng Viên</h5>
+                            <h5 class="card-title">Danh sách môn học và giảng viên</h5>
 
                             <form id="filterForm" method="GET" action="{{ route('admin.subject_lecturers.create') }}">
                                 <div class="row mb-4">
-                                    <label for="major_id" class="form-label">Chuyên Ngành</label>
+                                    <label for="major_id" class="form-label">Chuyên ngành</label>
 
                                     <div class="col-md-4">
                                         <select name="major_id" id="major_id" class="form-select">
@@ -75,8 +75,8 @@
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th style="width: 30%;">Môn Học</th>
-                                        <th>Giảng Viên</th>
+                                        <th style="width: 30%;">Môn học</th>
+                                        <th>Giảng viên</th>
                                     </tr>
                                 </thead>
                                 <tbody>

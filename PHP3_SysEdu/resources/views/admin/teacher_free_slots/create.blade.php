@@ -5,7 +5,7 @@
 @section('main')
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>Đăng Ký Ca Dạy Rảnh Của Giảng Viên</h1>
+        <h1>Đăng ký ca dạy rảnh của giảng viên</h1>
     </div>
 
     <section class="section">
@@ -16,7 +16,7 @@
                         <form action="{{ route('admin.teacher_free_slots.storeOrUpdate', $employee->id) }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <label for="time_slots" class="form-label">Ca Dạy Rảnh</label>
+                                <label for="time_slots" class="form-label">Ca dạy rảnh</label>
                                 <select class="form-select" id="time_slots" name="time_slots[]" multiple>
                                     @foreach ($timeSlots as $timeSlot)
                                         <option value="{{ $timeSlot->id }}"
@@ -31,7 +31,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="start_day" class="form-label">Ngày Bắt Đầu</label>
+                                <label for="start_day" class="form-label">Ngày bắt đầu</label>
                                 <input type="date" class="form-control" id="start_day" name="start_day" 
                                        value="{{ old('start_day', $freeSlot->start_day ?? '') }}">
                                 @error('start_day')
@@ -40,7 +40,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="end_day" class="form-label">Ngày Kết Thúc</label>
+                                <label for="end_day" class="form-label">Ngày kết thúc</label>
                                 <input type="date" class="form-control" id="end_day" name="end_day" 
                                        value="{{ old('end_day', $freeSlot->end_day ?? '') }}">
                                 @error('end_day')
@@ -48,7 +48,7 @@
                                 @enderror
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Lưu Ca Dạy Rảnh</button>
+                            <button type="submit" class="btn btn-primary">Lưu ca dạy rảnh</button>
                         </form>
                     </div>
                 </div>

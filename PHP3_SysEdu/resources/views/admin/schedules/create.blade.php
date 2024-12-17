@@ -5,12 +5,12 @@
 @section('main')
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>Tạo Lịch Tự Động</h1>
+        <h1>Tạo lịch tự động</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                <li class="breadcrumb-item">Quản Lý</li>
-                <li class="breadcrumb-item active">Tạo Lịch Học</li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                <li class="breadcrumb-item">Quản lý</li>
+                <li class="breadcrumb-item active">Tạo lịch học</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->

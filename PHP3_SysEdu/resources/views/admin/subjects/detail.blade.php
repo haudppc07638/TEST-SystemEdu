@@ -6,12 +6,12 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1><i class='bx bx-id-card'></i> Chi Tiết Môn Học: {{ $subject->name }}</h1>
+            <h1><i class='bx bx-id-card'></i> Chi tiết môn học: {{ $subject->name }}</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('admin.subjects.index') }}">Môn</a></li>
-                    <li class="breadcrumb-item active">Chi Tiết</li>
+                    <li class="breadcrumb-item active">Chi tiết</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -21,7 +21,7 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title"><i class='bx bx-book'></i> Thông Tin Môn Học</h5>
+                            <h5 class="card-title"><i class='bx bx-book'></i> Thông tin môn học</h5>
                             <dl class="row">
                                 <dt class="col-sm-3"><strong>Mã môn học:</strong></dt>
                                 <dd class="col-sm-9">{{ $subject->code }}</dd>
@@ -39,7 +39,7 @@
                                 <dd class="col-sm-9">{{ $subject->major ? $subject->major->name : 'Môn cơ bản' }}</dd>
                             </dl>
 
-                            <h5 class="mt-4"><i class='bx bx-list-ul'></i> Các Loại Điểm</h5>
+                            <h5 class="mt-4"><i class='bx bx-list-ul'></i> Các loại điểm</h5>
                             <ul class="list-group">
                                 @php
                                     $groupedScoreTypes = [];
@@ -82,7 +82,7 @@
                                 @endforeach
                             </ul>
 
-                            <h5 class="mt-4"><i class='bx bx-exclamation-circle'></i> Môn Tiên Quyết</h5>
+                            <h5 class="mt-4"><i class='bx bx-exclamation-circle'></i> Môn tiên quyết</h5>
                             <ul class="list-group">
                                 @if ($subject->prerequisites->isEmpty())
                                     <li class="list-group-item">Không có môn tiên quyết</li>

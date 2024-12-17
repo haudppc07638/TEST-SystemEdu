@@ -6,12 +6,12 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Quản Lý Loại Điểm</h1>
+        <h1>Quản lý loại điểm</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
                 <li class="breadcrumb-item">Điểm</li>
-                <li class="breadcrumb-item active">Loại Điểm Quá Trình</li>
+                <li class="breadcrumb-item active">Loại điểm quá trình</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -21,8 +21,8 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title">
-                            <a href="{{ route('admin.score_types.create') }}" class="btn btn-primary m-2">Thêm Mới</a>
+                        <div class="card-title d-flex justify-content-end">
+                            <a href="{{ route('admin.score_types.create') }}" class="btn btn-success">Thêm mới</a>
                         </div>
 
                         <!-- Table -->
@@ -30,9 +30,9 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Tên Loại Điểm</th>
+                                    <th>Tên loại điểm</th>
                                     <th>Thuộc loại</th>
-                                    <th>Tác Vụ</th>
+                                    <th>Tác vụ</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -50,7 +50,7 @@
                                                 <div class="dropdown-menu">
                                                     <a class="dropdown-item" 
                                                        href="{{ route('admin.score_types.edit', $scoreType->id) }}">
-                                                        <i class="bx bx-edit-alt me-2"></i> Chỉnh Sửa
+                                                        <i class="bx bx-edit-alt me-2"></i> Chỉnh sửa
                                                     </a>
                                                     <form action="{{ route('admin.score_types.delete', $scoreType->id) }}" 
                                                           method="POST" 

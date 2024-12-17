@@ -5,11 +5,11 @@
 @section('main')
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>Thêm Nhân Sự</h1>
+        <h1>Thêm nhân sự</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                <li class="breadcrumb-item active">Thêm Nhân Sự</li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Thêm nhân sự</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->

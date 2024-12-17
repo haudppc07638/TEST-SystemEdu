@@ -6,11 +6,11 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Quản Lý Học Kỳ</h1>
+            <h1>Quản lý học kỳ</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                    <li class="breadcrumb-item">Học Kỳ</li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                    <li class="breadcrumb-item">Học kỳ</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -20,9 +20,9 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="card-title">
+                            <div class="card-title d-flex justify-content-end">
                                 <a href="{{ route('admin.semesters.create') }}" type="submit"
-                                    class="btn btn-primary m-2">Thêm mới</a>
+                                    class="btn btn-success m-2">Thêm mới</a>
                             </div>
                             <table id="tableSemester" class="table datatable">
                                 <thead>

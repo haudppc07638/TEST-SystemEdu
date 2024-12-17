@@ -6,11 +6,11 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Quản Lý Môn</h1>
+            <h1>Quản lý môn</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                    <li class="breadcrumb-item">Đào Tạo</li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                    <li class="breadcrumb-item">Đào tạo</li>
                     <li class="breadcrumb-item active">Môn</li>
                 </ol>
             </nav>
@@ -21,8 +21,8 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="card-title">
-                                <a href="{{ route('admin.majors.create') }}" type="submit" class="btn btn-primary m-2">Thêm mới</a>
+                            <div class="card-title d-flex justify-content-end">
+                                <a href="{{ route('admin.subjects.create') }}" class="btn btn-success  m-2">Thêm mới</a>
                             </div>
                             <form action="{{ route('admin.subjects.index') }}" method="GET" class="mb-4">
                                 <div class="row">

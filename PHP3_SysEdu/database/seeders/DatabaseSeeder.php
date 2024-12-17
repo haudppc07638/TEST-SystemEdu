@@ -15,19 +15,19 @@ class DatabaseSeeder extends Seeder
     {
 
         $this->call([
-            // DepartmentSeeder::class,
-            // FacultySeeder::class,
-            // MajorSeeder::class,
-            // EmployeeSeeder::class,  
-            // SubjectSeeder::class,
-            // SemesterSeeder::class,
-            // TimeSlotSeeder::class,
+            DepartmentSeeder::class,
+            FacultySeeder::class,
+            MajorSeeder::class,
+            EmployeeSeeder::class,  
+            SubjectSeeder::class,
+            SemesterSeeder::class,
+            TimeSlotSeeder::class,
 
-            // MajorClassSeeder::class,
+            MajorClassSeeder::class,
 
-            // ClassroomSeeder::class,
+            ClassroomSeeder::class,
 
-            // SeedersStudentSeeder::class,
+            SeedersStudentSeeder::class,
 
             // SubjectLecturersSeeder::class,
         ]);

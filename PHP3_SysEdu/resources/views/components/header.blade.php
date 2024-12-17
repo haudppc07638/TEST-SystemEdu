@@ -3,7 +3,7 @@
 
     <div class="d-flex align-items-center justify-content-between">
         <a href="{{ route('admin.dashboard') }}" class="logo d-flex align-items-center">
-            <img src="{{ asset('assets/images/syseduicon.png') }}" alt="">
+            <img src="{{ asset('assets/images/syseduicon.png') }}">
             <span class="d-none d-lg-block">SysEdu</span>
         </a>
         <i class="bi bi-list toggle-sidebar-btn"></i>

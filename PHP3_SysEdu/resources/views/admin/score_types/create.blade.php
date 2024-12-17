@@ -5,12 +5,12 @@
 @section('main')
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>Tạo Loại Điểm Mới</h1>
+            <h1>Tạo loại điểm mới</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('admin.score_types.index') }}">Loại Điểm</a></li>
-                    <li class="breadcrumb-item active">Tạo Mới</li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.score_types.index') }}">Loại điểm</a></li>
+                    <li class="breadcrumb-item active">Tạo mới</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -23,7 +23,7 @@
                             <form action="{{ route('admin.score_types.store') }}" method="POST">
                                 @csrf
                                 <div class="mb-3">
-                                    <label for="name" class="form-label">Tên Điểm Quá Trình</label>
+                                    <label for="name" class="form-label">Tên điểm quá trình</label>
                                     <input type="text" name="name" id="name"
                                         class="form-control @error('name') is-invalid @enderror"
                                         value="{{ old('name') }}">
@@ -33,7 +33,7 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="type" class="form-label">Loại Điểm</label>
+                                    <label for="type" class="form-label">Loại điểm</label>
                                     <select name="type" id="type"
                                         class="form-select @error('type') is-invalid @enderror">
                                         <option>-- Chọn loại điểm --</option>
@@ -47,7 +47,7 @@
                                     @enderror
                                 </div>
 
-                                <button type="submit" class="btn btn-primary">Lưu</button>
+                                <button type="submit" class="btn btn-success">Lưu</button>
                             </form>
 
                         </div>

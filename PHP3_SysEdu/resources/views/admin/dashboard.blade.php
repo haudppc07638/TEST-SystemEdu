@@ -21,9 +21,9 @@
                             <form id="filterForm" method="GET" action="{{ route('admin.dashboard') }}">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <label for="facultySelect" class="form-label">Chọn Khoa</label>
+                                        <label for="facultySelect" class="form-label">Chọn khoa</label>
                                         <select id="facultySelect" name="faculty_id" class="form-select">
-                                            <option value="">Chọn Khoa</option>
+                                            <option value="">Chọn khoa</option>
                                             @foreach ($faculties as $faculty)
                                                 <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
                                             @endforeach
@@ -31,15 +31,15 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="majorSelect" class="form-label">Chọn Chuyên Ngành</label>
+                                        <label for="majorSelect" class="form-label">Chọn chuyên ngành</label>
                                         <select id="majorSelect" name="major_id" class="form-select">
-                                            <option value="">Chọn Chuyên Ngành</option>
+                                            <option value="">Chọn chuyên ngành</option>
                                             <!-- Options sẽ được cập nhật qua AJAX -->
                                         </select>
                                     </div>
                                 </div>
-                                <div class="mt-3">
-                                    <button type="submit" class="btn btn-primary">Xem Biểu Đồ</button>
+                                <div class="mt-4 text-center">
+                                    <button type="submit" class="btn btn-success">Xem biểu đồ</button>
                                 </div>
                             </form>
 
@@ -107,13 +107,13 @@
 
             function getColorByClassification(classification) {
                 switch (classification) {
-                    case 'Loại Yếu':
+                    case 'Loại yếu':
                         return '#FF4C4C';
-                    case 'Loại Trung bình':
+                    case 'Loại trung bình':
                         return '#FFCE5C';
-                    case 'Loại Khá':
+                    case 'Loại khá':
                         return '#5CFF5C';
-                    case 'Loại Giỏi':
+                    case 'Loại giỏi':
                         return '#5CC2FF';
                     default:
                         return '#0D6EFD';
@@ -133,7 +133,7 @@
                         success: function(data) {
                             let majorSelect = $('#majorSelect');
                             majorSelect.empty();
-                            majorSelect.append('<option value="">Chọn Chuyên Ngành</option>');
+                            majorSelect.append('<option value="">Chọn chuyên ngành</option>');
                             $.each(data, function(index, major) {
                                 majorSelect.append('<option value="' + major.id + '">' +
                                     major.name + '</option>');
@@ -141,7 +141,7 @@
                         }
                     });
                 } else {
-                    $('#majorSelect').empty().append('<option value="">Chọn Chuyên Ngành</option>');
+                    $('#majorSelect').empty().append('<option value="">Chọn chuyên ngành</option>');
                 }
             });
         });

@@ -5,12 +5,12 @@
 @section('main')
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>Quản Lý Thời Gian</h1>
+        <h1>Quản lý thời gian</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                <li class="breadcrumb-item">Thời Gian</li>
-                <li class="breadcrumb-item active">Thêm Thời Gian</li>
+                <li class="breadcrumb-item">Thời gian</li>
+                <li class="breadcrumb-item active">Thêm thời gian</li>
             </ol>
         </nav>
     </div>
@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="start_time" class="col-sm-2 col-form-label">Thời Gian Bắt Đầu</label>
+                    <label for="start_time" class="col-sm-2 col-form-label">Thời gian bắt đầu</label>
                     <div class="col-sm-10">
                         <input type="time" class="form-control @error('start_time') is-invalid @enderror" id="start_time" name="start_time" value="{{ old('start_time') }}">
                         @error('start_time')
@@ -38,7 +38,7 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="end_time" class="col-sm-2 col-form-label">Thời Gian Kết Thúc</label>
+                    <label for="end_time" class="col-sm-2 col-form-label">Thời gian kết thúc</label>
                     <div class="col-sm-10">
                         <input type="time" class="form-control @error('end_time') is-invalid @enderror" id="end_time" name="end_time" value="{{ old('end_time') }}">
                         @error('end_time')
@@ -48,7 +48,7 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-sm-10 offset-sm-2">
-                        <button type="submit" class="btn btn-primary">Thêm mới</button>
+                        <button type="submit" class="btn btn-success ">Thêm mới</button>
                     </div>
                 </div>
             </form>

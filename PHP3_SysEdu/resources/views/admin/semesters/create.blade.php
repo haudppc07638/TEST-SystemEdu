@@ -6,11 +6,11 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Thêm Học Kỳ</h1>
+        <h1>Thêm học kỳ</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('admin.semesters.index') }}">Học Kỳ</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.semesters.index') }}">Học kỳ</a></li>
                 <li class="breadcrumb-item active">Thêm</li>
             </ol>
         </nav>
@@ -35,7 +35,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <button type="submit" class="btn btn-primary">Thêm mới</button>
+                            <button type="submit" class="btn btn-success">Thêm mới</button>
                             <a href="{{ route('admin.semesters.index') }}" class="btn btn-secondary">Hủy</a>
                         </form>
                     </div>

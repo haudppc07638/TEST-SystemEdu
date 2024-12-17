@@ -5,12 +5,12 @@
 @section('main')
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>Quản Lý Phòng Học</h1>
+        <h1>Quản lý phòng học</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                <li class="breadcrumb-item">Đào Tạo</li>
-                <li class="breadcrumb-item active">Sửa Phòng Học</li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                <li class="breadcrumb-item">Đào tạo</li>
+                <li class="breadcrumb-item active">Sửa phòng học</li>
             </ol>
         </nav>
     </div>

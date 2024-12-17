@@ -83,7 +83,7 @@
                                 @error('subjects')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
-                                <button type="submit" class="btn btn-primary">Lưu</button>
+                                <button type="submit" class="btn btn-primary mt-2">Lưu</button>
                             </div>
                         </div>                        
                     </form>

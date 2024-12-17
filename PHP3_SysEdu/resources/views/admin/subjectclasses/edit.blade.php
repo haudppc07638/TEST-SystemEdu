@@ -6,11 +6,11 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Chỉnh Sửa Lớp Học</h1>
+        <h1>Chỉnh sửa lớp học</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('admin.subjectclasses.index') }}">Lớp Học</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.subjectclasses.index') }}">Lớp học</a></li>
                 <li class="breadcrumb-item active">Chỉnh Sửa</li>
             </ol>
         </nav>
@@ -45,7 +45,7 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                                <label for="name" class="col-sm-2 col-form-label">Tên Lớp </label>
+                                <label for="name" class="col-sm-2 col-form-label">Tên lớp </label>
                                 <div class="col-sm-10">
                                     <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $subjectClass->name) }}" >
                                     @error('name')

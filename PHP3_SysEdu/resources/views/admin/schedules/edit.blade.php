@@ -4,7 +4,7 @@
 
 @section('main')
     <main id="main" class="main">
-        <h1>Chỉnh sửa Lịch Học</h1>
+        <h1>Chỉnh sửa lịch học</h1>
 
         <form action="{{ route('admin.schedules.update', $schedule->id) }}" method="POST">
             @csrf
@@ -78,7 +78,7 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-primary">Cập Nhật</button>
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
             <a href="{{ route('admin.schedules.view-schedule', ['subject_class_id' => $schedule->subject_class_id]) }}"
                 class="btn btn-secondary">Quay Lại</a>
         </form>

@@ -6,10 +6,10 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Quản Lý Lớp</h1>
+            <h1>Quản lý lớp</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
                     <li class="breadcrumb-item">Khoa</li>
                     <li class="breadcrumb-item">Chuyên ngành</li>
                     <li class="breadcrumb-item">Lớp chuyên ngành </li>

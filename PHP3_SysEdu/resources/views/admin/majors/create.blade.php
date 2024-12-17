@@ -5,13 +5,13 @@
 @section('main')
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>Quản Lý Chuyên Ngành</h1>
+            <h1>Quản lý chuyên ngành</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
                     <li class="breadcrumb-item">Đào Tạo</li>
-                    <li class="breadcrumb-item"><a href="{{ route('admin.majors.index') }}">Chuyên Ngành</a></li>
-                    <li class="breadcrumb-item active">Thêm Chuyên Ngành</li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.majors.index') }}">Chuyên ngành</a></li>
+                    <li class="breadcrumb-item active">Thêm chuyên ngành</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -25,7 +25,7 @@
                         <label class="form-label">Khoa</label>
                         <select class="form-select @error('faculty_id') is-invalid @enderror"
                             aria-label="Default select example" name="faculty_id">
-                            <option value="" disabled {{ old('faculty_id') ? '' : 'selected' }}>Chọn Khoa</option>
+                            <option value="" disabled {{ old('faculty_id') ? '' : 'selected' }}>Chọn khoa</option>
                             @foreach ($faculties as $faculty)
                                 <option value="{{ $faculty->id }}"
                                     {{ old('faculty_id') == $faculty->id ? 'selected' : '' }}>

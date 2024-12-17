@@ -6,12 +6,12 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Tín Chỉ</h1>
+        <h1>Tín chỉ</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Trang Chủ</a></li>
-                <li class="breadcrumb-item">Đào Tạo</li>
-                <li class="breadcrumb-item active">Tín Chỉ</li>
+                <li class="breadcrumb-item"><a href="index.html">Trang chủ</a></li>
+                <li class="breadcrumb-item">Đào tạo</li>
+                <li class="breadcrumb-item active">Tín chỉ</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -21,8 +21,8 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title">
-                            <a href="{{ route('admin.credits.create') }}" type="submit" class="btn btn-primary m-2">Thêm mới</a>
+                        <div class="card-title d-lg-flex justify-content-end">
+                            <a href="{{ route('admin.credits.create') }}" type="submit" class="btn btn-success">Thêm mới</a>
                         </div>
                         <!-- Table with stripped rows -->
                         <table id="tableDepartment" class="table datatable" style="width:100%">

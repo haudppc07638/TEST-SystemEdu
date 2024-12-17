@@ -7,10 +7,10 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Quản Lý Nhân Sự</h1>
+            <h1>Quản lý nhân sự</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
                     <li class="breadcrumb-item">Đào tạo</li>
                     <li class="breadcrumb-item"><a href="{{ route('admin.employees.index') }}">Nhân sự</a></li>
                     <li class="breadcrumb-item active">Cập nhập thông tin nhân sự</li>

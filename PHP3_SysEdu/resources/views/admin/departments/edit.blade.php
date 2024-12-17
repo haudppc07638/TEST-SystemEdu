@@ -6,13 +6,13 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Quản Lý Phòng Ban</h1>
+        <h1>Quản lý phòng ban</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Trang Chủ</a></li>
-                <li class="breadcrumb-item">Đào Tạo</li>
+                <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Trang chủ</a></li>
+                <li class="breadcrumb-item">Đào tạo</li>
                 <li class="breadcrumb-item"><a href="{{route('admin.departments.index')}}">Phòng ban</a></li>
-                <li class="breadcrumb-item active">Sửa Phòng Ban</li>
+                <li class="breadcrumb-item active">Sửa phòng ban</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -48,7 +48,7 @@
                 </div>
                 <div class="col-12">
                     <div class="col-sm-10">
-                        <button type="submit" class="btn btn-success">Lưu</button>
+                        <button type="submit" class="btn btn-primary">Lưu chỉnh sửa</button>
                     </div>
                 </div>
             </form>

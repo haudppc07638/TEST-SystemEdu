@@ -9,9 +9,9 @@
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                    <li class="breadcrumb-item">Đào Tạo</li>
+                    <li class="breadcrumb-item">Đào tạo</li>
                     <li class="breadcrumb-item"><a href="{{ route('admin.majors.index') }}">Chuyên Ngành</a></li>
-                    <li class="breadcrumb-item active">Sửa Chuyên Ngành</li>
+                    <li class="breadcrumb-item active">Sửa chuyên ngành</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->

@@ -5,17 +5,17 @@
 @section('main')
 <main id="main" class="main">
     <div class="container">
-        <h1>Danh sách câu hỏi phản hồi</h1>
+        <h3>Danh sách câu hỏi phản hồi</h3>
 
         {{-- Nút tạo feedback --}}
-        <div class="mb-3">
-            <a href="{{ route('admin.feedbacks.create') }}" class="btn btn-primary">Tạo câu hỏi phản hồi</a>
+        <div class="mb-3 d-flex justify-content-end">
+            <a href="{{ route('admin.feedbacks.create') }}" class="btn btn-success">Tạo câu hỏi phản hồi</a>
         </div>
 
         {{-- Bộ lọc theo lớp môn --}}
         <form method="GET" action="{{ route('admin.feedbacks.index') }}">
             <div class="form-group">
-                <label for="subject_class_id">Lớp môn</label>
+                <label for="subject_class_id" class="mb-2">Lớp môn</label>
                 <select name="subject_class_id" id="subject_class_id" class="form-control" onchange="this.form.submit()">
                     <option value="">Chọn lớp môn</option>
                     @foreach ($subjectClasses as $subjectClass)
@@ -29,7 +29,7 @@
         </form>
 
         {{-- Danh sách feedbacks của sinh viên --}}
-        <h3>Phản hồi của sinh viên</h3>
+        <h4 class="mt-3">Phản hồi của sinh viên</h4>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -54,7 +54,7 @@
         {{ $feedbackResultsForStudents->links() }}
 
         {{-- Danh sách feedbacks của giáo viên --}}
-        <h3>Phản hồi của giáo viên</h3>
+        <h4>Phản hồi của giáo viên</h4>
         <table class="table table-striped">
             <thead>
                 <tr>

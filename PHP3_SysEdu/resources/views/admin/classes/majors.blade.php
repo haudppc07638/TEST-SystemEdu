@@ -6,10 +6,10 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Các Chuyên Ngành</h1>
+        <h1>Các chuyên ngành</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Trang Chủ</a></li>
+                <li class="breadcrumb-item"><a href="index.html">Trang chủ</a></li>
                 <li class="breadcrumb-item">Khoa</li>
                 <li class="breadcrumb-item active">Chuyên ngành</li>
             </ol>

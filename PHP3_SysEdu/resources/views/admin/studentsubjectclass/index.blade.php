@@ -5,11 +5,11 @@
 @section('main')
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>Quản Lý Điểm - Lớp Môn: {{ $subjectClass->name }}</h1>
+            <h1>Quản lý điểm - Lớp môn: {{ $subjectClass->name }}</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                    <li class="breadcrumb-item">Sinh Viên</li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                    <li class="breadcrumb-item">Sinh viên</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -75,9 +75,9 @@
                                                 <th class="fs-6">{{ $type['name'] }}</th>
                                             @endif
                                         @endforeach
-                                        <th class="fs-6">Tổng Điểm</th>
-                                        <th class="fs-6">Xếp Loại</th>
-                                        <th class="fs-6">Trạng Thái</th>
+                                        <th class="fs-6">Tổng điểm</th>
+                                        <th class="fs-6">Xếp loại</th>
+                                        <th class="fs-6">Trạng thái</th>
                                         @if (!$isBeforeStart)
                                             <th>Tác vụ</th>
                                         @endif

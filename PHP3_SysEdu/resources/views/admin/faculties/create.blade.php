@@ -6,11 +6,11 @@
 @section('main')
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>Quản Lý Khoa</h1>
+            <h1>Quản lý khoa</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Trang Chủ</a></li>
-                    <li class="breadcrumb-item">Đào Tạo</li>
+                    <li class="breadcrumb-item"><a href="index.html">Trang chủ</a></li>
+                    <li class="breadcrumb-item">Đào tạo</li>
                     <li class="breadcrumb-item">Khoa</li>
                     <li class="breadcrumb-item active">Thêm khoa</li>
                 </ol>
@@ -34,7 +34,7 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label for="inputText" class="col-sm-2 col-form-label">Mã Khoa</label>
+                        <label for="inputText" class="col-sm-2 col-form-label">Mã khoa</label>
                         <div class="col-sm-10">
                             <input type="text" name="code" class="form-control @error('code') is-invalid @enderror"
                                 value="{{ old('code') }}">
@@ -45,10 +45,10 @@
                     </div>
 
                     <div class="row mb-3">
-                        <label for="" class="col-sm-2 col-form-label">Trưởng Khoa</label>
+                        <label for="" class="col-sm-2 col-form-label">Trưởng khoa</label>
                         <div class="col-sm-10">
                             <select name="dean" class="form-select" id="dean" >
-                                <option value="">Chọn Trưởng Khoa</option>
+                                <option value="">Chọn trưởng khoa</option>
                                
                             </select>
                         </div>

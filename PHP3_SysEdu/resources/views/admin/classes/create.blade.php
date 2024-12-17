@@ -6,7 +6,7 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Quản Lý Lớp</h1>
+        <h1>Quản lý lớp</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
@@ -76,7 +76,7 @@
                 </div>
 
                 <!-- Nút Submit -->
-                <div class="col-12">
+                <div class="col-12 d-flex justify-content-center">
                     <button type="submit" class="btn btn-success">Thêm mới</button>
                 </div>
             </form>

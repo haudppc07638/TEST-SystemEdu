@@ -6,11 +6,11 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Quản Lý Nhân Sự </h1>
+            <h1>Quản lý nhân sự </h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                    <li class="breadcrumb-item">Nhân Sự </li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                    <li class="breadcrumb-item">Nhân sự </li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -20,8 +20,8 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="card-title">
-                                <a href="{{ route('admin.employees.create') }}" type="submit" class="btn btn-primary m-2">Thêm mới</a>
+                            <div class="card-title d-flex justify-content-end">
+                                <a href="{{ route('admin.employees.create') }}" type="submit" class="btn btn-success">Thêm mới</a>
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-4">
@@ -54,7 +54,7 @@
                                     <th>Số điện thoại</th>
                                     <th>Hình ảnh</th>
                                     <th>Chức vụ</th>
-                                    <th>Chuyên Nghành</th>
+                                    <th>Chuyên nghành</th>
                                     <th>Phòng ban</th>
                                     <th>Tác vụ</th>
                                 </tr>

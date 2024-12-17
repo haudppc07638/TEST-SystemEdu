@@ -5,12 +5,12 @@
 @section('main')
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>Quản Lý Thời Gian</h1>
+            <h1>Quản lý thời gian</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                    <li class="breadcrumb-item">Thời Gian</li>
-                    <li class="breadcrumb-item active">Danh Sách Thời Gian</li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                    <li class="breadcrumb-item">Thời gian</li>
+                    <li class="breadcrumb-item active">Danh sách thời gian</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -38,17 +38,17 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="card-title">
-                                <a href="{{ route('admin.timeslots.create') }}" type="submit" class="btn btn-primary m-2">Thêm mới</a>
+                            <div class="card-title d-flex justify-content-end">
+                                <a href="{{ route('admin.timeslots.create') }}" type="submit" class="btn btn-success  m-2">Thêm mới</a>
                             </div>
                             <table id="tableTimeSlot" class="table datatable">
                                 <thead>
                                     <tr>
                                         <th>#</th>
                                         <th>Ca </th>
-                                        <th>Thời Gian Bắt Đầu</th>
-                                        <th>Thời Gian Kết Thúc</th>
-                                        <th>Tác Vụ</th>
+                                        <th>Thời gian bắt đầu</th>
+                                        <th>Thời gian kết thúc</th>
+                                        <th>Tác vụ</th>
                                     </tr>
                                 </thead>
                                 <tbody>

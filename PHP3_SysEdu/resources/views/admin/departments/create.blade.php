@@ -6,10 +6,10 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Quản Lý Phòng Ban</h1>
+        <h1>Quản lý phòng ban</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Trang Chủ</a></li>
+                <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Trang chủ</a></li>
                 <li class="breadcrumb-item">Đào tạo</li>
                 <li class="breadcrumb-item"><a href="{{route('admin.departments.index')}}">Phòng ban</a></li>
                 <li class="breadcrumb-item active">Thêm phòng ban</li>

@@ -5,12 +5,12 @@
 @section('main')
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>Quản Lý Tín Chỉ</h1>
+        <h1>Quản lý tín chỉ</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                <li class="breadcrumb-item">Đào Tạo</li>
-                <li class="breadcrumb-item active">Sửa Tín Chỉ</li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                <li class="breadcrumb-item">Đào tạo</li>
+                <li class="breadcrumb-item active">Sửa tín chỉ</li>
             </ol>
         </nav>
     </div>
@@ -21,7 +21,7 @@
                 @csrf
                 @method('PUT')
                 <div class="row mb-3">
-                    <label for="price" class="col-sm-2 col-form-label">Giá Tiền (1TC)</label>
+                    <label for="price" class="col-sm-2 col-form-label">Giá tiền (1TC)</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control @error('price') is-invalid @enderror" id="price" name="price" value="{{ old('price', number_format($credit->price)) }}">
                         @error('price')

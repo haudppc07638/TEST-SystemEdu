@@ -6,13 +6,13 @@
          <li class="nav-item">
              <a class="nav-link " href="{{ route('admin.dashboard') }}">
                  <i class="bi bi-grid"></i>
-                 <span>Báo Cáo Thống Kê</span>
+                 <span>Báo cáo thống kê</span>
              </a>
          </li><!-- End Dashboard Nav -->
 
          <li class="nav-item">
              <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-                 <i class="bi bi-menu-button-wide"></i><span>Đào Tạo</span><i class="bi bi-chevron-down ms-auto"></i>
+                 <i class="bi bi-menu-button-wide"></i><span>Đào tạo</span><i class="bi bi-chevron-down ms-auto"></i>
              </a>
              <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                  <li>
@@ -22,37 +22,37 @@
                  </li>
                  <li>
                      <a href="{{ route('admin.majors.index') }}">
-                         <i class="bi bi-circle"></i><span>Chuyên Ngành</span>
+                         <i class="bi bi-circle"></i><span>Chuyên ngành</span>
                      </a>
                  </li>
                  <li>
                      <a href="{{ route('admin.subjects.index') }}">
-                         <i class="bi bi-circle"></i><span>Môn Học</span>
+                         <i class="bi bi-circle"></i><span>Môn học</span>
                      </a>
                  </li>
                  <li>
                      <a href="{{ route('admin.score_types.index') }}">
-                         <i class="bi bi-circle"></i><span>Điểm Quá Trình</span>
+                         <i class="bi bi-circle"></i><span>Điểm quá trình</span>
                      </a>
                  </li>
                  <li class="nav-item">
                      <a href="{{ route('admin.subject_lecturers.create') }}">
-                      <i class="bx bx-book"></i><span>Đăng Ký Môn Dạy</span>
+                      <i class="bi bi-circle"></i><span>Đăng ký môn dạy</span>
                      </a>
                  </li>
                  <li>
                      <a href="{{ route('admin.credits.index') }}">
-                         <i class="bi bi-circle"></i><span>Tín Chỉ</span>
+                         <i class="bi bi-circle"></i><span>Tín chỉ</span>
                      </a>
                  </li>
                  <li>
                      <a href="{{ route('admin.departments.index') }}">
-                         <i class="bi bi-circle"></i><span>Phòng Ban</span>
+                         <i class="bi bi-circle"></i><span>Phòng ban</span>
                      </a>
                  </li>
                  <li>
                      <a href="{{ route('admin.classrooms.index') }}">
-                         <i class="bi bi-circle"></i><span>Phòng Học</span>
+                         <i class="bi bi-circle"></i><span>Phòng học</span>
                      </a>
                  </li>
              </ul>
@@ -79,14 +79,14 @@
          <li class="nav-item">
             <a class="nav-link collapsed" href="{{ route('admin.semesters.index') }}">
                 <i class="bi bi-journal"></i>
-                <span>Học Kỳ</span>
+                <span>Học kỳ</span>
             </a>
         </li><!-- End Class Page Nav -->
 
          <li class="nav-item">
              <a class="nav-link collapsed" href="{{ route('admin.faculties') }}">
                  <i class="bi bi-folder-fill"></i>
-                 <span>Lớp Chuyên Ngành </span>
+                 <span>Lớp chuyên ngành </span>
              </a>
          </li><!-- End Class Page Nav -->
 
@@ -94,39 +94,39 @@
          <li class="nav-item">
              <a class="nav-link collapsed" href="{{ route('admin.students.index') }}">
                  <i class="bi bi-person-square"></i>
-                 <span>Sinh Viên</span>
+                 <span>Sinh viên</span>
              </a>
          </li><!-- End students Page Nav -->
 
          <li class="nav-item">
              <a class="nav-link collapsed" href="{{ route('admin.employees.index') }}">
                  <i class="bi bi-person-rolodex"></i>
-                 <span>Nhân Sự</span>
+                 <span>Nhân sự</span>
              </a>
          </li><!-- End employees Page Nav -->
 
          <li class="nav-item">
              <a class="nav-link collapsed" href="{{ route('admin.notifications.index') }}">
                  <i class="bi bi-bell-fill"></i>
-                 <span>Gửi Thông Báo</span>
+                 <span>Gửi thông báo</span>
              </a>
          </li><!-- End Notifications  Page Nav -->
          <li class="nav-item">
              <a class="nav-link collapsed" href="{{ route('admin.timeslots.index') }}">
                  <i class="bi bi-clock"></i>
-                 <span>Thời Gian Theo Ca</span>
+                 <span>Thời gian theo ca</span>
              </a>
          </li>
          <li class="nav-item">
              <a class="nav-link collapsed" href="{{ route('admin.subjectclasses.index') }}">
                  <i class="bi bi-folder2-open"></i>
-                 <span>Lớp Môn </span>
+                 <span>Lớp môn </span>
              </a>
          </li>
          <li class="nav-item">
              <a class="nav-link collapsed" href="{{ route('admin.feedbacks.index') }}">
                  <i class="bi bi-folder2-open"></i>
-                 <span>feedback </span>
+                 <span>Feedback </span>
              </a>
          </li>
      </ul>

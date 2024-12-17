@@ -6,11 +6,11 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Sửa Học Kỳ</h1>
+        <h1>Sửa học kỳ</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('admin.semesters.index') }}">Học Kỳ</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.semesters.index') }}">Học kỳ</a></li>
                 <li class="breadcrumb-item active">Sửa</li>
             </ol>
         </nav>
@@ -18,7 +18,7 @@
 
     <section class="section">
         <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg">
                 <div class="card">
                     <div class="card-body">
                         <form class="mt-3" method="POST" action="{{ route('admin.semesters.update', $semester->id) }}">
@@ -38,7 +38,7 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <button type="submit" class="btn btn-primary">Cập Nhật</button>
+                            <button type="submit" class="btn btn-primary">Cập nhật</button>
                             <a href="{{ route('admin.semesters.index') }}" class="btn btn-secondary">Hủy</a>
                         </form>
                     </div>

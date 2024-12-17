@@ -9,7 +9,7 @@
         <h1>Chi tiết thông báo</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('admin.notifications.index') }}">Gửi thông báo</a></li>
                 <li class="breadcrumb-item active">Chi tiết</li>
             </ol>

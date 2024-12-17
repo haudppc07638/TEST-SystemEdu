@@ -5,11 +5,11 @@
 @section('main')
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>Quản Lý Khoa</h1>
+        <h1>Quản lý khoa</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                <li class="breadcrumb-item">Đào Tạo</li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                <li class="breadcrumb-item">Đào tạo</li>
                 <li class="breadcrumb-item active">Khoa</li>
             </ol>
         </nav>
@@ -26,31 +26,29 @@
     <section class="section">
         <div class="row">
             <div class="col-lg-12">
-
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title d-flex">
-                            <a href="{{ route('admin.faculties.create') }}" type="submit" class="btn btn-primary m-2">Thêm mới</a>
-
+                        <div class="card-title d-flex justify-content-between">
                             <div class="col-lg-4">
                                 <form action="{{ route('admin.faculties.index') }}" method="GET">
-                                <div class="input-group m-3">
-                                    <input type="text" name="search" class="form-control" placeholder="Tìm kiếm khoa" value="{{ request('search') }}">
-                                    <button class="btn btn-outline-secondary" type="submit">Tìm kiếm</button>
-                                </div>
-                            </form>
+                                    <div class="input-group mt-3 mb-3">
+                                        <input type="text" name="search" class="form-control" placeholder="Tìm kiếm khoa" value="{{ request('search') }}">
+                                        <button class="btn bg-primary text-white" type="submit">Tìm kiếm</button>
+                                    </div>
+                                </form>
                             </div>
                             @if($facultiesView)
                             <ul>
                                 @if(request('search') > 0 )
                                 @foreach($facultiesView as $faculty)
-                                   
+
                                 @endforeach
                                 @endif
                             </ul>
-                        @else
+                            @else
                             <p>Không tìm thấy kết quả nào.</p>
-                        @endif
+                            @endif
+                            <a href="{{ route('admin.faculties.create') }}" type="submit" class="btn btn-success mt-3 mb-3">Thêm mới</a>
                         </div>
 
                         <!-- Table with stripped rows -->
@@ -66,8 +64,8 @@
                                     <th>Tác vụ</th>
                                 </tr>
                             </thead>
-                            <tbody>  
-                                @foreach($facultiesView as $index => $faculty)                              
+                            <tbody>
+                                @foreach($facultiesView as $index => $faculty)
                                 <tr>
                                     <td>{{ $index +1 }}</td>
                                     <td>{{ $faculty->name }}</td>

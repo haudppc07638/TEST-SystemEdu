@@ -6,12 +6,12 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Thêm Mới Môn Học</h1>
+            <h1>Thêm mới môn học</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
                     <li class="breadcrumb-item"><a href="{{ route('admin.subjects.index') }}">Môn</a></li>
-                    <li class="breadcrumb-item active">Thêm Mới</li>
+                    <li class="breadcrumb-item active">Thêm mới</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -66,7 +66,7 @@
                                 </div>
 
                                 <div class="row mb-3">
-                                    <label for="credit" class="col-sm-2 col-form-label">Tín Chỉ</label>
+                                    <label for="credit" class="col-sm-2 col-form-label">Tín chỉ</label>
                                     <div class="col-sm-10">
                                         <input type="number" name="credit" class="form-control" id="credit"
                                             value="{{ old('credit') }}" min="1" step="1">
@@ -77,7 +77,7 @@
                                 </div>
 
                                 <div class="mb-3" id="score_weights">
-                                    <label for="score_types" class="form-label">Chọn Loại Điểm và Trọng Số</label>
+                                    <label for="score_types" class="form-label">Chọn loại điểm và trọng số</label>
                                     <div class="row">
                                         @foreach ($scoreTypes as $scoreType)
                                             <div class="col-md-3 mt-2">
@@ -153,7 +153,7 @@
                                     </div>
                                 </div>
 
-                                <button type="submit" class="btn btn-primary">Thêm mới</button>
+                                <button type="submit" class="btn btn-success">Thêm mới</button>
                             </form>
                         </div>
                     </div>

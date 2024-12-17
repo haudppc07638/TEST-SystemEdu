@@ -5,12 +5,12 @@
 @section('main')
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>Chỉnh Sửa Loại Điểm</h1>
+            <h1>Chỉnh sửa loại điểm</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('admin.score_types.index') }}">Loại Điểm</a></li>
-                    <li class="breadcrumb-item active">Chỉnh Sửa</li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.score_types.index') }}">Loại điểm</a></li>
+                    <li class="breadcrumb-item active">Chỉnh sửa</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -25,7 +25,7 @@
                                 @method('PUT')
 
                                 <div class="mb-3">
-                                    <label for="name" class="form-label">Tên Loại Điểm</label>
+                                    <label for="name" class="form-label">Tên loại điểm</label>
                                     <input type="text" name="name" id="name"
                                         class="form-control @error('name') is-invalid @enderror"
                                         value="{{ old('name', $scoreType->name) }}">
@@ -35,7 +35,7 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="type" class="form-label">Loại Điểm</label>
+                                    <label for="type" class="form-label">Loại điểm</label>
                                     <select name="type" id="type"
                                         class="form-select @error('type') is-invalid @enderror">
                                         <option disabled>-- Chọn loại điểm --</option>
@@ -50,7 +50,7 @@
                                     @enderror
                                 </div>
 
-                                <button type="submit" class="btn btn-primary">Cập Nhật</button>
+                                <button type="submit" class="btn btn-primary">Cập nhật</button>
                             </form>
 
                         </div>

@@ -5,10 +5,10 @@
 @section('main')
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>Gửi Thông báo</h1>
+            <h1>Gửi thông báo</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
                     <li class="breadcrumb-item">Gửi thông báo</li>
                 </ol>
             </nav>
@@ -129,8 +129,8 @@
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-sm-10">
-                            <button type="submit" class="btn btn-primary">Gửi</button>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-success">Gửi</button>
                         </div>
                     </div>
                 </form>
