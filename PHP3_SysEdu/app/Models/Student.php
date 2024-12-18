@@ -36,6 +36,7 @@ class Student extends Authenticatable
         'house_number',        // Số nhà
         'sponsor_name',        // Tên người bảo hộ
         'sponsor_phone',       // Số điện thoại người bảo hộ
+        'status',              // Trạng thái
         'major_id',            // ID chuyên ngành
         'major_class_id',      // ID lớp chuyên ngành
     ];

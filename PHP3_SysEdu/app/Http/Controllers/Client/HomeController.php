@@ -3,117 +3,26 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
-use App\Models\Tuition;
-use Illuminate\Http\Request;
+use App\Models\Major;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
-use App\Models\StudentSubjectClass;
-use App\Models\TotalTuition;
-use Illuminate\Support\Facades\Http;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use App\Models\Student;
-use App\Mail\PaymentSuccessMail;
-use Illuminate\Support\Facades\Mail;
+
 class HomeController extends Controller
 {
-    public function index() {
-        $student = Auth::guard(name: 'student')->user();
-        $tuition = Tuition::getSubjectStudentRegister();
-        $totalTuition = TotalTuition::getTotal();
-        return view('client.home',[
-            'student' => $student,
-            'tuitionView' => $tuition,
-            'totalTuitionView' => $totalTuition
-    
-    ]);
-    }
-    public function tuition($id){
-        $studentSubjectClass = StudentSubjectClass::findOrFail($id);
-        $tuition = Tuition::insertTuitionJoinClass($studentSubjectClass->id);
-    
-        return redirect()->route('tuition.success')->with('success', 'Tuition created successfully');
-    }
-    public function generateVietQr(Request $request, $studentId)
+    public function index()
     {
-        $clientId = env('VIETQR_CLIENT_ID'); 
-        $apiKey = env('VIETQR_API_KEY');   
-        $apiUrl = 'https://api.vietqr.io/v2/generate';
+        $student = Auth::guard('student')->user();
+        $major = Major::find($student->major_id);
 
-        $student = Student::findOrFail($studentId);
-        $amount = ceil(TotalTuition::getTotalByStudentId($student->id));
-        $amount = (int)$amount;
+        $notifications = Notification::getStudentNotifications($major->id);
 
-    if ($amount <= 0) {
-        return back()->with('error', 'Số tiền thanh toán phải lớn hơn 0.');
+        return view('client.home', compact('notifications'));
     }
 
-    if ($amount <= 0) {
-        return back()->with('error', 'Không có học phí cần thanh toán.');
+    public function show($id)
+    {
+        $notification = Notification::find($id);
+        return view('client.detail-notification', compact('notification'));
     }
-      $accountNo = '06301360240402';
-      $accountName = 'VO MINH KHANH';
-      $acqId = 970422;
-      $addInfo = 'Thanh toán học phí'. $student->code;
-    $data = [
-        'accountNo' => $accountNo,
-        'accountName' => strtoupper($accountName),
-        'acqId' => $acqId,
-        'amount' => $amount,
-        'addInfo' => $addInfo,
-        'format' => 'image',
-        'template' => 'J5NYvUt',
-    ];
 
-        $response = Http::withHeaders([
-            'x-client-id' => $clientId,
-            'x-api-key' => $apiKey,
-            'Accept' => 'application/json',
-        ])->post($apiUrl, $data);
-
-        if ($response->successful()) {
-            $responseData = $response->json();
-        
-            if (isset($responseData['code']) && $responseData['code'] === '00') {
-                $qrCodeUrl = $responseData['data']['qrDataURL'];
-                TotalTuition::where('student_id', $student->id)
-                 ->update([
-                'payment_status' => 'paid',
-                'payment_date' => now(),
-            ]);
-
-            TotalTuition::where('student_id', $student->id)->update([
-                'payment_status' => 'paid',
-                'payment_date' => now(),
-            ]);
-        
-            try {
-                Mail::to($student->email)->send(new PaymentSuccessMail($student, $amount));
-            } catch (\Exception $e) {
-                return back()->with('error', 'Thanh toán thành công nhưng không thể gửi email: ' . $e->getMessage());
-            }
-        
-            return view('vietqr.index', compact('qrCodeUrl'))->with('success', 'Thanh toán thành công và email đã được gửi!');
-        } else {
-            return back()->with('error', 'Lỗi từ API: ' . ($responseData['desc'] ?? 'Không rõ lỗi.'));
-        }
-        }
-    }
-    
-//     public function showVietQr()
-// {
-//     try {
-//         // Gọi hàm generateVietQr với các tham số cần thiết
-//         $qrCodeUrl = $this->generateVietQr(
-//             'VCB',            // Mã ngân hàng (Ví dụ: Vietcombank)
-//             '123456789',      // Số tài khoản ngân hàng
-//             100000,           // Số tiền thanh toán (100,000 VNĐ)
-//             'Thanh toán đơn hàng #123'  // Mô tả thanh toán
-//         );
-
-//         // Trả về view với URL mã QR
-//         return view('vietqr', compact('qrCodeUrl'));
-//     } catch (\Exception $e) {
-//         // Nếu có lỗi, quay lại và hiển thị thông báo lỗi
-//         return back()->with('error', $e->getMessage());
-//     }
-// }
 }

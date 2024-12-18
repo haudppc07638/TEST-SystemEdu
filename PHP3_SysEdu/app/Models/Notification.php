@@ -81,6 +81,18 @@ class Notification extends Model
             ->where('type', 'system')
             ->whereJsonContains('recipients', $faculty->name)
             ->orderBy('date_sent', 'desc')
-            ->get();
+            ->paginate(10);
+    }
+
+    public static function getStudentNotifications($majorId)
+    {
+        $major = Major::find($majorId);
+
+        return self::with('employee')
+            ->where('type', 'system')
+            ->where('status', 'sent')
+            ->whereJsonContains('recipients', $major->name)
+            ->orderBy('date_sent', 'desc')
+            ->paginate(10);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Client\StudentFeedbackController;
+use App\Http\Controllers\Client\TuitionController;
 use App\Http\Controllers\Teacher\TeacherFreeController;
 use App\Http\Controllers\Teacher\TeacherScheduleController;
 use Illuminate\Support\Facades\Route;
@@ -167,8 +168,6 @@ Route::middleware(['admin'])->group(function () {
         Route::delete('{id}', [ClassroomController::class, 'destroy'])->name('destroy');
     });
 
-
-
     Route::prefix('notifications')->name('admin.notifications.')->group(function () {
         Route::get('/', [NotificationController::class, 'index'])->name('index');
         Route::post('send', [NotificationController::class, 'send'])->name('send');
@@ -176,7 +175,6 @@ Route::middleware(['admin'])->group(function () {
         Route::get('/{id}/edit', [NotificationController::class, 'edit'])->name('edit');
         Route::put('/{id}/edit', [NotificationController::class, 'update'])->name('update');
     });
-
 
     Route::prefix('timeslots')->name('admin.timeslots.')->group(function () {
         Route::get('/', [TimeSlotController::class, 'index'])->name('index');
@@ -263,7 +261,10 @@ Route::middleware(['admin'])->group(function () {
 Route::middleware(['student'])->group(function () {
 
     Route::get('trang-chu', [ClientHomeController::class, 'index'])->name('home');
-    
+    Route::get('thong-bao/{id}', [ClientHomeController::class, 'show'])->name('notifications.detail');
+
+    Route::get('thanh-toan', [TuitionController::class, 'index'])->name('tuition');
+
     // Route::get('/generate-vietqr', [HomeController::class, 'generateVietQr'])->name('vietqr');
     Route::get('/generate-vietqr/{studentId}', [HomeController::class, 'generateVietQr'])->name('vietqr');
 
@@ -301,15 +302,15 @@ Route::middleware(['teacher'])->group(function () {
         Route::get('/schedules/filter', [TeacherScheduleController::class, 'filter'])->name('teacher.schedules.filter');
         Route::get('/free-slot', [TeacherFreeController::class, 'index'])->name('teacher.free_slot.index');
         Route::post('/free-slot', [TeacherFreeController::class, 'update'])->name('teacher.free_slot.update');
-        
-    Route::prefix('classes')->group(function() {
-        Route::get('/', [AttendanceController::class, 'classList'])->name('classes');
-        Route::get('/{subjectClass}', [AttendanceController::class, 'classDetail'])->name('attendance.class.detail');
-        Route::get('/{subjectClass}/attendance', [AttendanceController::class, 'takeAttendance'])->name('attendance.take');
-        Route::post('/{subjectClass}/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
-        Route::post('/{subjectClass}/import', [AttendanceController::class, 'importGrades'])->name('attendance.import');
-        Route::get('/{subjectClass}/export', [AttendanceController::class, 'exportGrades'])->name('attendance.export');
-        Route::get('/{subjectClass}/export-exam-list', [AttendanceController::class, 'exportExamList'])->name('export.examList');
-    });
+
+        Route::prefix('classes')->group(function () {
+            Route::get('/', [AttendanceController::class, 'classList'])->name('classes');
+            Route::get('/{subjectClass}', [AttendanceController::class, 'classDetail'])->name('attendance.class.detail');
+            Route::get('/{subjectClass}/attendance', [AttendanceController::class, 'takeAttendance'])->name('attendance.take');
+            Route::post('/{subjectClass}/attendance/store', [AttendanceController::class, 'store'])->name('attendance.store');
+            Route::post('/{subjectClass}/import', [AttendanceController::class, 'importGrades'])->name('attendance.import');
+            Route::get('/{subjectClass}/export', [AttendanceController::class, 'exportGrades'])->name('attendance.export');
+            Route::get('/{subjectClass}/export-exam-list', [AttendanceController::class, 'exportExamList'])->name('export.examList');
+        });
     });
 });

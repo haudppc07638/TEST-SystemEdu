@@ -17,7 +17,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css"
     />
    
-    <link href="{{ asset('assets/client/css/tailwind.output.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/client/css/student.css') }}" rel="stylesheet">
 
     @stack('style')
     
@@ -33,7 +33,7 @@
     </x-client.sidebar>
 
      <!-- Nội dung chính -->
-      <div class="flex flex-col flex-1 w-3/4 p-6">
+      <div class="flex flex-col flex-1 w-3/4">
         <x-client.header></x-client.header>
        
         @yield('main')

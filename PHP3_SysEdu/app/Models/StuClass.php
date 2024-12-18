@@ -15,7 +15,6 @@ class StuClass extends Model
     protected $table = 'major_classes';
     protected $fillable = [
         'id',
-        'training_system',
         'name',
         'quantity',
         'status',

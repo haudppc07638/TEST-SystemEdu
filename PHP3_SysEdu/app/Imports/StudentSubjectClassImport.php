@@ -48,7 +48,6 @@ class StudentSubjectClassImport implements ToModel, WithHeadingRow, WithStartRow
 
     public function model(array $row)
     {
-        // dd($row);   
         $studentCode = trim($row['ma_sinh_vien'] ?? '');
 
         if (empty($studentCode)) {

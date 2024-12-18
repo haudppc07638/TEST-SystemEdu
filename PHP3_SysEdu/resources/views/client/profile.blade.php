@@ -6,77 +6,86 @@
 
 <main class="h-full pb-16 overflow-y-auto">
   <div class="container grid px-6 mx-auto">
-      <h2 class="my-6 text-2xl font-semibold text-gray-700">
-          Hồ sơ cá nhân
-      </h2>
+    <h2 class="my-6 text-2xl font-semibold text-gray-700">Hồ sơ cá nhân</h2>
 
-      <form class="px-4 md:px-8 w-full mx-auto py-12">
-        <div class="space-y-12">
-          
-          <div class="border-b border-gray-900/10 pb-12">
-            <h2 class="text-base font-semibold leading-7 text-gray-900 mb-4">Thông tin cá nhân</h2>
-      
-            <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-              <div class="sm:col-span-3">
-                <label for="first-name" class="text-sm font-medium leading-6 text-gray-900">Họ và tên</label>
-                <div class="mt-2 mb-4">
-                  <input type="text" name="first-name" id="first-name" autocomplete="given-name" class="form-input w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  value="{{ $user->fullname }}"
-                  readonly>
-                </div>
-              </div>
-
-              <div class="sm:col-span-3">
-                <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">Mã sinh viên</label>
-                <div class="mt-2 mb-4">
-                  <input type="text" name="first-name" id="first-name" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  value="{{ $user->code }}"
-                  readonly>
-                </div>
-              </div>
-
-              <div class="sm:col-span-3">
-                <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">Email</label>
-                <div class="mt-2 mb-4">
-                  <input type="text" name="first-name" id="first-name" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  value="{{ $user->email }}"
-                  readonly>
-                </div>
-              </div>
-
-              <div class="sm:col-span-3">
-                <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">Số điện thoại</label>
-                <div class="mt-2 mb-4">
-                  <input type="text" name="first-name" id="first-name" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  value="{{ $user->phone }}"
-                  readonly>
-                </div>
-              </div>
-
-              <div class="sm:col-span-3">
-                <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">Chuyên ngành</label>
-                <div class="mt-2 mb-4">
-                  <input type="text" name="first-name" id="first-name" autocomplete="given-name" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  value="{{ $user->major->name }}"
-                  readonly>
-                </div>
-              </div>
-
-              <div class="sm:col-span-3">
-                <label for="first-name" class="block text-sm font-medium leading-6 text-gray-900">Ngày nhập học</label>
-                <div class="mt-2 mb-4">
-                  <input type="text" name="first-name" id="first-name" autocomplete="given-name" class="form-input w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  value="{{ $formatDate }}"
-                  readonly>
-                </div>
-              </div>
-          
-            </div>
+    <form class="px-4 md:px-8 w-full mx-auto py-12">
+      <div class="space-y-12">
+        
+        <div class="border-b border-gray-900/10 pb-12">
+          <h2 class="text-base font-semibold leading-7 text-gray-900 mb-4">Thông tin cá nhân</h2>
+        
+          <!-- Table to display student information -->
+          <div class="overflow-hidden bg-white shadow sm:rounded-lg">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Thông tin</th>
+                  <th class="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">Chi tiết</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200 bg-white">
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">Họ và tên</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->full_name }}</td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">Mã sinh viên</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->code }}</td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">Email</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->email }}</td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">Số điện thoại</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->phone }}</td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">Ngày nhập học</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $formatDate }}</td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">Chuyên ngành</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->major->name }}</td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">Quốc tịch</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->nation }}</td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">CMND/CCCD</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->identity_card }}</td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">Ngày cấp CMND/CCCD</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->card_issuance_date }}</td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">Nơi cấp CMND/CCCD</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->card_location }}</td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">Địa chỉ</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {{ $user->house_number }}, {{ $user->commune_level }}, {{ $user->district }}, {{ $user->provice_city }}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">Người bảo hộ</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->sponsor_name }}</td>
+                </tr>
+                <tr>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">Số điện thoại người bảo hộ</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->sponsor_phone }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-      
+          <!-- End table -->
         </div>
-      </form>
-
+      
+      </div>
+    </form>
   </div>
 </main>
 

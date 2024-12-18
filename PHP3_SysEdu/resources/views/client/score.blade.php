@@ -8,8 +8,10 @@
         <h2 class="my-6 text-2xl font-semibold text-gray-700">Bảng Điểm</h2>
 
         <h4 class="mb-4 text-sm font-semibold">Chuyên ngành: {{ $major->name }}</h4>
-        <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
-            <div class="w-full overflow-x-auto">
+        
+        <!-- Card wrapper -->
+        <div class="w-full mb-8 bg-white rounded-lg shadow-lg p-6">
+            <div class="overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr class="text-xs font-semibold tracking-wide text-left uppercase border-b">
@@ -17,8 +19,6 @@
                             <th class="px-4 py-3">Học kỳ</th>
                             <th class="px-4 py-3">Môn</th>
                             <th class="px-4 py-3">Mã môn</th>
-                            <th class="px-4 py-3">Điểm giữa kỳ</th>
-                            <th class="px-4 py-3">Điểm cuối kỳ</th>
                             <th class="px-4 py-3">Điểm trung bình</th>
                             <th class="px-4 py-3">Trạng thái</th>
                         </tr>
@@ -30,8 +30,6 @@
                             <td class="px-4 py-3 text-sm">{{ $score->subjectClass->semester->block }}</td>
                             <td class="px-4 py-3 text-sm">{{ $score->subjectClass->subject->name }}</td>
                             <td class="px-4 py-3 text-sm">{{ $score->subjectClass->subject->code }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $score->midterm_score }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $score->final_score }}</td>
                             <td class="px-4 py-3 text-sm">{{ $score->total_score }}</td> <!-- Lấy từ database -->
                             <td class="px-4 py-3 text-sm">
                                 @if($score->status == 0)
