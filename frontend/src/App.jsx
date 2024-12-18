@@ -7,6 +7,7 @@ import Recruitment from "./Pages/Recruitment/Page";
 import TrainingProgram from "./Pages/TrainingProgram/Page";
 import GeneralIntroduction from "./Pages/GeneralIntroduction/Page";
 import ContactPage from "./Pages/ContactPage/Page";
+import ShoolNews from "./Pages/NewsSchool/Page";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             element={<GeneralIntroduction />}
           />
           <Route path="/contacts" element={<ContactPage />} />
+          <Route path="/news" element={<ShoolNews />} />
         </Routes>
       </LayoutBlog>
     </Router>

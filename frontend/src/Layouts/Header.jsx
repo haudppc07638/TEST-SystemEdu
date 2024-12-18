@@ -92,13 +92,7 @@ function Header() {
                         GIỚI THIỆU CHUNG
                     </a>
                     <a
-                        href="/"
-                        className="text-blue-600 hover:text-blue-300 transition duration-300 text-sm font-medium"
-                    >
-                        HOẠT ĐỘNG SV
-                    </a>
-                    <a
-                        href="/"
+                        href="/news"
                         className="text-blue-600 hover:text-blue-300 transition duration-300 text-sm font-medium"
                     >
                         TIN TỨC
@@ -151,19 +145,13 @@ function Header() {
                             GIỚI THIỆU CHUNG
                         </a>
                         <a
-                            href="/"
-                            className="text-blue-600 hover:text-blue-300 transition duration-300 text-sm font-medium"
-                        >
-                            HOẠT ĐỘNG SV
-                        </a>
-                        <a
-                            href="/"
+                            href="/news"
                             className="text-blue-600 hover:text-blue-300 transition duration-300 text-sm font-medium"
                         >
                             TIN TỨC
                         </a>
                         <a
-                            href="/"
+                            href="/contacts"
                             className="text-blue-600 hover:text-blue-300 transition duration-300 text-sm font-medium"
                         >
                             LIÊN HỆ

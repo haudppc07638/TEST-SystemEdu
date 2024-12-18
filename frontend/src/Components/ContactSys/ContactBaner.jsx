@@ -7,9 +7,9 @@ function ContactBaner() {
       <h2 className="text-3xl text-black font-bold text-center mb-8">
         Thông tin liên hệ
       </h2>
-      <div className="lg:flex lg:items-center lg:justify-between border-t space-y-8 lg:space-y-0">
+      <div className="lg:flex lg:items-center lg:justify-between border-t pt-6 space-y-8 lg:space-y-0">
         <div className="lg:w-1/2">
-          <div className="bg-white shadow-lg rounded-lg p-8">
+          <div className="bg-whiter shadow-lg rounded-lg p-8">
             <h4 className="text-3xl font-bold text-blue-600 mb-4">
               Cao đẳng Sysedu
             </h4>
@@ -37,7 +37,7 @@ function ContactBaner() {
         </div>
       </div>
 
-      <div className="bg-whiter py-16 px-16 mt-10">
+      <div className="bg-whiter py-16 px-16 mt-10 shadow rounded-lg">
         <h2 className="text-2xl font-semibold mb-4">
           Cơ sở đào tạo tại Cần Thơ
         </h2>
@@ -69,12 +69,12 @@ function ContactBaner() {
         </ul>
       </div>
       <div>
-        <h2 className="text-3xl font-semibold mb-4 mt-10">
-          Bản đồ địa chỉ
+        <h2 className="w-full bg-blue-600 text-white px-16 py-4 text-2xl font-semibold mt-10">
+          Bản đồ địa chỉ Trường Cao đẳng Sysedu 
         </h2>
         <iframe
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d177859.28351141888!2d105.63952704794647!3d9.91962524858424!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a08906415c355f%3A0x416815a99ebd841e!2zVHLGsOG7nW5nIENhbyDEkeG6s25nIEZQVCBQb2x5dGVjaG5pYw!5e0!3m2!1svi!2s!4v1734459540038!5m2!1svi!2s"
-          className="w-full mt-6"
+          className="w-full"
           title="SysEdu"
           height="450"
           allowfullscreen=""

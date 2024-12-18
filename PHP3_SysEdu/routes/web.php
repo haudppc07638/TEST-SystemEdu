@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\EnrollmentController;
 use App\Http\Controllers\Client\StudentFeedbackController;
 use App\Http\Controllers\Client\TuitionController;
 use App\Http\Controllers\Teacher\TeacherFreeController;
@@ -39,10 +40,31 @@ use App\Http\Controllers\Admin\SubjectLecturerController;
 use App\Http\Controllers\Teacher\StudentLookupController;
 use App\Http\Controllers\Admin\TeacherFreeSlotController;
 use App\Http\Controllers\Teacher\AttendanceController;
+use App\Http\Controllers\Api\NewsController;
 
 use App\Http\Controllers\Client\HomeController;
-// auth route ==============================================================================
 
+//Evirouments===============================================================================
+
+Route::prefix('enrollments')->group(function () {
+    Route::get('/', [EnrollmentController::class, 'index']); 
+    // Route::get('/{id}', [EnrollmentController::class, 'show']); 
+    Route::post('/', [EnrollmentController::class, 'store']); 
+    // Route::put('/{id}', [EnrollmentController::class, 'update']); 
+    // Route::delete('/{id}', [EnrollmentController::class, 'destroy']);
+});
+
+//News======================================================================================
+
+Route::prefix('news')->group(function () {
+    Route::get('/', [NewsController::class, 'index']); 
+    Route::get('/{id}', [NewsController::class, 'show']); 
+    Route::post('/', [NewsController::class, 'store']); 
+    Route::put('/{id}', [NewsController::class, 'update']); 
+    Route::delete('/{id}', [NewsController::class, 'destroy']);
+});
+
+// auth route ==============================================================================
 Route::get('/', [LoginController::class, 'index'])->name('login');
 
 Route::prefix('auth/login')->group(function () {

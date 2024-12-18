@@ -107,13 +107,7 @@ function BannerTop() {
                         GIỚI THIỆU CHUNG
                     </a>
                     <a
-                        href="/"
-                        className="text-white hover:text-blue-300 transition duration-300 text-sm font-medium"
-                    >
-                        HOẠT ĐỘNG SV
-                    </a>
-                    <a
-                        href="/"
+                        href="/news"
                         className="text-white hover:text-blue-500 transition duration-300 text-sm font-medium"
                     >
                         TIN TỨC
