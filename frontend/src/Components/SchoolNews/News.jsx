@@ -67,7 +67,7 @@ function News() {
 
           <div className="md:w-1/2 px-4">
             <img
-              src={`../../Assets/Images/${news[0].image}`} 
+              src={`/images/${news[0].image}`} 
               alt={news[0].title}
               className="w-full h-100 shadow-md"
             />

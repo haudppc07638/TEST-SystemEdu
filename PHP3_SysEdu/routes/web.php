@@ -49,7 +49,7 @@ use App\Http\Controllers\Client\HomeController;
 Route::prefix('enrollments')->group(function () {
     Route::get('/', [EnrollmentController::class, 'index']); 
     // Route::get('/{id}', [EnrollmentController::class, 'show']); 
-    Route::post('/', [EnrollmentController::class, 'store']); 
+    Route::post('/', [EnrollmentController::class, 'store'])->middleware('csrf-token'); 
     // Route::put('/{id}', [EnrollmentController::class, 'update']); 
     // Route::delete('/{id}', [EnrollmentController::class, 'destroy']);
 });

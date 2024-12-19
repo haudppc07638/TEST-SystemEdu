@@ -36,10 +36,10 @@ function BannerSection() {
     graduationProvince: "",
     graduationDistrict: "",
     graduationWard: "",
-    student: true,
-    guardian: true,
-    address: true,
-    atschool: true,
+    student: false,
+    guardian: false,
+    address:false,
+    atschool: false,
     idFront: "",
     idBack: "",
     diploma: "",
@@ -72,38 +72,6 @@ function BannerSection() {
     };
   }, [isModalVisible]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    const formDataToSend = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      formDataToSend.append(key, value);
-    });
-
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/enrollments",
-        formDataToSend,
-        {
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-        }
-      );
-      setSubmitSuccess(true);
-      setSubmitError(null);
-      console.log("Form submitted successfully:", response.data);
-    } catch (error) {
-      setSubmitError(error.message);
-      setSubmitSuccess(false);
-      console.error("Error submitting form:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   const fetchEnrollment = async () => {
     try {
       const response = await axios.get("http://127.0.0.1:8000/enrollments");
@@ -116,6 +84,60 @@ function BannerSection() {
   useEffect(() => {
     fetchEnrollment();
   }, []);
+
+  // Hàm lấy CSRF token
+  const getCsrfToken = () => {
+    const token = document
+      .querySelector('meta[name="csrf-token"]')
+      .getAttribute("content");
+    return token;
+  };
+
+  // Cấu hình axios instance
+  const axiosInstance = axios.create({
+    baseURL: "http://127.0.0.1:8000", // Thay đổi URL backend của bạn
+    headers: {
+      "X-CSRF-TOKEN": getCsrfToken(), // Đảm bảo CSRF token được gửi
+      "Content-Type": "application/json", // Hoặc multipart/form-data nếu có file
+    },
+    withCredentials: true, // Đảm bảo gửi cookies với request
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const csrfToken = getCsrfToken(); // Dùng hàm getCsrfToken() để lấy token
+      const formDataToSend = new FormData();
+
+      Object.entries(formData).forEach(([key, value]) => {
+        formDataToSend.append(key, value);
+      });
+
+      // Gửi request POST với CSRF token và multipart/form-data (nếu có file)
+      const response = await axiosInstance.post(
+        "/enrollments",
+        formDataToSend,
+        {
+          headers: {
+            "X-CSRF-TOKEN": csrfToken,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setSubmitSuccess(true);
+      setSubmitError(null);
+      console.log("Form submitted successfully:", response.data);
+    } catch (error) {
+      setSubmitError(error.response?.data?.message || "Error submitting form.");
+      setSubmitSuccess(false);
+      console.error("Error submitting form:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="container mx-auto py-16">
@@ -185,7 +207,6 @@ function BannerSection() {
                       name="fullName"
                       value={formData.fullName}
                       onChange={handleChange}
-                      required
                     />
                   </div>
                   <div className="w-full">
@@ -243,7 +264,6 @@ function BannerSection() {
                       name="idNumber"
                       value={formData.idNumber}
                       onChange={handleChange}
-                      required
                     />
                   </div>
                   <div className="w-full">
@@ -256,7 +276,6 @@ function BannerSection() {
                       name="issueDate"
                       value={formData.issueDate}
                       onChange={handleChange}
-                      required
                     />
                   </div>
                   <div className="w-full">
@@ -270,7 +289,6 @@ function BannerSection() {
                       name="issuePlace"
                       value={formData.issuePlace}
                       onChange={handleChange}
-                      required
                     />
                   </div>
                 </div>
@@ -340,7 +358,6 @@ function BannerSection() {
                       name="phoneNumber"
                       value={formData.phoneNumber}
                       onChange={handleChange}
-                      required
                     />
                   </div>
                   <div className="w-full">
@@ -354,7 +371,6 @@ function BannerSection() {
                       onChange={handleChange}
                       placeholder="email@example.com"
                       name="email"
-                      required
                     />
                   </div>
                   <div className="w-full">
@@ -368,7 +384,6 @@ function BannerSection() {
                       onChange={handleChange}
                       placeholder="Họ và tên"
                       name="guardianName"
-                      required
                     />
                   </div>
                   <div className="w-full">
@@ -382,7 +397,6 @@ function BannerSection() {
                       name="guardianPhone"
                       value={formData.guardianPhone}
                       onChange={handleChange}
-                      required
                     />
                   </div>
                 </div>
@@ -492,7 +506,6 @@ function BannerSection() {
                       name="year"
                       value={formData.year}
                       onChange={handleChange}
-                      required
                     />
                   </div>
                   <div>

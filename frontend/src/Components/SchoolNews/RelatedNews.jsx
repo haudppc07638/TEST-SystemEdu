@@ -32,7 +32,7 @@ function RelatedNews() {
   const [news, setNews] = useState([]);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 8;
+  const postsPerPage = 6;
 
   const fetchNews = async () => {
     try {
@@ -80,7 +80,7 @@ function RelatedNews() {
               className="flex flex-col p-4 shadow-md rounded-lg items-start bg-white hover:shadow-lg transition-shadow duration-300"
             >
               <img
-                src={post.imageUrl}
+                src={`/images/${post.image}`} 
                 alt={post.title}
                 className="w-full h-60 object-cover mb-4 rounded-md"
               />
