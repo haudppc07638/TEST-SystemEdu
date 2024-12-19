@@ -9,9 +9,12 @@
 
         <h4 class="mb-4 text-sm font-semibold">Chuyên ngành: {{ $major->name }}</h4>
         
-        <!-- Card wrapper -->
-        <div class="w-full mb-8 bg-white rounded-lg shadow-lg p-6">
-            <div class="overflow-x-auto">
+        @foreach($studentSubjectClasses->groupBy('subjectClass.subject_id') as $subjectId => $subjectClasses)
+        <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">
+                Môn: {{ $subjectClasses->first()->subjectClass->subject->name }}
+            </h3>
+            <div class="w-full overflow-x-auto">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr class="text-xs font-semibold tracking-wide text-left uppercase border-b">
@@ -19,20 +22,28 @@
                             <th class="px-4 py-3">Học kỳ</th>
                             <th class="px-4 py-3">Môn</th>
                             <th class="px-4 py-3">Mã môn</th>
-                            <th class="px-4 py-3">Điểm trung bình</th>
+                            @foreach($subjectScoreTypes->where('subject_id', $subjectId) as $subjectScoreType)
+                                <th class="px-4 py-3">{{ $subjectScoreType->name ?? 'Không có tên' }}</th>
+                            @endforeach
                             <th class="px-4 py-3">Trạng thái</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y dark:divide-gray-700">
-                        @foreach($scores as $index => $score)
+                        @foreach($subjectClasses as $index => $studentSubjectClass)
                         <tr class="text-gray-700">
-                            <td class="px-4 py-3">{{ $index + 1 }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $score->subjectClass->semester->block }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $score->subjectClass->subject->name }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $score->subjectClass->subject->code }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $score->total_score }}</td> <!-- Lấy từ database -->
+                            <td class="px-4 py-3">{{ $studentSubjectClasses->firstItem() + $index }}</td>
+                            <td class="px-4 py-3 text-sm">{{ $studentSubjectClass->subjectClass->semester->block }}</td>
+                            <td class="px-4 py-3 text-sm">{{ $studentSubjectClass->subjectClass->subject->name }}</td>
+                            <td class="px-4 py-3 text-sm">{{ $studentSubjectClass->subjectClass->subject->code }}</td>
+
+                            @foreach($subjectScoreTypes->where('subject_id', $subjectId) as $subjectScoreType)
+                                <td class="px-4 py-3">
+                                    {{ optional($studentSubjectClass->scores->where('subjectScoreType_id', $subjectScoreType->id)->first())->score ?? 'Chưa có điểm' }}
+                                </td>
+                            @endforeach
+
                             <td class="px-4 py-3 text-sm">
-                                @if($score->status == 0)
+                                @if($studentSubjectClass->total_score >= 5)
                                     <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full">Pass</span>
                                 @else
                                     <span class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full">Fail</span>
@@ -40,21 +51,21 @@
                             </td>
                         </tr>
                         @endforeach
-                    </tbody>
+                    </tbody>                    
                 </table>
             </div>
 
-            <!-- Pagination -->
             <div class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9">
                 <span class="flex items-center col-span-3">
-                    Hiển thị {{ $scores->firstItem() }}-{{ $scores->lastItem() }} trên {{ $scores->total() }}
+                    Hiển thị {{ $studentSubjectClasses->firstItem() }}-{{ $studentSubjectClasses->lastItem() }} trên {{ $studentSubjectClasses->total() }}
                 </span>
                 <span class="col-span-2"></span>
                 <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
-                    {{ $scores->links() }} <!-- Hiển thị phân trang -->
+                    {{ $studentSubjectClasses->links() }}
                 </span>
-            </div>
+            </div>            
         </div>
+        @endforeach
     </div>
 </main>
 @endsection

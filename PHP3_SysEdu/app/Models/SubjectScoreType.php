@@ -20,7 +20,7 @@ class SubjectScoreType extends Model
 
     public function scoreType(): BelongsTo
     {
-        return $this->belongsTo(ScoreType::class);
+        return $this->belongsTo(ScoreType::class, 'score_type_id');
     }
 
     public function scores(): HasMany

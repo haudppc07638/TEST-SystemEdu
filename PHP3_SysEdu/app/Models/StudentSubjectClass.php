@@ -15,7 +15,7 @@ class StudentSubjectClass extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['total_score', 'classification', 'status', 'student_id', 'subject_class_id'];
+    protected $fillable = ['total_score', 'classification', 'status', 'type', 'student_id', 'subject_class_id'];
 
     public function student(): BeLongsTo
     {
@@ -63,6 +63,13 @@ class StudentSubjectClass extends Model
     //     $this->attributes['final_score'] = $value;
     //     $this->calculateTotalScore();
     // }
+    public function getStudentScores()
+    {
+        return Score::with('subjectScoreType.scoreType')
+            ->where('student_subject_class_id', $this->id)
+            ->get();
+    }
+
     public static function validate($data, $request)
     {
         $rules = $request->rules();
@@ -87,36 +94,87 @@ class StudentSubjectClass extends Model
     }
     public static function insertStudentSubjectClass($studentId, $subjectClassId)
     {
-        $studentSubjectClass = self::create([
-            'student_id' => $studentId,
-            'subject_class_id' => $subjectClassId,
-            'total_score' => 0,
-            'classification' => 'Chưa phân loại',
-        ]);
-        $type = SubjectHistory::determineTypeBasedOnStatus($studentSubjectClass);
+        $subjectClass = SubjectClass::findOrFail($subjectClassId);
 
-        SubjectHistory::create([
-            'student_subject_class_id' => $studentSubjectClass->id,
-            'type' => $type,
-        ]);
-    
-        return $studentSubjectClass;
+        $existingRegistration = self::where('student_id', $studentId)
+            ->where('subject_class_id', $subjectClassId)
+            ->exists();
+
+        if (!$existingRegistration) {
+            $studentSubjectClass = self::create([
+                'student_id' => $studentId,
+                'subject_class_id' => $subjectClassId,
+                'total_score' => 0,
+                'classification' => 'Chưa phân loại',
+                'type' => 'mới',
+            ]);
+            return $studentSubjectClass;
+        }
+
+        return null;
     }
+    public static function determineType($subjectClass, $studentId)
+    {
+        $subjectHistory = SubjectHistory::whereHas('studentSubjectClass.subjectClass', function ($query) use ($subjectClass) {
+            $query->where('subject_id', $subjectClass->subject_id); // Lọc theo môn học
+        })
+        ->whereHas('studentSubjectClass', function ($query) use ($studentId) {
+            $query->where('student_id', $studentId); // Lọc theo sinh viên
+        })
+        ->latest()
+        ->first();
+
+    if (!$subjectHistory) {
+        return 'mới';
+    }
+
+    $studentSubjectClass = StudentSubjectClass::where('id', $subjectHistory->student_subject_class_id)
+        ->latest()
+        ->first();
+
+    if ($studentSubjectClass && $studentSubjectClass->status === 'fail') {
+        return 'học lại';
+    }
+
+    if ($studentSubjectClass && $studentSubjectClass->status === 'pass') {
+        return 'cải thiện';
+    }
+
+    return 'mới';
+    }
+
 
     public static function cancelStudentSubjectClass($studentId, $subjectClassId)
     {
         $studentSubjectClass = self::where('student_id', $studentId)
             ->where('subject_class_id', $subjectClassId)
             ->first();
-        if ($studentSubjectClass) {
-            $subjectClass = $studentSubjectClass->subjectClass;
 
-            if ($subjectClass && $subjectClass->subject) {
-
-                return $studentSubjectClass->delete();
-            }
+        if (!$studentSubjectClass) {
+            return false; // Không tìm thấy lớp môn đã đăng ký
         }
-        return false;
+
+        if (!$studentSubjectClass->subjectClass) {
+            return false; // Lớp môn không tồn tại
+        }
+
+        // Kiểm tra hạn đăng ký
+        $registrationDeadline = \Carbon\Carbon::parse($studentSubjectClass->subjectClass->registration_deadline);
+        if (\Carbon\Carbon::now()->greaterThan($registrationDeadline)) {
+            return false; // Không thể hủy nếu đã hết hạn đăng ký
+        }
+
+        return $studentSubjectClass->delete();
+    }
+    private static function isCurrentSemester($semesterId)
+    {
+        $currentSemester = Semester::where('block', false)->first();
+
+        if (!$currentSemester) {
+            return false;
+        }
+
+        return $currentSemester->id == $semesterId;
     }
 
     public static function getRegisteredClassForSubject($studentId, $subjectId)
@@ -259,21 +317,21 @@ class StudentSubjectClass extends Model
         });
     }
 
-// protected static function bootSubject()
-// {
-//     parent::boot();
+    // protected static function bootSubject()
+    // {
+    //     parent::boot();
 
-//     static::created(function (StudentSubjectClass $studentSubjectClass) {
-//         $type = SubjectHistory::determineTypeBasedOnStatus($studentSubjectClass);
+    //     static::created(function (StudentSubjectClass $studentSubjectClass) {
+    //         $type = SubjectHistory::determineTypeBasedOnStatus($studentSubjectClass);
 
-//         Log::info('SubjectHistory type determined:', ['type' => $type]);
+    //         Log::info('SubjectHistory type determined:', ['type' => $type]);
 
-//         SubjectHistory::create([
-//             'student_subject_class_id' => $studentSubjectClass->id,
-//             'type' => $type,
-//         ]);
-//     });
-// }
+    //         SubjectHistory::create([
+    //             'student_subject_class_id' => $studentSubjectClass->id,
+    //             'type' => $type,
+    //         ]);
+    //     });
+    // }
     public static function getIncompleteFeedbackClasses($studentId)
     {
         return self::with(['subjectClass', 'feedbackResults'])  // Lấy thông tin lớp môn và feedbackResults
@@ -281,7 +339,7 @@ class StudentSubjectClass extends Model
             ->whereHas('feedbackResults', function ($query) use ($studentId) {
                 // Kiểm tra xem lớp môn đó đã có feedback
                 $query->where('student_id', $studentId)  // Lọc theo student_id
-                      ->whereNull('results');  // Chỉ lấy những phản hồi chưa có kết quả
+                    ->whereNull('results');  // Chỉ lấy những phản hồi chưa có kết quả
             })
             ->get();  // Trả về các lớp môn mà sinh viên chưa điền feedback
     }

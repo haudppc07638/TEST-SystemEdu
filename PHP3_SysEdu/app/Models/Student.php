@@ -231,6 +231,14 @@ class Student extends Authenticatable
             ->where('id', $id)
             ->firstOrFail();
     }
+    public static function getCurrentSemesterId($studentId)
+    {
+        $currentSemester = Semester::where('start_date', '<=', now())
+                                   ->where('end_date', '>=', now())
+                                   ->first();
+        
+        return $currentSemester ? $currentSemester->id : null;
+    }
 
     public function getGroupedSubjectResults()
     {
