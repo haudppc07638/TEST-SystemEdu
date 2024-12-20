@@ -58,7 +58,7 @@
                                                         id="attendance-{{ $student->id }}"
                                                         name="attendance[{{ $student->id }}]" type="checkbox"
                                                         data-student-id="{{ $student->id }}"
-                                                        checked
+                                                        {{ $student->attendances ? null : 'checked'}}
                                                         {{ $student->attendances->first()?->status ? 'checked' : '' }}>
                                                     <label class="tgl-btn" for="attendance-{{ $student->id }}"></label>
                                                 </div>
