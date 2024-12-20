@@ -40,9 +40,9 @@ class MajorController extends Controller
         });
         if ($request->expectsJson()) {
             return response()->json($majors, 201)
-            ->header('Access-Control-Allow-Origin', '*')
-            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
-            ->header('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With');
+                ->header('Access-Control-Allow-Origin', '*')
+                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+                ->header('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With');
         }
     }
 
@@ -111,13 +111,13 @@ class MajorController extends Controller
     {
         try {
             $isDeleted = Major::deleteMajorId($id);
-    
+
             if ($isDeleted) {
                 toastr()->success('Xóa thành công');
             } else {
                 toastr()->warning('Hiện tại chuyên ngành đang có dữ liệu phụ thuộc!');
             }
-    
+
             return redirect()->route('admin.majors.index');
         } catch (QueryException $e) {
             toastr()->warning('Đã xảy ra lỗi khi xóa chuyên ngành. Vui lòng thử lại!');

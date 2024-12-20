@@ -36,12 +36,12 @@
                 <span>Ca dạy rảnh</span>
             </a>
         </li>
-        <li class="nav-item">
+        {{-- <li class="nav-item">
             <a class="nav-link collapsed" href="{{ route('admin.subjectclasses.index') }}">
                 <i class="bi bi-folder2-open"></i>
                 <span>Feedback </span>
             </a>
-        </li>
+        </li> --}}
     </ul>
 
 </aside><!-- End Sidebar-->

@@ -115,41 +115,6 @@
                         <div class="d-flex justify-content-end">  
                             {{ $feedbackResultsForStudents->appends(request()->query())->links() }}
                         </div>
-
-                        {{-- Danh sách phản hồi của giáo viên --}}
-                        <h3 class="mt-5">Phản hồi của giáo viên</h3>
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>Tên giáo viên</th>
-                                    <th>MSGV</th>
-                                    <th>Điểm</th>
-                                    <th>Ghi chú thêm</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse ($feedbackResultsForTeachers as $index => $feedbackResult)
-                                    <tr>
-                                        <td>{{ $index + 1 }}</td> <!-- Thêm số thứ tự -->
-                                        <td>{{ $feedbackResult->employee->full_name }}</td>
-                                        <td>{{ $feedbackResult->employee->code}}</td>
-                                        <td>{{ $feedbackResult->results ?? 'Giáo viên chưa đánh giá' }}</td>
-                                        <td class="text-truncate" style="max-width: 300px;">
-                                            {{ $feedbackResult->expertise ?? 'Giáo viên chưa đánh giá' }}
-                                        </td>                        
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="7" class="text-center">Không có dữ liệu</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                        {{-- Phân trang cho feedbacks của giáo viên --}}
-                        <div class="d-flex justify-content-end">  
-                            {{ $feedbackResultsForTeachers->appends(request()->query())->links() }}
-                        </div>
                     </div>
                 </div>
             </div>
