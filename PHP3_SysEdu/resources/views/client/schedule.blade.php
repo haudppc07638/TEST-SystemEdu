@@ -47,12 +47,12 @@
                         @foreach ($schedules as $index => $schedule)
                             <tr class="text-gray-700">
                                 <td class="px-4 py-3">{{ $index + 1 }}</td>
-                                <td class="px-4 py-3 text-sm">{{ \Carbon\Carbon::parse($schedule->date)->translatedFormat('l, d/m/Y') }}</td>
+                                <td class="px-4 py-3 text-sm">{{ ucfirst(\Carbon\Carbon::parse($schedule->date)->translatedFormat('l, d/m/Y')) }}</td>
                                 <td class="px-4 py-3 text-xs">{{ $schedule->classroom->code ?? 'Chưa có' }}</td>
                                 <td class="px-4 py-3 text-sm">{{ $schedule->subjectClass->subject->code ?? 'Chưa có' }}</td>
                                 <td class="px-4 py-3 text-sm">{{ $schedule->subjectClass->subject->name ?? 'Chưa có' }}</td>
                                 <td class="px-4 py-3 text-sm">{{ $schedule->subjectClass->name ?? 'Chưa có' }}</td>
-                                <td class="px-4 py-3 text-sm">{{ $schedule->subjectClass->employee->full_name ?? 'Chưa có' }}</td>
+                                <td class="px-4 py-3 text-sm">{{ $schedule->subjectClass->employee->full_name ?? 'Chưa có' }} - {{ $schedule->subjectClass->employee->code ?? 'Chưa có' }}</td>
                                 <td class="px-4 py-3 text-sm">{{ $schedule->timeSlot->slot ?? 'Chưa có' }}</td>
                                 <td class="px-4 py-3 text-sm">{{ $schedule->timeSlot->start_time ?? 'Chưa có' }} - {{ $schedule->timeSlot->end_time ?? 'Chưa có' }}</td>
                             </tr>

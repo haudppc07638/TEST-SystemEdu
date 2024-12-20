@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\EnrollmentController;
 use App\Http\Controllers\Client\StudentFeedbackController;
 use App\Http\Controllers\Client\TuitionController;
+use App\Http\Controllers\Teacher\TeacherExamScheduleController;
 use App\Http\Controllers\Teacher\TeacherFreeController;
 use App\Http\Controllers\Teacher\TeacherScheduleController;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,7 @@ use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Admin\ExamScheduleController;
 
 use App\Http\Controllers\Client\HomeController;
+use App\Http\Controllers\Client\StudentExamScheduleController;
 use App\Http\Middleware\CorsMiddleware;
 
 //
@@ -331,6 +333,8 @@ Route::middleware(['student'])->group(function () {
 
     Route::get('lich-hoc', [ClientScheduleController::class, 'index'])->name('schedules');
 
+    Route::get('lich-thi', [StudentExamScheduleController::class, 'index'])->name('exam-schedules');
+
     Route::get('ho-tro', [HelpController::class, 'index'])->name('help');
 
     Route::get('dang-ky-mon', [RegisterSubjectController::class, 'index'])->name('register-subject');
@@ -361,7 +365,10 @@ Route::middleware(['teacher'])->group(function () {
         Route::get('/schedules/filter', [TeacherScheduleController::class, 'filter'])->name('teacher.schedules.filter');
         Route::get('/free-slot', [TeacherFreeController::class, 'index'])->name('teacher.free_slot.index');
         Route::post('/free-slot', [TeacherFreeController::class, 'update'])->name('teacher.free_slot.update');
+        Route::get('/exam-schedules', [TeacherExamScheduleController::class, 'index'])->name('exam-schedules.index');
+        Route::get('/exam-schedules/filter', [TeacherExamScheduleController::class, 'filter'])->name('exam-schedules.filter');
 
+        
         Route::prefix('classes')->group(function () {
             Route::get('/', [AttendanceController::class, 'classList'])->name('classes');
             Route::get('/{subjectClass}', [AttendanceController::class, 'classDetail'])->name('attendance.class.detail');

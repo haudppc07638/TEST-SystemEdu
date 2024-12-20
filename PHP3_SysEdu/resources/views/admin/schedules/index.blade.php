@@ -45,7 +45,7 @@
                     @foreach ($schedules as $index => $schedule)
                         <tr>
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ \Carbon\Carbon::parse($schedule->date)->translatedFormat('l, d/m/Y') }}</td>
+                            <td>{{ ucfirst(\Carbon\Carbon::parse($schedule->date)->translatedFormat('l, d/m/Y')) }}</td>
                             <td>{{ $schedule->classroom->code ?? 'Chưa có' }}</td>
                             <td>{{ $schedule->subjectClass->subject->code ?? 'Chưa có' }}</td>
                             <td>{{ $schedule->subjectClass->subject->name ?? 'Chưa có' }}</td>

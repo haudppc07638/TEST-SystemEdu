@@ -183,6 +183,7 @@ class Schedule extends Model
     public static function getSchedulesBySubjectClassId($subjectClassId, $perPage = 20)
     {
         return self::where('subject_class_id', $subjectClassId)
+            ->whereDoesntHave('examSchedule')
             ->orderBy('date', 'asc')
             ->paginate($perPage);
     }
@@ -238,22 +239,28 @@ class Schedule extends Model
 
     public static function getSchedulesByTeacher($teacherId, $subjectClassId = null, $date = null)
     {
-        return self::whereHas('subjectClass', function ($query) use ($teacherId) {
-                $query->where('employee_id', $teacherId);
-            })
-            ->when($subjectClassId, function ($query) use ($subjectClassId) {
-                $query->where('subject_class_id', $subjectClassId);
-            })
-            ->when($date, function ($query) use ($date) {
-                $query->whereDate('date', $date);
-            })
-            ->with([
-                'subjectClass.subject',
-                'subjectClass.employee',
-                'classroom',
-                'timeSlot'
-            ])
-            ->paginate(20);
+        $query = self::whereHas('subjectClass', function ($query) use ($teacherId) {
+            $query->where('employee_id', $teacherId);
+        });
+        $today = Carbon::today();
+        // Lọc theo lớp môn (chỉ lấy lịch từ ngày hiện tại trở đi)
+        if ($subjectClassId) {
+            $query->where('subject_class_id', $subjectClassId)
+                ->where('date', '>=', $today)
+                ->orderBy('date'); // Chỉ lấy ngày từ hiện tại trở đi
+        }
+
+        // Lọc theo ngày (nếu có)
+        if ($date) {
+            $query->whereDate('date', $date); // Lấy lịch theo ngày cụ thể, không ràng buộc ngày hiện tại
+        }
+
+        return $query->with([
+            'subjectClass.subject',
+            'subjectClass.employee',
+            'classroom',
+            'timeSlot',
+        ])->paginate(20);
     }
 
     public static function countEditedSchedulesBySubjectClass($subjectClassId)

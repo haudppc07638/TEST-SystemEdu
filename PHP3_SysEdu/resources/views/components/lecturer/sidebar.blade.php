@@ -30,6 +30,13 @@
                 <span>Lịch dạy</span>
             </a>
         </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{{ route('exam-schedules.index') }}">
+                <i class="bi bi-bell-fill"></i>
+                <span>Lịch gác thi</span>
+            </a>
+        </li>
         <li class="nav-item">
             <a class="nav-link collapsed" href="{{ route('teacher.free_slot.index') }}">
                 <i class="bi bi-clock"></i>

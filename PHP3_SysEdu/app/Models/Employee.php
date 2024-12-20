@@ -92,6 +92,16 @@ class Employee extends Authenticatable
         return $this->hasMany(ScheduleHistory::class, 'substitute_employee_id');
     }
 
+    public function examSchedulesAsTeacher1()
+    {
+        return $this->hasMany(ExamSchedule::class, 'teacher_1');
+    }
+
+    public function examSchedulesAsTeacher2()
+    {
+        return $this->hasMany(ExamSchedule::class, 'teacher_2');
+    }
+
     public static function getAvailableTeachers(){
         return self::where('position', 'teacher')
             ->whereDoesntHave('classes', function ($query) {

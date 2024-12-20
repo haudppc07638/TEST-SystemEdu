@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\ExamStudent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Schedule;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\DB;
+use App\Models\ExamSchedule;
+use Carbon\Carbon;
 
-class ScheduleController extends Controller
+class StudentExamScheduleController extends Controller
 {
     public function index(Request $request)
     {
-        $user = Auth::guard('student')->user();
+        // Lấy thông tin học sinh đã đăng nhập - Haudp
+        $studentId = Auth::guard('student')->user()->id;
 
         $timeRange = $request->get('time_range', '7 days ahead');
         $startDate = now();
@@ -45,30 +46,22 @@ class ScheduleController extends Controller
                 $startDate = now()->subDays(30);
                 break;
             case '60 days before':
-                $startDate = now()->subDays(value: 60);
+                $startDate = now()->subDays(60);
                 break;
             case '90 days before':
                 $startDate = now()->subDays(90);
                 break;
         }
 
-        $schedules = Schedule::whereExists(function ($query) use ($user) {
-            $query->select(DB::raw(1))
-                ->from('subject_classes')
-                ->whereColumn('schedules.subject_class_id', 'subject_classes.id')
-                ->whereExists(function ($query) use ($user) {
-                    $query->select(DB::raw(1))
-                        ->from('student_subject_classes')
-                        ->whereColumn('subject_classes.id', 'student_subject_classes.subject_class_id')
-                        ->where('student_id', $user->id);
-                });
-        })  
-            ->whereDoesntHave('examSchedule')
-            ->whereBetween('date', [$startDate, $endDate])
-            ->orderBy('date', 'asc')
-            ->paginate(30)
-            ->appends(['time_range' => $timeRange]);
+        $examStudents = ExamStudent::where('student_id', $studentId)
+        ->join('exam_schedules', 'exam_students.exam_schedule_id', '=', 'exam_schedules.id')
+        ->join('schedules', 'exam_schedules.schedule_id', '=', 'schedules.id')
+        ->whereBetween('schedules.date', [$startDate, $endDate])
+        ->with(['examSchedule.schedule', 'examSchedule.schedule.subjectClass'])
+        ->orderBy('schedules.date', 'asc') // Sắp xếp theo cột date trong bảng schedules
+        ->paginate(10);
 
-        return view('client.schedule', compact('schedules'));
+        return view('client.exam-schedule', compact('examStudents', 'timeRange'));
     }
+
 }

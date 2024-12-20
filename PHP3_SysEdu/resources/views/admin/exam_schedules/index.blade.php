@@ -35,10 +35,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($examSchedules as $index => $examSchedule)
+                    @forelse ($examSchedules as $index => $examSchedule)
                         <tr>
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ \Carbon\Carbon::parse($examSchedule->schedule->date)->translatedFormat('l, d/m/Y') }}</td>
+                            <td>{{ ucfirst(\Carbon\Carbon::parse($examSchedule->schedule->date)->translatedFormat('l, d/m/Y')) }}</td>
                             <td>{{ $examSchedule->schedule->timeSlot->slot ?? 'Chưa có' }}</td>
                             <td>{{ $examSchedule->schedule->classroom->code ?? 'Chưa có' }}</td>
                             <td>
@@ -73,22 +73,16 @@
                                             href="{{ route('admin.examschedules.edit', $examSchedule->id) }}">
                                             <i class="bx bx-edit-alt me-2"></i> Sửa
                                         </a>
-                                        {{-- 
-                                        <form action="{{ route('admin.examschedules.destroy', $examSchedule->id) }}" method="POST"
-                                            onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="dropdown-item">
-                                                <i class="bx bx-trash me-2"></i> Xóa
-                                            </button>
-                                        </form> 
-                                        --}}
                                     </div>
                                 </div>
                             </td>
                         </tr>
-                    @endforeach
-                </tbody>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="text-center">Không có lịch thi trong các ngày này.</td>
+                        </tr>
+                    @endforelse
+                </tbody>                
             </table>
             <div class="d-flex justify-content-center">
                 {{ $examSchedules->links() }}
