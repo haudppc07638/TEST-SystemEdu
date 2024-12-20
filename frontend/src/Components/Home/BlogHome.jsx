@@ -10,7 +10,8 @@ function BlogHome() {
   const fetchNews = async () => {
     try {
       const response = await axios.get("http://localhost:8000/news");
-      setNews(response.data); 
+      const sortedNews = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+      setNews(sortedNews);
     } catch (err) {
       setError(err.message);
     }
