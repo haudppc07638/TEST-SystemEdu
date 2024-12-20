@@ -43,6 +43,7 @@ use App\Http\Controllers\Teacher\StudentLookupController;
 use App\Http\Controllers\Admin\TeacherFreeSlotController;
 use App\Http\Controllers\Teacher\AttendanceController;
 use App\Http\Controllers\Api\NewsController;
+use App\Http\Controllers\Admin\ExamScheduleController;
 
 use App\Http\Controllers\Client\HomeController;
 
@@ -162,6 +163,15 @@ Route::middleware(['admin'])->group(function () {
         Route::get('edit/{id}', [AdminScheduleController::class, 'edit'])->name('edit');
         Route::put('{id}', [AdminScheduleController::class, 'update'])->name('update');
         Route::get('/export-schedules-pdf', [AdminScheduleController::class, 'exportPdf'])->name('export-pdf');
+    });
+
+    Route::prefix('examschedules')->name('admin.examschedules.')->group(function () {
+        Route::get('index', [ExamScheduleController::class, 'index'])->name('index');
+        Route::get('show/{id}', [ExamScheduleController::class, 'show'])->name('show');
+        Route::get('create', [ExamScheduleController::class, 'create'])->name('create');
+        Route::post('create', [ExamScheduleController::class, 'store'])->name('store');
+        Route::get('edit/{id}', [ExamScheduleController::class, 'edit'])->name('edit');
+        Route::put('{id}', [ExamScheduleController::class, 'update'])->name('update');
     });
 
     Route::prefix('semesters')->name('admin.semesters.')->group(function () {
@@ -319,9 +329,9 @@ Route::middleware(['student'])->group(function () {
 
     Route::get('/bang-diem-theo-ky', [ScoreController::class, 'index'])->name('scores');
 
-    Route::get('feedback/classes', [StudentFeedbackController::class, 'listClassesForFeedback'])->name('student.feedback.classes');
-    Route::get('feedback/{studentSubjectClassId}/form', [StudentFeedbackController::class, 'showFeedbackForm'])->name('student.feedback.form');
-    Route::post('feedback/{studentSubjectClassId}/store', [StudentFeedbackController::class, 'storeFeedback'])->name('student.feedback.store');
+    Route::get('feedback', [StudentFeedbackController::class, 'index'])->name('feedback.list');
+    Route::get('feedback/{studentSubjectClassId}/form', [StudentFeedbackController::class, 'showFeedbackForm'])->name('feedback.form');
+    Route::post('feedback/{studentSubjectClassId}/store', [StudentFeedbackController::class, 'storeFeedback'])->name('feedback.store');
 });
 
 //teacher

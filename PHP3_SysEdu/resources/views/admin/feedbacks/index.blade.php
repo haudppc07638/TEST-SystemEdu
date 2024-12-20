@@ -4,81 +4,147 @@
 
 @section('main')
 <main id="main" class="main">
-    <div class="container">
-        <h3>Danh sách câu hỏi phản hồi</h3>
 
-        {{-- Nút tạo feedback --}}
-        <div class="mb-3 d-flex justify-content-end">
-            <a href="{{ route('admin.feedbacks.create') }}" class="btn btn-success">Tạo câu hỏi phản hồi</a>
-        </div>
+    <div class="pagetitle">
+        <h1>Danh sách phản hồi</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
+                <li class="breadcrumb-item active">Feedback</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
 
-        {{-- Bộ lọc theo lớp môn --}}
-        <form method="GET" action="{{ route('admin.feedbacks.index') }}">
-            <div class="form-group">
-                <label for="subject_class_id" class="mb-2">Lớp môn</label>
-                <select name="subject_class_id" id="subject_class_id" class="form-control" onchange="this.form.submit()">
-                    <option value="">Chọn lớp môn</option>
-                    @foreach ($subjectClasses as $subjectClass)
-                        <option value="{{ $subjectClass->id }}" 
-                                {{ request('subject_class_id') == $subjectClass->id ? 'selected' : '' }}>
-                                {{ $subjectClass->subject->name }} - {{ $subjectClass->name }}
-                        </option>
-                    @endforeach
-                </select>
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">
+                            <a href="{{ route('admin.feedbacks.create') }}" class="btn btn-primary m-2">Tạo câu hỏi phản hồi</a>
+                        </div>
+
+                        <h3>Phản hồi của sinh viên</h3>
+                        <form method="GET" action="{{ route('admin.feedbacks.index') }}">
+                            <div class="row mb-3">
+                                <!-- Lọc theo lớp môn -->
+                                <div class="col-md-6">
+                                    <label for="subject_class_id">Lớp môn</label>
+                                    <select name="subject_class_id" id="subject_class_id" class="form-control" onchange="this.form.submit()">
+                                        <option value="">Chọn lớp môn</option>
+                                        @foreach ($subjectClasses as $subjectClass)
+                                            <option value="{{ $subjectClass->id }}" 
+                                                    {{ request('subject_class_id') == $subjectClass->id ? 'selected' : '' }} >
+                                                    {{ $subjectClass->subject->name }} - {{ $subjectClass->name }}
+                                            </option>
+                                        @endforeach 
+                                    </select>
+                                </div>
+                        
+                                <!-- Lọc theo khoảng thời gian -->
+                                <div class="col-md-6">
+                                    <label for="created_at_range">Chọn khoảng thời gian</label>
+                                    <select name="created_at_range" id="created_at_range" class="form-control" onchange="this.form.submit()">
+                                        <option value="">Chọn khoảng thời gian</option>
+                                        <option value="today" {{ request('created_at_range') == 'today' ? 'selected' : '' }}>Hôm nay</option>
+                                        <option value="this_week" {{ request('created_at_range') == 'this_week' ? 'selected' : '' }}>Tuần này</option>
+                                        <option value="this_month" {{ request('created_at_range') == 'this_month' ? 'selected' : '' }}>Tháng này</option>
+                                        <option value="last_month" {{ request('created_at_range') == 'last_month' ? 'selected' : '' }}>Tháng trước</option>
+                                        <option value="last_7_days" {{ request('created_at_range') == 'last_7_days' ? 'selected' : '' }}>7 ngày qua</option>
+                                    </select>
+                                </div>
+                            </div>
+                        
+                            <!-- Tìm kiếm -->
+                            <div class="mb-3">
+                                <div class="input-group">
+                                    <input type="text" name="search" id="search" class="form-control" 
+                                           value="{{ request('search') }}" placeholder="Nhập MSSV hoặc tên sinh viên">
+                                    <button type="submit" class="btn btn-secondary">Tìm kiếm</button>
+                                </div>
+                            </div>
+                        </form>                        
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Tên sinh viên</th>
+                                        <th>MSSV</th>
+                                        <th>Câu hỏi</th>
+                                        <th>Đánh giá</th>
+                                        <th>Ghi chú thêm</th>
+                                    </tr>
+                                </thead>    
+                                @php
+                                $resultMap = [
+                                    10 => 'Tốt',
+                                    8 => 'Khá',
+                                    6 => 'Trung bình',
+                                    4 => 'Kém',
+                                ];
+                            @endphp
+
+                            <tbody>
+                                @foreach ($feedbackResultsForStudents as $index => $feedbackResult)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td> <!-- Thêm số thứ tự -->
+                                        <td>{{ $feedbackResult->studentSubjectClass->student->full_name }}</td>
+                                        <td>{{ $feedbackResult->studentSubjectClass->student->code }}</td>
+                                        <td>{{ $feedbackResult->feedbackQuestion->name ?? 'Không có câu hỏi' }}</td>
+                                        <td>
+                                            @if(isset($resultMap[$feedbackResult->results]))
+                                                {{ $resultMap[$feedbackResult->results] }}
+                                            @else
+                                                {{ 'Chưa đánh giá' }}
+                                            @endif
+                                        </td>
+                                        <td class="text-break" style="max-width: 300px;">
+                                            {{ $feedbackResult->expertise ?? 'Sinh viên chưa đánh giá' }}
+                                        </td>                                                   
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                            </table>
+                        </div>        
+                        {{-- Phân trang cho feedbacks của sinh viên --}}
+                        {{ $feedbackResultsForStudents->appends(request()->query())->links() }}
+
+                        {{-- Danh sách phản hồi của giáo viên --}}
+                        <h3>Phản hồi của giáo viên</h3>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Tên giáo viên</th>
+                                    <th>MSGV</th>
+                                    <th>Điểm</th>
+                                    <th>Ghi chú thêm</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($feedbackResultsForTeachers as $index => $feedbackResult)
+                                    <tr>
+                                        <td>{{ $index + 1 }}</td> <!-- Thêm số thứ tự -->
+                                        <td>{{ $feedbackResult->employee->full_name }}</td>
+                                        <td>{{ $feedbackResult->employee->code}}</td>
+                                        <td>{{ $feedbackResult->results ?? 'Giáo viên chưa đánh giá' }}</td>
+                                        <td class="text-truncate" style="max-width: 300px;">
+                                            {{ $feedbackResult->expertise ?? 'Giáo viên chưa đánh giá' }}
+                                        </td>                        
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        {{-- Phân trang cho feedbacks của giáo viên --}}
+                        {{ $feedbackResultsForTeachers->appends(request()->query())->links() }}
+                    </div>
+                </div>
             </div>
-        </form>
+        </div>
+    </section>
 
-        {{-- Danh sách feedbacks của sinh viên --}}
-        <h4 class="mt-3">Phản hồi của sinh viên</h4>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Tên sinh viên</th>
-                    <th>MSSV</th>
-                    <th>Câu trả lời</th>
-                    <th>Điểm trung bình</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($feedbackResultsForStudents as $feedbackResult)
-                    <tr>
-                        <td>{{ $feedbackResult->studentSubjectClass->student->full_name }}</td>
-                        <td>{{ $feedbackResult->studentSubjectClass->student->code }}</td>
-                        <td>{{ $feedbackResult->results }}</td>
-                        <td>{{ $feedbackResult->average_score ?? 'Chưa có điểm' }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-        {{-- Phân trang cho feedbacks của sinh viên --}}
-        {{ $feedbackResultsForStudents->links() }}
-
-        {{-- Danh sách feedbacks của giáo viên --}}
-        <h4>Phản hồi của giáo viên</h4>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Tên giáo viên</th>
-                    <th>MSGV</th>
-                    <th>Câu trả lời</th>
-                    <th>Điểm trung bình</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($feedbackResultsForTeachers as $feedbackResult)
-                    <tr>
-                        <td>{{ $feedbackResult->employee->full_name }}</td>
-                        <td>{{ $feedbackResult->employee->code }}</td>
-                        <td>{{ $feedbackResult->results }}</td>
-                        <td>{{ $feedbackResult->average_score ?? 'Chưa có điểm' }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-        {{-- Phân trang cho feedbacks của giáo viên --}}
-        {{ $feedbackResultsForTeachers->links() }}
-    </div>
-</main>
+</main><!-- End #main -->
 @endsection
 
 @section('scripts')

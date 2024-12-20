@@ -168,7 +168,7 @@
                                     <table class="table table-striped table-hover" style="width:100%">
                                         <thead>
                                             <tr>
-                                                <th>#</th>
+                                                <th>STT</th>
                                                 <th>Tiêu đề</th>
                                                 <th>Loại</th>
                                                 <th>Ngày gửi</th>

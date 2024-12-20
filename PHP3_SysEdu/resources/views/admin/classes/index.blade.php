@@ -59,7 +59,7 @@
                             <table id="tableDepartment" class="table datatable" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th>STT</th>
                                         <th>Tên lớp</th>
                                         <th>Số lượng</th>
                                         <th>Chuyên ngành</th>

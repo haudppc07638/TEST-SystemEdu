@@ -29,7 +29,7 @@
                         <table id="tableScoreType" class="table datatable">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>STT</th>
                                     <th>Tên loại điểm</th>
                                     <th>Thuộc loại</th>
                                     <th>Tác vụ</th>

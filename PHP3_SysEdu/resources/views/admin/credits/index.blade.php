@@ -28,8 +28,11 @@
                         <table id="tableDepartment" class="table datatable" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>STT</th>
                                     <th>Giá Tiền (1TC)</th>
+                                    <th>Tỷ lệ tăng (%/năm)</th>
+                                    <th>Thành tiền</th>
+                                    <th>Ngày cập nhật</th>
                                     <th>Tác vụ</th>
                                 </tr>
                             </thead>
@@ -38,7 +41,9 @@
                                 <tr>
                                     <td>{{ $index +1 }}</td>
                                     <td>{{ number_format($credit->price) }}</td>
-                    
+                                    <td>{{ $credit->vat }}</td>
+                                    <td>{{ number_format($credit->total_price) }}</td>
+                                    <td>{{ $credit->updated_at }}</td>
                                     <td>
                                         <div class="dropdown">
                                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">

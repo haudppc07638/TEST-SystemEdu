@@ -78,6 +78,11 @@ class Schedule extends Model
         return $this->histories()->exists();
     }
 
+    public function examSchedule()
+    {
+        return $this->hasOne(ExamSchedule::class);
+    }
+
     public static function getAllSchedules()
     {
         return self::with(['timeSlot', 'classroom', 'subjectClass.subject'])

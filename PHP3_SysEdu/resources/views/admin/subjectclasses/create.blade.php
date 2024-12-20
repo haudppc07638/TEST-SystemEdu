@@ -6,12 +6,12 @@
     <main id="main" class="main">
 
         <div class="pagetitle">
-            <h1>Thêm lớp học</h1>
+            <h1>Thêm Lớp Học</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('admin.subjectclasses.index') }}">Lớp học</a></li>
-                    <li class="breadcrumb-item active btn-success">Thêm mới</li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.subjectclasses.index') }}">Lớp Học</a></li>
+                    <li class="breadcrumb-item active">Thêm Mới</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
@@ -25,13 +25,13 @@
                                 @csrf
 
                                 <div class="mb-3">
-                                    <label for="subject_id" class="form-label">Môn học</label>
+                                    <label for="subject_id" class="form-label">Môn Học</label>
                                     <select id="subject_id" name="subject_id" class="form-select select2">
-                                        <option value="">Chọn môn</option>
+                                        <option value="">Chọn Môn</option>
                                         @foreach ($subjects as $subject)
                                             <option value="{{ $subject->id }}"
                                                 {{ old('subject_id') == $subject->id ? 'selected' : '' }}>
-                                                {{ $subject->major ? $subject->major->name : 'Bộ môn cơ bản' }} |
+                                                {{ $subject->major ? $subject->major->name : 'Cơ bản' }} |
                                                 {{ $subject->name }}
                                             </option>
                                         @endforeach
@@ -42,9 +42,9 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="employee_id" class="form-label">Giảng viên</label>
+                                    <label for="employee_id" class="form-label">Giảng Viên</label>
                                     <select id="employee_id" name="employee_id" class="form-select select2">
-                                        <option value="">Chọn giảng viên</option>
+                                        <option value="">Chọn Giảng Viên</option>
                                         @foreach ($employees as $employee)
                                             <option value="{{ $employee->id }}"
                                                 {{ old('employee_id') == $employee->id ? 'selected' : '' }}>
@@ -58,7 +58,7 @@
                                 </div>
 
                                 <div class="mb-5">
-                                    <label for="major_class_id" class="form-label">Lớp chuyên ngành</label>
+                                    <label for="major_class_id" class="form-label">Lớp Chuyên Ngành</label>
                                     <select id="major_class_id" name="major_class_id" class="form-select select2">
                                         <option value="">Chọn Lớp CN</option>
                                         @foreach ($majorClasses as $majorClass)
@@ -74,7 +74,7 @@
                                 </div>
 
                                 <div class="row mb-3">
-                                    <label for="name" class="col-sm-2 col-form-label">Tên lớp</label>
+                                    <label for="name" class="col-sm-2 col-form-label">Tên Lớp</label>
                                     <div class="col-sm-10">
                                         <input type="text" name="name" id="name" class="form-control"
                                             value="{{ old('name') }}">
@@ -100,12 +100,12 @@
                                     <div class="col-sm-10">
                                         <select name="credit_id" id="credit_id"
                                             class="form-control @error('credit_id') is-invalid @enderror">
-                                            <option value="">Chọn giá TC</option>
+                                            <option value="">Chọn Giá TC</option>
                                             @foreach ($credits as $credit)
                                                 <option value="{{ $credit->id }}"
-                                                    data-total-price="{{ $credit->price }}"
+                                                    data-total-price="{{ $credit->total_price }}"
                                                     {{ old('credit_id') == $credit->id ? 'selected' : '' }}>
-                                                    {{ $credit->price }}
+                                                    {{ $credit->total_price }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -116,7 +116,7 @@
                                 </div>
 
                                 <div class="row mb-3">
-                                    <label for="credit_price" class="col-sm-2 col-form-label">Giá tín chỉ (Hiện tại)</label>
+                                    <label for="credit_price" class="col-sm-2 col-form-label">Giá Tín Chỉ (Hiện tại)</label>
                                     <div class="col-sm-10">
                                         <input type="number" name="credit_price" id="credit_price" class="form-control"
                                             value="{{ old('credit_price') }}" readonly>
@@ -179,7 +179,7 @@
                                 </div>
 
                                 <div class="text-center">
-                                    <button type="submit" class="btn btn-success">Lưu</button>
+                                    <button type="submit" class="btn btn-primary">Lưu</button>
                                     <a href="{{ route('admin.subjectclasses.index') }}" class="btn btn-secondary">Hủy</a>
                                 </div>
                             </form>

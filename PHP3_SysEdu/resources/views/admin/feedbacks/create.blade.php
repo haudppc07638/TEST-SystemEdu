@@ -5,14 +5,14 @@
 @section('main')
 <main id="main" class="main">
     <div class="container">
-        <h3 class="mb-4 text-xl">Tạo câu hỏi phản hồi</h3>
+        <h1 class="mb-4">Tạo câu hỏi phản hồi</h1>
 
         <form action="{{ route('admin.feedbacks.store') }}" method="POST">
             @csrf
             <div class="form-group">
                 <label for="subject_class_id">Lớp môn</label>
                 <select name="subject_class_id" id="subject_class_id" class="form-control @error('subject_class_id') is-invalid @enderror">
-                    <option value=""">Chọn lớp môn</option>
+                    <option value="">Chọn lớp môn</option>
                     @foreach ($subjectClasses as $subjectClass)
                         <option value="{{ $subjectClass->id }}" {{ old('subject_class_id') == $subjectClass->id ? 'selected' : '' }}>
                             {{ $subjectClass->name }}
@@ -77,32 +77,19 @@
 @push('style')
 <style>
     .form-group {
-        margin-bottom: 1.5rem; /
+        margin-bottom: 1.5rem;
     }
     label {
-        font-weight: bold; 
-        font-size: 15px; 
+        font-weight: bold;
     }
-    select,
-    input[type="text"] {
-        height: 3rem; 
-        font-size: 1rem; 
-        padding: 0.5rem;
-    }
-    .btn-outline-secondary {
-        margin-top: 1rem; 
-        font-size: 0.9rem; 
-        padding: 0.5rem 1rem; 
-    }
-    .btn-danger {
-        font-size: 0.9rem; 
-        padding: 0.3rem 0.6rem; 
+    .alert {
+        margin-bottom: 1.5rem;
     }
     .question-item {
-        margin-bottom: 1rem; 
+        margin-bottom: 1rem;
     }
-    .btn-primary {
-        font-size: 1rem;
-        padding: 0.7rem 1.5rem;
+    .btn-outline-secondary {
+        margin-top: 1rem;
     }
 </style>
+@endpush

@@ -6,12 +6,12 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Quản lý lớp môn</h1>
+        <h1>Quản Lý Lớp Môn</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
-                <li class="breadcrumb-item">Đào tạo</li>
-                <li class="breadcrumb-item active">Lớp môn</li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
+                <li class="breadcrumb-item">Đào Tạo</li>
+                <li class="breadcrumb-item active">Lớp Môn</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
@@ -20,17 +20,13 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="card-body mt-3 d-flex flex-column">
-                        <div class="d-flex justify-content-end mb-3">
-                            <a href="{{ route('admin.subjectclasses.create') }}" class="btn btn-success">
-                                <i class="bi bi-plus-circle"></i> Thêm mới
-                            </a>
-                        </div>
-                        <table id="tableSubjectClass" class="table table-striped table-bordered datatable">
-                            <thead class="table datatable">
+                    <div class="card-body mt-3">
+                        <a href="{{ route('admin.subjectclasses.create') }}" class="btn btn-primary m-2">Thêm mới</a>
+                        <table id="tableSubjectClass" class="table datatable">
+                            <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Tên Lớp</th>
+                                    <th>STT</th>
+                                    <th>Tên Lớp </th>
                                     <th>Số lượng</th>
                                     <th>Ngày bắt đầu</th>
                                     <th>Ngày kết thúc</th>
@@ -46,7 +42,7 @@
                             <tbody>
                                 @foreach($subjectClasses as $index => $subjectClass)
                                 <tr>
-                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $index +1 }}</td>
                                     <td>{{ $subjectClass->name }}</td>
                                     <td>{{ $subjectClass->quantity }}</td>
                                     <td>{{ $subjectClass->start_date }}</td>
@@ -59,28 +55,22 @@
                                     <td>{{ $subjectClass->majorClass->name ?? 'Chưa có' }}</td>
                                     <td>
                                         <div class="dropdown">
-                                            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
-                                                <i class="bi bi-three-dots-vertical"></i>
+                                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                                <i class="bx bx-dots-vertical-rounded"></i>
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a href="{{ route('admin.schedules.view-schedule', ['subject_class_id' => $subjectClass->id]) }}" class="dropdown-item">
+                                                <a href="{{ route('admin.schedules.view-schedule', ['subject_class_id' => $subjectClass->id]) }}" class="dropdown-item bg-info">
                                                     <i class="bi bi-calendar"></i> Xem Lịch Học
-                                                </a>
-                                                <a class="dropdown-item" href="{{ route('admin.schedules.create', ['subject_class_id' => $subjectClass->id]) }}">
-                                                    <i class="bi bi-calendar-plus"></i> Tạo lịch
-                                                </a>
-                                                <a class="dropdown-item" href="{{ route('admin.studentsubjectclass.index', $subjectClass->id) }}">
-                                                    <i class="bi bi-pen"></i> Nhập điểm
-                                                </a>
-                                                <a class="dropdown-item" href="{{ route('admin.subjectclasses.edit', $subjectClass->id) }}">
-                                                    <i class="bi bi-pencil-square"></i> Chỉnh sửa
-                                                </a>
+                                                </a>                                            
+                                                <a class="dropdown-item" href="{{ route('admin.schedules.create', ['subject_class_id' => $subjectClass->id]) }}"><i class="bi bi-calendar-plus"></i> Tạo lịch học</a>
+                                                <a class="dropdown-item" href="{{ route('admin.examschedules.index', ['subject_class_id' => $subjectClass->id]) }}"><i class="bi bi-calendar-plus"></i> Xem lịch thi</a>
+                                                <a class="dropdown-item" href="{{ route('admin.examschedules.create', ['subject_class_id' => $subjectClass->id]) }}"><i class="bi bi-calendar-plus"></i> Tạo lịch thi</a>
+                                                <a class="dropdown-item" href="{{ route('admin.studentsubjectclass.index', $subjectClass->id) }}"><i class="bi bi-pen"></i> Nhập điểm</a>
+                                                <a class="dropdown-item" href="{{ route('admin.subjectclasses.edit', $subjectClass->id) }}"><i class="bx bx-edit-alt me-2"></i> Chỉnh sửa</a>
                                                 <form action="{{ route('admin.subjectclasses.destroy', $subjectClass->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa môn học này không?');">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="dropdown-item text-danger">
-                                                        <i class="bi bi-trash"></i> Xóa
-                                                    </button>
+                                                    <button type="submit" class="dropdown-item"><i class="bx bx-trash me-2"></i> Xóa</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -90,7 +80,6 @@
                             </tbody>
                         </table>
                     </div>
-
                 </div>
 
             </div>

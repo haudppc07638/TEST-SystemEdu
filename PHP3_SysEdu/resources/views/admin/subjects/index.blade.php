@@ -54,7 +54,7 @@
                             <table id="tableSubject" class="table datatable">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th>STT</th>
                                         <th>Mã môn</th>
                                         <th>Tên môn</th>
                                         <th>Chuyên ngành</th>

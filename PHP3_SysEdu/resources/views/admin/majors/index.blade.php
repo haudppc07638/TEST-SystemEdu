@@ -60,11 +60,11 @@
                             <table id="tableMajor" class="table datatable">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th>STT</th>
                                         <th>Khoa</th>
                                         <th>Chuyên ngành</th>
                                         <th>Mã</th>
-                                        <th>Tổng tín chỉ</th>
+                                        <th>Tín Chỉ <small><i>(Yêu cầu)</i></small></th>
                                         <th>Tác vụ</th>
                                     </tr>
                                 </thead>

@@ -23,6 +23,18 @@ class CreditRequest extends FormRequest
     {
         return [
             'price' => 'required|numeric|min:0',
+            'vat'   => 'required|numeric|min:0|max:100',        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'price.required' => 'Giá tiền không được để trống',
+            'price.numeric' => 'Giá tiền phải là số',
+            'price.min' => 'Giá tiền phải lớn hơn 0',
+            
+            'vat.numeric' => 'Tỷ lệ tăng phải là số',
+            'vat.min' => 'Tỷ lệ tăng phải lớn hơn 0',
         ];
     }
 }

@@ -27,7 +27,7 @@
                     <table id="tableClassroom" class="table datatable">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>STT</th>
                                 <th>Mã phòng học</th>
                                 <th>Sức chứa</th>
                                 <th>Tác vụ</th>

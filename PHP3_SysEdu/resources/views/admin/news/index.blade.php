@@ -27,7 +27,7 @@
                         <table id="tableDepartment" class="table datatable" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>STT</th>
                                     <th>Tiêu đề</th>
                                     <th>Ảnh</th>
                                     <th>Ngày đăng</th>

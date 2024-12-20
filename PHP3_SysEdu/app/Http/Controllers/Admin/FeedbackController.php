@@ -17,18 +17,68 @@ class FeedbackController extends Controller
     {
         $subjectClasses = SubjectClass::orderBy('name', 'asc')->get();
         $feedbackResultsQuery = FeedbackResult::query();
-
+    
+        // Lọc theo lớp môn nếu có
         if ($request->has('subject_class_id') && $request->input('subject_class_id') != '') {
             $feedbackResultsQuery->whereHas('studentSubjectClass', function ($query) use ($request) {
                 $query->where('subject_class_id', $request->input('subject_class_id'));
             });
         }
+    
+        // Lọc theo khoảng thời gian nếu có
+        if ($request->has('created_at_range') && $request->input('created_at_range') != '') {
+            $range = $request->input('created_at_range');
+            $today = now()->startOfDay();
+            $startOfWeek = now()->startOfWeek();
+            $startOfMonth = now()->startOfMonth();
+            $startOfLastMonth = now()->subMonth()->startOfMonth();
+            $startOfLast7Days = now()->subDays(7)->startOfDay();
+    
+            switch ($range) {
+                case 'today':
+                    $feedbackResultsQuery->whereDate('created_at', $today);
+                    break;
+                case 'this_week':
+                    $feedbackResultsQuery->whereBetween('created_at', [$startOfWeek, now()]);
+                    break;
+                case 'this_month':
+                    $feedbackResultsQuery->whereBetween('created_at', [$startOfMonth, now()]);
+                    break;
+                case 'last_month':
+                    $feedbackResultsQuery->whereBetween('created_at', [$startOfLastMonth, $startOfLastMonth->endOfMonth()]);
+                    break;
+                case 'last_7_days':
+                    $feedbackResultsQuery->whereBetween('created_at', [$startOfLast7Days, now()]);
+                    break;
+            }
+        }
+    
+        // Tìm kiếm theo MSSV hoặc tên sinh viên nếu có
+        if ($request->has('search') && $request->input('search') != '') {
+            $search = $request->input('search');
+            $feedbackResultsQuery->whereHas('studentSubjectClass.student', function ($query) use ($search) {
+                $query->where('code', 'LIKE', '%' . $search . '%')
+                      ->orWhere('full_name', 'LIKE', '%' . $search . '%');
+            });
+        }
+    
+        // Lọc và phân trang phản hồi cho sinh viên
+        $feedbackResultsForStudents = $feedbackResultsQuery->whereHas('studentSubjectClass')
+        ->with(['studentSubjectClass.student'])
+        ->orderByRaw('IFNULL(results, 0) DESC') // Ưu tiên phản hồi đã có kết quả
+        ->paginate(10);
 
-        $feedbackResultsForStudents = $feedbackResultsQuery->whereHas('studentSubjectClass')->with(['studentSubjectClass.student'])->paginate(10);
-        $feedbackResultsForTeachers = $feedbackResultsQuery->whereHas('feedbackQuestion.employee')->with(['feedbackQuestion.employee'])->paginate(10);
-
+        // Lọc và phân trang phản hồi cho giáo viên
+        $feedbackResultsForTeachers = $feedbackResultsQuery->whereHas('feedbackQuestion.employee')
+        ->with(['feedbackQuestion.employee'])
+        ->orderByRaw('IFNULL(results, 0) DESC') // Ưu tiên phản hồi đã có kết quả
+        ->paginate(10);
+    
         return view('admin.feedbacks.index', compact('feedbackResultsForStudents', 'feedbackResultsForTeachers', 'subjectClasses'));
     }
+    
+
+    
 
     public function create()
     {
@@ -70,7 +120,6 @@ class FeedbackController extends Controller
                         'student_subject_class_id' => $target->id,
                     ];
 
-                    // Lưu vào bảng FeedbackResult tùy theo đối tượng
                     if ($request->target === 'employee') {
                         $data['employee_id'] = $target->id;
                     }
@@ -81,8 +130,8 @@ class FeedbackController extends Controller
                 return redirect()->back()->with('error', 'Vui lòng chọn lớp môn.');
             }
         }
-
-        return redirect()->route('admin.feedbacks.index')->with('success', 'Tạo câu hỏi phản hồi thành công!');
+        toastr()->success('Tạo câu hỏi phản hồi thành công!');
+        return redirect()->route('admin.feedbacks.index');
     }
 
     public function edit($id)

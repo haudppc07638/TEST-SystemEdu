@@ -11,62 +11,64 @@ use Illuminate\Support\Facades\Auth;
 
 class StudentFeedbackController extends Controller
 {
+    public function index()
+    {
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $studentClasses = StudentSubjectClass::where('student_id', $studentId)->pluck('id');
+        
+        // Lấy các câu hỏi feedback theo lớp môn của sinh viên
+        $feedbackResults = FeedbackResult::whereIn('student_subject_class_id', $studentClasses)
+            ->whereNull('results') // Chỉ lấy các câu hỏi chưa có kết quả
+            ->with('feedbackQuestion', 'studentSubjectClass')
+            ->get()
+            ->groupBy('student_subject_class_id'); // Nhóm theo lớp môn
+        
+        return view('client.feedback', compact('feedbackResults'));
+    }
+    
     public function showFeedbackForm($studentSubjectClassId)
-{
-    $student = Auth::guard('student')->user();
-    $studentSubjectClass = StudentSubjectClass::findOrFail($studentSubjectClassId);
-    $completedFeedback = FeedbackResult::where('student_subject_class_id', $studentSubjectClassId)
-        ->whereNotNull('results')   
-        ->exists();
-
-    $feedbackQuestions = FeedbackQuestion::whereHas('feedbackResults.studentSubjectClass', function ($query) use ($studentSubjectClass) {
-        $query->where('subject_class_id', $studentSubjectClass->subject_class_id);
-    })->get();
-
-    return view('client.feedback-form', compact('feedbackQuestions', 'studentSubjectClassId'));
-}
+    {
+        $student = Auth::guard('student')->user();
+        $studentId = $student->id;
+        $studentClass = StudentSubjectClass::where('id', $studentSubjectClassId)
+            ->where('student_id', $studentId)
+            ->firstOrFail();
+        $feedbackQuestions = FeedbackQuestion::whereHas('feedbackResults', function ($query) use ($studentSubjectClassId) {
+            $query->where('student_subject_class_id', $studentSubjectClassId)->whereNull('results');
+        })->get();
+        return view('client.feedback-form', compact('feedbackQuestions', 'studentSubjectClassId'));
+    }
 
     public function storeFeedback(Request $request, $studentSubjectClassId)
     {
         $student = Auth::guard('student')->user();
-        $request->validate([
+        $studentId = $student->id;
+        $studentClass = StudentSubjectClass::where('id', $studentSubjectClassId)
+            ->where('student_id', $studentId)
+            ->firstOrFail();
+        $data = $request->validate([
             'feedback_question_id' => 'required|array',
             'results' => 'required|array',
+            'expertise' => 'nullable|string|max:255',
         ]);
 
-        $totalScore = 0;
-        $totalQuestions = count($request->feedback_question_id);
-
-        foreach ($request->feedback_question_id as $index => $questionId) {
-            $result = new FeedbackResult([
-                'feedback_question_id' => $questionId,
-                'student_subject_class_id' => $studentSubjectClassId,
-                'results' => $request->results[$index],
-                'student_id' => $student->id,
-            ]);
-            $result->save();
-
-            $totalScore += $request->results[$index];
+        foreach ($data['feedback_question_id'] as $index => $questionId) {
+            FeedbackResult::updateOrCreate(
+                [
+                    'student_subject_class_id' => $studentSubjectClassId,
+                    'feedback_question_id' => $questionId,
+                ],
+                [
+                    'student_id' => $studentId,
+                    'results' => $data['results'][$index],
+                    'expertise' => $data['expertise']
+                ]
+            );
         }
 
-        $averageScore = $totalScore / $totalQuestions;
-        $feedbackResult = FeedbackResult::where('student_subject_class_id', $studentSubjectClassId)
-                    ->whereHas('feedbackQuestion', function ($query) use ($student) {
-                        $query->where('student_id', $student->id);
-                    })->first();
-        if ($feedbackResult) {
-            $feedbackResult->average_score = $averageScore;
-            $feedbackResult->save();
-        }
-        return redirect()->route('student.home')->with('success', 'Bạn đã hoàn thành feedback!');
+        return redirect()->route('feedback.list')
+            ->with('success', 'Feedback đã được gửi thành công!');
     }
-    public function checkFeedbackCompletion($studentSubjectClassId)
-    {
-        $student = Auth::guard('student')->user();
-        $feedbackCompleted = FeedbackResult::where('student_subject_class_id', $studentSubjectClassId)
-                                           ->where('student_id', $student->id)
-                                           ->whereNotNull('results')
-                                           ->exists();
-        return response()->json(['completed' => $feedbackCompleted]);
-    }
+
 }

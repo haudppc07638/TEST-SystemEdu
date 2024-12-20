@@ -44,7 +44,7 @@
                             <table id="tableTimeSlot" class="table datatable">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th>STT</th>
                                         <th>Ca </th>
                                         <th>Thời gian bắt đầu</th>
                                         <th>Thời gian kết thúc</th>

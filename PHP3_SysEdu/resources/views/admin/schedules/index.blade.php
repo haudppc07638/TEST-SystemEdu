@@ -28,7 +28,7 @@
             <table class="table table-bordered mt-3">
                 <thead>
                     <tr>
-                        <th>Stt</th>
+                        <th>STT</th>
                         <th>Ngày</th>
                         <th>Phòng Học</th>
                         <th>Mã Môn</th>

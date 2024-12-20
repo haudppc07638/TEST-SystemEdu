@@ -42,7 +42,7 @@
                             <table id="sysTable" class="table datatable">
                                 <thead>
                                     <tr>
-                                        <th class="fs-6">#</th>
+                                        <th class="fs-6">STT</th>
                                         <th class="fs-6">MSV</th>
                                         <th class="fs-6">Họ tên</th>
                                         @php

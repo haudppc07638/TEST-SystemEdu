@@ -28,7 +28,7 @@
                         <table id="tableDepartment" class="table datatable" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>STT</th>
                                     <th>Tên phòng</th>
                                     <th>Vị trí</th>
                                     <th>Tác vụ</th>
