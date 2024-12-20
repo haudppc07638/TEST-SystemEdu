@@ -15,8 +15,8 @@ class Semester extends Model
         'id',
         'block',
         'year',
-        'start_day', 
-        'end_day'
+        'start_date', 
+        'end_date'
     ];
     public function isCurrentSemester()
     {

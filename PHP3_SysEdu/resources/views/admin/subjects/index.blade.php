@@ -21,8 +21,8 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="card-title d-flex justify-content-end">
-                                <a href="{{ route('admin.subjects.create') }}" class="btn btn-success  m-2">Thêm mới</a>
+                            <div class="card-title d-flex">
+                                <a href="{{ route('admin.subjects.create') }}" class="btn btn-cBlue  m-2">Thêm</a>
                             </div>
                             <form action="{{ route('admin.subjects.index') }}" method="GET" class="mb-4">
                                 <div class="row">
@@ -30,26 +30,26 @@
                                         <select name="major_id" class="form-select">
                                             <option value="">Tất cả chuyên ngành</option>
                                             @foreach ($majors as $major)
-                                                <option value="{{ $major->id }}" 
-                                                        {{ request('major_id') == $major->id ? 'selected' : '' }}>
+                                                <option value="{{ $major->id }}"
+                                                    {{ request('major_id') == $major->id ? 'selected' : '' }}>
                                                     {{ $major->name }}
                                                 </option>
                                             @endforeach
                                         </select>
                                     </div>
-                        
+
                                     <div class="col-lg-4">
-                                        <input type="text" name="search" class="form-control" 
-                                               placeholder="Tìm kiếm môn học" value="{{ request('search') }}">
+                                        <input type="text" name="search" class="form-control"
+                                            placeholder="Tìm kiếm môn học" value="{{ request('search') }}">
                                     </div>
-                        
+
                                     <div class="col-lg-4">
                                         <button type="submit" class="btn btn-primary">Lọc</button>
                                         <a href="{{ route('admin.subjects.index') }}" class="btn btn-secondary">Reset</a>
                                     </div>
                                 </div>
                             </form>
-                        
+
                             <!-- Bảng danh sách môn học -->
                             <table id="tableSubject" class="table datatable">
                                 <thead>
@@ -89,18 +89,14 @@
                                                     <div class="dropdown-menu">
                                                         <a class="dropdown-item"
                                                             href="{{ route('admin.subjects.detail', $subject->id) }}"><i
-                                                                class='bx bx-id-card me-2'></i> Xem chi tiết</a>
+                                                                class="bx bx-id-card me-2"></i> Xem chi tiết</a>
                                                         <a class="dropdown-item"
                                                             href="{{ route('admin.subjects.edit', $subject->id) }}"><i
                                                                 class="bx bx-edit-alt me-2"></i> Chỉnh sửa</a>
-                                                        <form action="{{ route('admin.subjects.destroy', $subject->id) }}"
-                                                            method="POST"
-                                                            onsubmit="return confirm('Bạn có chắc chắn muốn xóa môn học này không?');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="dropdown-item"><i
-                                                                    class="bx bx-trash me-2"></i> Xóa</button>
-                                                        </form>
+                                                        <button type="button" class="dropdown-item delete-subject"
+                                                            data-id="{{ $subject->id }}">
+                                                            <i class="bx bx-trash me-2"></i> Xóa
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </td>
@@ -109,7 +105,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                     </div>
 
                 </div>
@@ -123,4 +119,35 @@
 @endpush
 
 @push('script')
+    <script>
+        document.querySelectorAll('.delete-subject').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const subjectId = this.getAttribute('data-id');
+
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn xóa môn học này?',
+                    text: "Việc này không thể hoàn tác!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '{{ route('admin.subjects.destroy', ':id') }}'.replace(
+                            ':id', subjectId);
+                        form.innerHTML = `
+                    @csrf
+                    @method('DELETE')
+                `;
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
 @endpush

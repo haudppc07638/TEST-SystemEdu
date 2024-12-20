@@ -9,8 +9,8 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                <li class="breadcrumb-item">Thời gian</li>
-                <li class="breadcrumb-item active">Thêm thời gian</li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.timeslots.index') }}">Thời gian ca học</a></li>
+                <li class="breadcrumb-item active">Thêm ca học</li>
             </ol>
         </nav>
     </div>
@@ -37,7 +37,7 @@
                         @enderror
                     </div>
                 </div>
-                <div class="row mb-3">
+                <div class="row mb-4">
                     <label for="end_time" class="col-sm-2 col-form-label">Thời gian kết thúc</label>
                     <div class="col-sm-10">
                         <input type="time" class="form-control @error('end_time') is-invalid @enderror" id="end_time" name="end_time" value="{{ old('end_time') }}">
@@ -47,8 +47,8 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-sm-10 offset-sm-2">
-                        <button type="submit" class="btn btn-success ">Thêm mới</button>
+                    <div class="col-sm-12">
+                        <button type="submit" class="btn btn-cBlue ">Thêm</button>
                     </div>
                 </div>
             </form>

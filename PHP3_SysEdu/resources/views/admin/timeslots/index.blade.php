@@ -5,41 +5,23 @@
 @section('main')
     <main id="main" class="main">
         <div class="pagetitle">
-            <h1>Quản lý thời gian</h1>
+            <h1>Quản lý thời gian ca học</h1>
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
-                    <li class="breadcrumb-item">Thời gian</li>
-                    <li class="breadcrumb-item active">Danh sách thời gian</li>
+                    <li class="breadcrumb-item active">Thời gian ca học</li>
                 </ol>
             </nav>
         </div><!-- End Page Title -->
 
         <section class="section">
             <div class="row">
-                @if (session('success'))
-                    <div class="col-12">
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="bi bi-check-circle me-1"></i>
-                            {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    </div>
-                @endif
-                @if (session('error'))
-                    <div class="col-12">
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="bi bi-x-circle me-1"></i>
-                            {{ session('error') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    </div>
-                @endif
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="card-title d-flex justify-content-end">
-                                <a href="{{ route('admin.timeslots.create') }}" type="submit" class="btn btn-success  m-2">Thêm mới</a>
+                            <div class="card-title d-flex">
+                                <a href="{{ route('admin.timeslots.create') }}" type="submit"
+                                    class="btn btn-cBlue m-2">Thêm</a>
                             </div>
                             <table id="tableTimeSlot" class="table datatable">
                                 <thead>
@@ -68,15 +50,11 @@
                                                     <div class="dropdown-menu">
                                                         <a class="dropdown-item"
                                                             href="{{ route('admin.timeslots.edit', $timeSlot->id) }}"><i
-                                                                class="bx bx-edit-alt me-2"></i> Sửa</a>
-                                                        <form action="{{ route('admin.timeslots.destroy', $timeSlot->id) }}"
-                                                            method="POST"
-                                                            onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="dropdown-item"><i
-                                                                    class="bx bx-trash me-2"></i> Xóa</button>
-                                                        </form>
+                                                                class="bx bx-edit-alt me-2"></i> Chỉnh sửa</a>
+                                                        <button type="button" class="dropdown-item delete-timeslot"
+                                                            data-id="{{ $timeSlot->id }}">
+                                                            <i class="bx bx-trash me-2"></i> Xóa
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </td>
@@ -97,4 +75,35 @@
 @endpush
 
 @push('script')
+    <script>
+        document.querySelectorAll('.delete-timeslot').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const timeslotId = this.getAttribute('data-id');
+
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn xóa ca học này?',
+                    text: "Việc này không thể hoàn tác!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '{{ route('admin.timeslots.destroy', ':id') }}'.replace(
+                            ':id', timeslotId);
+                        form.innerHTML = `
+                @csrf
+                @method('DELETE')
+            `;
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
 @endpush

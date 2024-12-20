@@ -93,7 +93,7 @@ class Major extends Model
         return $major;
     }
 
-    public static function deleteMajor($id)
+    public static function deleteMajorId($id)
     {
         $major = self::findOrFail($id);
         $major->delete();
@@ -123,16 +123,6 @@ class Major extends Model
     {
         return self::with('students')
         ->get();
-    }
-
-    public static function updateTotalCreditsForAllMajors()
-    {
-        self::with('subjects')->each(function ($major) {
-            $totalCreditsNoMajor = Subject::whereNull('major_id')->sum('credit');
-            $totalCreditsForMajor = $major->subjects->sum('credit');
-            $totalCredits = $totalCreditsNoMajor + $totalCreditsForMajor;
-            $major->update(['total_credits' => $totalCredits]);
-        });
     }
 
 }

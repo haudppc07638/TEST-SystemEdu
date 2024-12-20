@@ -3,7 +3,7 @@
 @section('title', 'students')
 
 @section('main')
-<main id="main" class="main">
+    <main id="main" class="main">
 
         <div class="pagetitle">
             <h1>Quản lý sinh viên</h1>
@@ -20,9 +20,9 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="card-title d-flex justify-content-end">
+                            <div class="card-title d-flex">
                                 <a href="{{ route('admin.students.create') }}" type="submit"
-                                    class="btn btn-success  m-2">Thêm mới</a>
+                                    class="btn btn-cBlue mt-2">Thêm</a>
                             </div>
                             <table id="tableStudent" class="table datatable">
                                 <thead>
@@ -47,8 +47,9 @@
                                             <td>{{ $student->email }}</td>
                                             <td>{{ $student->phone }}</td>
                                             <td>
-                                                <img src="{{ $student->image ? asset('storage/avatars/' . $student->image) : asset('assets/images/default-avatar1.jpg') }}" alt="avatar" class="rounded-circle" width="40px" height="40px">
-                                            </td>                                            
+                                                <img src="{{ $student->image ? asset('storage/avatars/' . $student->image) : asset('assets/images/default-avatar1.jpg') }}"
+                                                    alt="avatar" class="rounded-circle" width="40px" height="40px">
+                                            </td>
                                             <td>{{ $student->major->name ?? 'Chưa có chuyên ngành' }}</td>
                                             <td>{{ $student->stuClass->name ?? 'Chưa có lớp học' }}</td>
 
@@ -58,26 +59,18 @@
                                                         data-bs-toggle="dropdown">
                                                         <i class="bx bx-dots-vertical-rounded"></i>
                                                     </button>
-                                                    
                                                     <div class="dropdown-menu">
                                                         <a class="dropdown-item"
-                                                            href="{{ route('admin.students.detail', ['id' => $student->id]) }}">
-                                                            <i class="bx bx-id-card me-2"></i>
-                                                            Xem chi tiết
-                                                        </a>
+                                                            href="{{ route('admin.students.detail', $student->id) }}"><i
+                                                                class="bx bx-id-card me-2"></i> Xem chi tiết</a>
                                                         <a class="dropdown-item"
-                                                            href="{{ route('admin.students.edit', ['id' => $student->id]) }}">
-                                                            <i class="bx bx-edit-alt me-2"></i> Chỉnh sửa
-                                                        </a>
-                                                        <form
-                                                            action="{{ route('admin.students.destroy', ['id' => $student->id]) }}"
-                                                            method="POST"
-                                                            onsubmit="return confirm('Bạn có chắc chắn muốn xóa sinh viên này không?');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="dropdown-item"><i
-                                                                    class="bx bx-trash me-2"></i> Xóa</button>
-                                                        </form>
+                                                            href="{{ route('admin.students.edit', $student->id) }}"><i
+                                                                class="bx bx-edit-alt me-2"></i> Chỉnh sửa</a>
+                                                        <!-- Xóa tin tức với popup xác nhận -->
+                                                        <button type="button" class="dropdown-item delete-student"
+                                                            data-id="{{ $student->id }}">
+                                                            <i class="bx bx-trash me-2"></i> Xóa
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </td>
@@ -87,94 +80,53 @@
                             </table>
                             <!-- End Table with stripped rows -->
 
-                            <div class="d-flex justify-content-center">
-                                {{ $students->links() }} 
+                            <div class="d-flex justify-content-end">
+                                {{ $students->links() }}
                             </div>
-                        </form>
-                        <!-- Kết thúc bộ lọc -->
-
-                        <div class="card-title">
-                            <a href="{{ route('admin.students.create') }}" type="submit" class="btn btn-primary m-2">Thêm mới</a>
                         </div>
-                        <table id="tableStudent" class="table datatable">
-                            <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>Họ và tên</th>
-                                    <th>MSSV</th>
-                                    <th>Email</th>
-                                    <th>Số điện thoại</th>
-                                    <th>Ảnh</th>
-                                    <th>Chuyên ngành</th>
-                                    <th>Lớp học</th>
-                                    <th>Tác vụ</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($students as $index => $student)
-                                    <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ $student->full_name }}</td>
-                                        <td>{{ $student->code }}</td>
-                                        <td>{{ $student->email }}</td>
-                                        <td>{{ $student->phone }}</td>
-                                        <td>
-                                            <img src="{{ $student->image ? asset('storage/avatars/' . $student->image) : asset('assets/images/default-avatar1.jpg') }}" alt="avatar" class="rounded-circle" width="40px" height="40px">
-                                        </td>                                            
-                                        <td>{{ $student->major->name ?? 'Chưa có chuyên ngành' }}</td>
-                                        <td>{{ $student->stuClass->name ?? 'Chưa có lớp học' }}</td>
-
-                                        <td>
-                                            <div class="dropdown">
-                                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
-                                                    data-bs-toggle="dropdown">
-                                                    <i class="bx bx-dots-vertical-rounded"></i>
-                                                </button>
-                                                
-                                                <div class="dropdown-menu">
-                                                    <a class="dropdown-item"
-                                                        href="{{ route('admin.students.detail', ['id' => $student->id]) }}">
-                                                        <i class="bx bx-id-card me-2"></i>
-                                                        Xem chi tiết
-                                                    </a>
-                                                    <a class="dropdown-item"
-                                                        href="{{ route('admin.students.edit', ['id' => $student->id]) }}">
-                                                        <i class="bx bx-edit-alt me-2"></i> Chỉnh sửa
-                                                    </a>
-                                                    <form
-                                                        action="{{ route('admin.students.destroy', ['id' => $student->id]) }}"
-                                                        method="POST"
-                                                        onsubmit="return confirm('Bạn có chắc chắn muốn xóa sinh viên này không?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="dropdown-item"><i
-                                                                class="bx bx-trash me-2"></i> Xóa</button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        <!-- End Table with stripped rows -->
-
-                        <div class="d-flex justify-content-center">
-                            {{ $students->links() }} 
-                        </div>
-
                     </div>
                 </div>
-
             </div>
-        </div>
-    </section>
+        </section>
 
-</main><!-- End #main -->
+    </main><!-- End #main -->
 @endsection
 
 @push('style')
 @endpush
 
 @push('script')
+<script>
+    // Thêm sự kiện xóa chuyên ngành
+    document.querySelectorAll('.delete-student').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const studentId = this.getAttribute('data-id');
+
+            Swal.fire({
+                title: 'Bạn có chắc chắn muốn xóa sinh viên này?',
+                text: "Việc này không thể hoàn tác!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Tạo form xóa chuyên ngành
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '{{ route('admin.students.destroy', ':id') }}'.replace(
+                        ':id', studentId); // Sửa URL
+                    form.innerHTML = `
+                    @csrf
+                    @method('DELETE')
+                `;
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
 @endpush

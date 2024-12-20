@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ScoreTypeRequest extends FormRequest
 {
@@ -21,8 +22,10 @@ class ScoreTypeRequest extends FormRequest
      */
     public function rules()
     {
+        $scoreTypeId = $this->route('id');
+
         return [
-            'name' => 'required|string|max:100',
+            'name' => ['required', 'string', 'max:100',Rule::unique('score_types')->ignore( $scoreTypeId)],
             'type' => 'required|in:single,multi',
         ];
     }
@@ -33,6 +36,7 @@ class ScoreTypeRequest extends FormRequest
             'name.required' => 'Tên loại điểm là bắt buộc.',
             'name.string' => 'Tên loại điểm phải là một chuỗi.',
             'name.max' => 'Tên loại điểm không được quá 100 ký tự.',
+            'name.unique' => 'Loại điểm đã tồn tại.',
 
             'type.required' => 'Loại điểm không được để trống',
             'type.in' => 'Loại điểm không hợp lệ',

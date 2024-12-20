@@ -15,7 +15,7 @@ class SubjectLecturerController extends Controller
     public function create(Request $request)
     {
         $majorId = $request->input('major_id');
-        $subjects = Subject::all();
+        $subjects = Subject::orderBy('major_id', 'asc')->get();
         $employees = Employee::all();
         $majors = Major::all();
 

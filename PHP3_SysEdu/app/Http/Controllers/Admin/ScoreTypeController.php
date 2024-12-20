@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ScoreTypeRequest;
 use App\Models\ScoreType;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -48,10 +49,21 @@ class ScoreTypeController extends Controller
 
     public function destroy($id)
     {
-        $scoreType = ScoreType::findOrFail($id);
-        $scoreType->delete();
-
-        toastr()->success('Xóa loại điểm thành công!');
-        return redirect()->route('admin.score_types.index');
+        try {
+            
+            $isDeleted = ScoreType::findOrFail($id);
+            $isDeleted->delete();
+            
+            if ($isDeleted) {
+                toastr()->success('Xóa thành công');
+            } else {
+                toastr()->warning('Hiện tại loại điểm đang có dữ liệu phụ thuộc!');
+            }
+    
+            return redirect()->route('admin.score_types.index');
+        } catch (QueryException $e) {
+            toastr()->warning('Đã xảy ra lỗi khi xóa loại điểm. Vui lòng thử lại!');
+            return redirect()->route('admin.score_types.index');
+        }
     }
 }

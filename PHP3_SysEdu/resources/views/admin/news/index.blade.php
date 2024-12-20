@@ -20,8 +20,8 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title d-flex justify-content-end">
-                            <a href="{{ route('admin.news.create') }}" type="submit" class="btn btn-success">Thêm mới</a>
+                        <div class="card-title d-flex">
+                            <a href="{{ route('admin.news.create') }}" type="submit" class="btn btn-cBlue">Thêm</a>
                         </div>
                         <!-- Table with stripped rows -->
                         <table id="tableDepartment" class="table datatable" style="width:100%">
@@ -35,7 +35,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($news as $index => $news)
+                                @forelse($news as $index => $news)
                                 <tr>
                                     <td>{{ $index +1 }}</td>
                                     <td class="text-limited">{{ $news->title }}</td>
@@ -62,7 +62,11 @@
                                         </div>
                                     </td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                <tr>
+                                    <td colspan="5" class="text-center">Không có dữ liệu</td>
+                                </tr>
+                                @endforelse
                             </tbody>
                         </table>
                         <!-- End Table with stripped rows -->

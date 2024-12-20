@@ -21,7 +21,30 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body mt-3">
-                        <a href="{{ route('admin.subjectclasses.create') }}" class="btn btn-primary m-2">Thêm mới</a>
+                        <a href="{{ route('admin.subjectclasses.create') }}" class="btn btn-cBlue m-2">Thêm</a>
+                        <div class="row mb-3 mt-4">
+                            <div class="col-md-6">
+                                <select id="subjectFilter" class="form-select" name="subject_id" onchange="filterSubjectClasses()">
+                                    <option value=""> -- Chọn môn học --</option>
+                                    @foreach ($subjects as $subject)
+                                        <option value="{{ $subject->id }}" {{ $filters['subject_id'] == $subject->id ? 'selected' : '' }}>
+                                            {{ $subject->major->name ?? 'Cơ bản' }} - {{ $subject->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <select id="employeeFilter" class="form-select" name="employee_id" onchange="filterSubjectClasses()">
+                                    <option value=""> -- Chọn cố vấn --</option>
+                                    @foreach ($employees as $employee)
+                                        <option value="">Tất cả</option>
+                                        <option value="{{ $employee->id }}" {{ $filters['employee_id'] == $employee->id ? 'selected' : '' }}>
+                                            {{ $employee->full_name }} - {{ $employee->code }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                         <table id="tableSubjectClass" class="table datatable">
                             <thead>
                                 <tr>
@@ -55,23 +78,30 @@
                                     <td>{{ $subjectClass->majorClass->name ?? 'Chưa có' }}</td>
                                     <td>
                                         <div class="dropdown">
-                                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
+                                                data-bs-toggle="dropdown">
                                                 <i class="bx bx-dots-vertical-rounded"></i>
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a href="{{ route('admin.schedules.view-schedule', ['subject_class_id' => $subjectClass->id]) }}" class="dropdown-item bg-info">
-                                                    <i class="bi bi-calendar"></i> Xem Lịch Học
-                                                </a>                                            
-                                                <a class="dropdown-item" href="{{ route('admin.schedules.create', ['subject_class_id' => $subjectClass->id]) }}"><i class="bi bi-calendar-plus"></i> Tạo lịch học</a>
-                                                <a class="dropdown-item" href="{{ route('admin.examschedules.index', ['subject_class_id' => $subjectClass->id]) }}"><i class="bi bi-calendar-plus"></i> Xem lịch thi</a>
-                                                <a class="dropdown-item" href="{{ route('admin.examschedules.create', ['subject_class_id' => $subjectClass->id]) }}"><i class="bi bi-calendar-plus"></i> Tạo lịch thi</a>
-                                                <a class="dropdown-item" href="{{ route('admin.studentsubjectclass.index', $subjectClass->id) }}"><i class="bi bi-pen"></i> Nhập điểm</a>
-                                                <a class="dropdown-item" href="{{ route('admin.subjectclasses.edit', $subjectClass->id) }}"><i class="bx bx-edit-alt me-2"></i> Chỉnh sửa</a>
-                                                <form action="{{ route('admin.subjectclasses.destroy', $subjectClass->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa môn học này không?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="dropdown-item"><i class="bx bx-trash me-2"></i> Xóa</button>
-                                                </form>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('admin.schedules.view-schedule', ['subject_class_id' => $subjectClass->id]) }}"><i
+                                                        class="bi bi-calendar"></i> Xem Lịch Học</a>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('admin.schedules.create', ['subject_class_id' => $subjectClass->id]) }}"><i
+                                                        class="bi bi-calendar-plus"></i> Tạo lịch học</a>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('admin.examschedules.index', ['subject_class_id' => $subjectClass->id]) }}"><i
+                                                        class="bi bi-calendar-plus"></i> Xem lịch thi</a>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('admin.examschedules.create', ['subject_class_id' => $subjectClass->id]) }}"><i
+                                                        class="bi bi-calendar-plus"></i> Tạo lịch thi</a>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('admin.subjectclasses.edit', $subjectClass->id) }}"><i
+                                                        class="bx bx-edit-alt me-2"></i> Chỉnh sửa</a>
+                                                <button type="button" class="dropdown-item delete-subject-class"
+                                                    data-id="{{ $subjectClass->id }}">
+                                                    <i class="bx bx-trash me-2"></i> Xóa
+                                                </button>
                                             </div>
                                         </div>
                                     </td>
@@ -79,6 +109,9 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <div class="d-flex justify-content-end">
+                            {{ $subjectClasses->links() }}
+                        </div>
                     </div>
                 </div>
 
@@ -93,4 +126,61 @@
 @endpush
 
 @push('script')
+<script>
+    function filterSubjectClasses() {
+        const subjectId = document.getElementById('subjectFilter').value;
+        const employeeId = document.getElementById('employeeFilter').value;
+
+        const url = new URL(window.location.href);
+        url.searchParams.set('subject_id', subjectId);
+        url.searchParams.set('employee_id', employeeId);
+
+        window.location.href = url.toString();
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $('#subjectFilter').select2({
+            placeholder: "-- Chọn môn học --",
+            allowClear: true,
+            width: '100%'
+        });
+        $('#employeeFilter').select2({
+            placeholder: "-- Chọn cố vấn --",
+            allowClear: true,
+            width: '100%'
+        });
+    });
+</script>
+<script>
+    document.querySelectorAll('.delete-subject-class').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const subjectClassId = this.getAttribute('data-id');
+
+            Swal.fire({
+                title: 'Bạn có chắc chắn muốn xóa lớp môn này?',
+                text: "Việc này không thể hoàn tác!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '{{ route('admin.subjectclasses.destroy', ':id') }}'.replace(
+                        ':id', subjectClassId);
+                    form.innerHTML = `
+            @csrf
+            @method('DELETE')
+        `;
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
 @endpush

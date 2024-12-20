@@ -9,8 +9,7 @@
         <h1>Quản lý phòng ban</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Trang chủ</a></li>
-                <li class="breadcrumb-item">Đào tạo</li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
                 <li class="breadcrumb-item active">Phòng ban</li>
             </ol>
         </nav>
@@ -21,8 +20,8 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title d-flex justify-content-end">
-                            <a href="{{ route('admin.departments.create') }}" type="submit" class="btn btn-success">Thêm mới</a>
+                        <div class="card-title d-flex">
+                            <a href="{{ route('admin.departments.create') }}" type="submit" class="btn btn-cBlue">Thêm</a>
                         </div>
                         <!-- Table with stripped rows -->
                         <table id="tableDepartment" class="table datatable" style="width:100%">
@@ -42,17 +41,19 @@
                                     <td>{{ $department->location }}</td>
                                     <td>
                                         <div class="dropdown">
-                                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
+                                                data-bs-toggle="dropdown">
                                                 <i class="bx bx-dots-vertical-rounded"></i>
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item" href="{{ route('admin.departments.edit', $department->id) }}"><i class="bx bx-edit-alt me-2"></i> Chỉnh sửa</a>
-                                                <form action="{{ route('admin.departments.destroy', $department->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa phòng ban này không?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="dropdown-item"><i class="bx bx-trash me-2"></i> Xóa</button>
-                                                </form>
-                                            </div>  
+                                                <a class="dropdown-item"
+                                                    href="{{ route('admin.departments.edit', $department->id) }}"><i
+                                                        class="bx bx-edit-alt me-2"></i> Chỉnh sửa</a>
+                                                <button type="button" class="dropdown-item delete-department"
+                                                    data-id="{{ $department->id }}">
+                                                    <i class="bx bx-trash me-2"></i> Xóa
+                                                </button>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -61,6 +62,9 @@
                             </tbody>
                         </table>
                         <!-- End Table with stripped rows -->
+                        <div class="d-flex justify-content-end">
+                            {{ $departmentsView->links() }} 
+                        </div>
 
                     </div>
                 </div>
@@ -76,4 +80,35 @@
 @endpush
 
 @push('script')
+<script>
+    document.querySelectorAll('.delete-department').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const departmentId = this.getAttribute('data-id');
+
+            Swal.fire({
+                title: 'Bạn có chắc chắn muốn xóa phòng ban này?',
+                text: "Việc này không thể hoàn tác!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '{{ route('admin.departments.destroy', ':id') }}'.replace(
+                        ':id', departmentId);
+                    form.innerHTML = `
+                    @csrf
+                    @method('DELETE')
+                `;
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
 @endpush

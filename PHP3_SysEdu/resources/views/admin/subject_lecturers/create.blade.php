@@ -22,7 +22,7 @@
                                         @foreach ($subjects as $subject)
                                             <option value="{{ $subject->id }}"
                                                 {{ old('subject_id') == $subject->id ? 'selected' : '' }}>
-                                                {{ $subject->name }}
+                                                {{ $subject->major->name ?? 'Cơ bản' }} - {{ $subject->code }} - {{ $subject->name }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -39,7 +39,7 @@
                                     </select>
                                 </div>
 
-                                <button type="submit" class="btn btn-success">Đăng ký</button>
+                                <button type="submit" class="btn btn-cBlue">Đăng ký</button>
                             </form>
 
                         </div>
@@ -67,7 +67,7 @@
                                     </div>
                                     <div class="col-md-2">
                                         <label class="form-label">&nbsp;</label>
-                                        <button type="button" id="filterButton" class="btn btn-primary">Lọc</button>
+                                        <button type="button" id="filterButton" class="btn btn-cBlue">Lọc</button>
                                     </div>
                                 </div>
                             </form>
@@ -129,7 +129,7 @@
                     if (data.length > 0) {
                         data.forEach(function(subject) {
                             rows += `<tr>
-                                        <td>${subject.name}</td>
+                                        <td>${subject.major.name ?? 'Cơ bản'} - ${subject.code} - ${subject.name}</td>
                                         <td>`;
                             if (subject.lecturers.length > 0) {
                                 subject.lecturers.forEach(function(lecturer, index) {

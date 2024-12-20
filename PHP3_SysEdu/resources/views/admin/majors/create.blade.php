@@ -64,9 +64,9 @@
                         @enderror
                     </div>
                 
-                    <div class="col-12">
+                    <div class="col-12 mt-4">
                         <div class="col-sm-10">
-                            <button type="submit" class="btn btn-success">Thêm mới</button>
+                            <button type="submit" class="btn btn-cBlue">Thêm</button>
                         </div>
                     </div>
                 </form>

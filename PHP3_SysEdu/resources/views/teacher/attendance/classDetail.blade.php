@@ -214,12 +214,6 @@
                         <div class="card-body">
                             <div class="card-title d-flex justify-content-end align-items-center pr-4">
                                 <div class="btn-group">
-                                    @if ($subjectClass->end_date >= now())
-                                        <a href="{{ route('export.examList', $subjectClass->id) }}"
-                                            class="btn btn-sm btn-warning">
-                                            <i class="bi bi-file-earmark-excel me-1"></i> Xuất danh sách thi
-                                        </a>
-                                    @endif
                                     <a href="{{ route('attendance.export', $subjectClass->id) }}"
                                         class="btn btn-sm btn-success me-2">
                                         <i class="bi bi-file-earmark-excel me-1"></i> Xuất bảng điểm

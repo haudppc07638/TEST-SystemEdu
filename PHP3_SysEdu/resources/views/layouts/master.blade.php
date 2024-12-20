@@ -32,6 +32,8 @@
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.3.1/ckeditor5.css" />
 
     <!-- Template Main CSS File -->
+    <link rel="stylesheet" href="{{ asset('assets/admin/css/select2.min.css') }}">
+
     <link rel="stylesheet" href="{{ asset('assets/admin/css/style.css') }}">
 
     @stack('style')

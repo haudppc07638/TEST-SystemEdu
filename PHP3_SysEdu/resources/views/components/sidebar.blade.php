@@ -58,23 +58,6 @@
              </ul>
          </li><!-- End Components Nav -->
 
-         {{-- <li class="nav-item">
-             <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-                 <i class="bi bi-journal-text"></i><span>Lịch học</span><i class="bi bi-chevron-down ms-auto"></i>
-             </a>
-             <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                 <li>
-                     <a href="{{ route('admin.schedules.index') }}">
-                         <i class="bi bi-circle"></i><span>Lịch học</span>
-                     </a>
-                 </li>
-                 <li>
-                     <a href="{{ route('admin.semesters.index') }}">
-                         <i class="bi bi-circle"></i><span>Học Kỳ</span>
-                     </a>
-                 </li>
-             </ul>
-         </li> --}}
 
          <li class="nav-item">
             <a class="nav-link collapsed" href="{{ route('admin.semesters.index') }}">
@@ -83,6 +66,27 @@
             </a>
         </li><!-- End Class Page Nav -->
 
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{{ route('admin.timeslots.index') }}">
+                <i class="bi bi-clock"></i>
+                <span>Thời gian ca học</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{{ route('admin.students.index') }}">
+                <i class="bi bi-person-square"></i>
+                <span>Sinh viên</span>
+            </a>
+        </li><!-- End students Page Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{{ route('admin.employees.index') }}">
+                <i class="bi bi-person-rolodex"></i>
+                <span>Nhân sự</span>
+            </a>
+        </li><!-- End employees Page Nav -->
+
          <li class="nav-item">
              <a class="nav-link collapsed" href="{{ route('admin.classes.index') }}">
                  <i class="bi bi-folder-fill"></i>
@@ -90,21 +94,13 @@
              </a>
          </li><!-- End Class Page Nav -->
 
-
          <li class="nav-item">
-             <a class="nav-link collapsed" href="{{ route('admin.students.index') }}">
-                 <i class="bi bi-person-square"></i>
-                 <span>Sinh viên</span>
-             </a>
-         </li><!-- End students Page Nav -->
-
-         <li class="nav-item">
-             <a class="nav-link collapsed" href="{{ route('admin.employees.index') }}">
-                 <i class="bi bi-person-rolodex"></i>
-                 <span>Nhân sự</span>
-             </a>
-         </li><!-- End employees Page Nav -->
-
+            <a class="nav-link collapsed" href="{{ route('admin.subjectclasses.index') }}">
+                <i class="bi bi-folder2-open"></i>
+                <span>Lớp môn </span>
+            </a>
+        </li>
+        
          <li class="nav-item">
              <a class="nav-link collapsed" href="{{ route('admin.notifications.index') }}">
                  <i class="bi bi-bell-fill"></i>
@@ -126,18 +122,7 @@
             </a>
         </li><!-- End Enrollments Page Nav -->
 
-         <li class="nav-item">
-             <a class="nav-link collapsed" href="{{ route('admin.timeslots.index') }}">
-                 <i class="bi bi-clock"></i>
-                 <span>Thời gian theo ca</span>
-             </a>
-         </li>
-         <li class="nav-item">
-             <a class="nav-link collapsed" href="{{ route('admin.subjectclasses.index') }}">
-                 <i class="bi bi-folder2-open"></i>
-                 <span>Lớp môn </span>
-             </a>
-         </li>
+
          <li class="nav-item">
              <a class="nav-link collapsed" href="{{ route('admin.feedbacks.index') }}">
                  <i class="bi bi-folder2-open"></i>

@@ -105,7 +105,7 @@
                                                 <option value="{{ $credit->id }}"
                                                     data-total-price="{{ $credit->total_price }}"
                                                     {{ old('credit_id') == $credit->id ? 'selected' : '' }}>
-                                                    {{ $credit->total_price }}
+                                                    {{ $credit->total_price }} VNĐ
                                                 </option>
                                             @endforeach
                                         </select>
@@ -178,10 +178,8 @@
                                     </div>
                                 </div>
 
-                                <div class="text-center">
-                                    <button type="submit" class="btn btn-primary">Lưu</button>
-                                    <a href="{{ route('admin.subjectclasses.index') }}" class="btn btn-secondary">Hủy</a>
-                                </div>
+                                <button type="submit" class="btn btn-cBlue">Thêm</button>
+
                             </form>
                         </div>
                     </div>

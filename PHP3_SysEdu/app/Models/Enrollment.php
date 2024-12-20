@@ -38,4 +38,14 @@ class Enrollment extends Model
         'back_id_card',
         'graduation_certificate',
     ];
+
+    public function firstMajor()
+    {
+        return $this->belongsTo(Major::class, 'first_major_id');
+    }
+
+    public function secondMajor()
+    {
+        return $this->belongsTo(Major::class, 'second_major_id');
+    }
 }

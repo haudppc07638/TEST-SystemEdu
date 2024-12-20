@@ -22,20 +22,8 @@ class ClassroomController extends Controller
     }
     public function store(ClassroomRequest $request)
     {
-        $rules = $request->rules();
-        $messages = $request->messages();
-        $data = $request->only(['code']);
-
-
-        $validator = Validator::make($data, $rules, $messages);
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        $validatedData = $validator->validated();
-        $classroom = Classroom::create($validatedData);
+        $validated = $request->validated();
+        $classroom = Classroom::create($validated);
 
         toastr()->success('Thêm thành công: ' . $classroom->code);
         return redirect()->route('admin.classrooms.index');
@@ -47,19 +35,9 @@ class ClassroomController extends Controller
     }
     public function update(ClassroomRequest $request, string $id)
     {
-        $rules = $request->rules();
-        $messages = $request->messages();
-        $data = $request->only(['code']);
-
-        $validator = Validator::make($data, $rules, $messages);
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-        $validatedData = $validator->validated();
+        $validated = $request->validated();
         $classroom = Classroom::findOrFail($id);
-        $classroom->update($validatedData);
+        $classroom->update($validated);
 
         toastr()->success('Cập nhật thành công: ' . $classroom->code);
         return redirect()->route('admin.classrooms.index');
@@ -77,10 +55,10 @@ class ClassroomController extends Controller
         }
         catch (QueryException $e) {
             if ($e->getCode() == 23000) {
-                toastr()->error('Không thể xóa phòng học. Nó có liên kết với lịch học.');
+                toastr()->warning('Không thể xóa phòng học. Nó có liên kết với lịch học.');
                 return redirect()->route('admin.classrooms.index');
             }
-            toastr()->error('Có lỗi xảy ra khi xóa phòng học. Vui lòng thử lại.');
+            toastr()->warning('Có lỗi xảy ra khi xóa phòng học. Vui lòng thử lại.');
             return redirect()->route('admin.classrooms.index');
         }
     }

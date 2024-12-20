@@ -77,15 +77,18 @@ class FacultyController extends Controller
      */
     public function destroy(string $id)
     {
-        try{
-        Faculty::deleteFacultyId($id);
-            toastr()->success('Xoá thành công');
-            return redirect()->route('admin.faculties.index');
-        }
-        catch (QueryException $e) {
-            if ($e->getCode()) {
-                return redirect()->route('admin.faculties.index');  
+        try {
+            $isDeleted = Faculty::deleteFacultyId($id);
+    
+            if ($isDeleted) {
+                toastr()->success('Xóa thành công');
+            } else {
+                toastr()->warning('Hiện tại khoa đang có dữ liệu phụ thuộc!');
             }
+    
+            return redirect()->route('admin.faculties.index');
+        } catch (QueryException $e) {
+            toastr()->warning('Đã xảy ra lỗi khi xóa khoa. Vui lòng thử lại!');
             return redirect()->route('admin.faculties.index');
         }
     }

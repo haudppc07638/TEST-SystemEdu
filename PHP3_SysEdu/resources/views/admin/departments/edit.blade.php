@@ -10,7 +10,6 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Trang chủ</a></li>
-                <li class="breadcrumb-item">Đào tạo</li>
                 <li class="breadcrumb-item"><a href="{{route('admin.departments.index')}}">Phòng ban</a></li>
                 <li class="breadcrumb-item active">Sửa phòng ban</li>
             </ol>
@@ -48,7 +47,7 @@
                 </div>
                 <div class="col-12">
                     <div class="col-sm-10">
-                        <button type="submit" class="btn btn-primary">Lưu chỉnh sửa</button>
+                        <button type="submit" class="btn btn-cBlue">Cập nhật</button>
                     </div>
                 </div>
             </form>

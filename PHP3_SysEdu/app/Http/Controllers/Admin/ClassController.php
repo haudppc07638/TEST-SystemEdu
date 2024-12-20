@@ -34,7 +34,7 @@ class ClassController extends Controller
             $majorClasses->where('major_id', $request->major_id);
         }
 
-        $majorClasses = $majorClasses->get();
+        $majorClasses = $majorClasses->latest()->paginate(10);
         return view('admin.classes.index', compact('faculties', 'majorClasses'));
     }
 

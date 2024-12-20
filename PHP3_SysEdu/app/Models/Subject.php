@@ -148,6 +148,7 @@ class Subject extends Model
 
     public static function createSubject(array $data)
     {
+        // Tạo môn học mới
         $subject = self::create([
             'code' => $data['code'],
             'name' => $data['name'],
@@ -156,12 +157,14 @@ class Subject extends Model
             'major_id' => $data['major_id'] ?? null,
         ]);
 
+        // Xử lý các loại điểm
         if (isset($data['score_types'])) {
             foreach ($data['score_types'] as $scoreTypeId) {
                 $scoreType = ScoreType::find($scoreTypeId);
                 $weight = $data['weights'][$scoreTypeId] ?? 0;
 
                 if ($scoreType->type === 'multi') {
+                    // Xử lý loại điểm có nhiều điểm con
                     $quantity = $data['sub_scores'][$scoreTypeId] ?? 1;
                     $subWeight = $weight / $quantity;
 
@@ -172,7 +175,7 @@ class Subject extends Model
                         ]);
                     }
                 } else {
-                    // Trường hợp single
+                    // Xử lý loại điểm đơn
                     $subject->scoreTypes()->attach($scoreTypeId, [
                         'weight' => $weight,
                         'name' => $scoreType->name,
@@ -181,8 +184,9 @@ class Subject extends Model
             }
         }
 
-        if (isset($data['prerequisites'])) {
-            $subject->prerequisites()->sync($data['prerequisites']);
+        // Xử lý môn tiên quyết
+        if (isset($data['prerequisites']) && !empty($data['prerequisites'])) {
+            $subject->prerequisites()->attach($data['prerequisites']);
         }
 
         return $subject;
@@ -237,6 +241,7 @@ class Subject extends Model
         $scoreTypes = $subject->scoreTypes;
         return $scoreTypes;
     }
+
     protected static function boot()
     {
         parent::boot();

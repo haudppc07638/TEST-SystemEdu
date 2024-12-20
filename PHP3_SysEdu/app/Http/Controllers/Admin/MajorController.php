@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\MajorRequest;
 use App\Models\Major;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Models\Faculty;
@@ -21,7 +20,6 @@ class MajorController extends Controller
         $facultyId = $request->get('faculty_id', null);
         $search = $request->get('search', null);
         $search = $request->input('search');
-        Major::updateTotalCreditsForAllMajors();
         $majors = Major::getAllMajor($facultyId,$search);
         return view('admin.majors.index', [
             'majorsView' => $majors,
@@ -95,13 +93,17 @@ class MajorController extends Controller
     public function destroy(string $id)
     {
         try {
-            Major::deleteMajor($id);
-            toastr()->success('Xoá thành công');
+            $isDeleted = Major::deleteMajorId($id);
+    
+            if ($isDeleted) {
+                toastr()->success('Xóa thành công');
+            } else {
+                toastr()->warning('Hiện tại chuyên ngành đang có dữ liệu phụ thuộc!');
+            }
+    
             return redirect()->route('admin.majors.index');
         } catch (QueryException $e) {
-            if ($e->getCode()) {
-                return redirect()->route('admin.majors.index');
-            }
+            toastr()->warning('Đã xảy ra lỗi khi xóa chuyên ngành. Vui lòng thử lại!');
             return redirect()->route('admin.majors.index');
         }
     }

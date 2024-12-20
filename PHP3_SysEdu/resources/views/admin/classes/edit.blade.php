@@ -90,7 +90,7 @@
 
                     <!-- Nút Submit -->
                     <div class="col-12">
-                        <button type="submit" class="btn btn-success">Cập nhật</button>
+                        <button type="submit" class="btn btn-cBlue">Cập nhật</button>
                     </div>
                 </form>
             </div>

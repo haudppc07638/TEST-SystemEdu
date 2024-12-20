@@ -64,18 +64,21 @@ class TimeSlotController extends Controller
         return redirect()->route('admin.timeslots.index');
     }
 
-    public function destroy($id)
+    public function destroy(string $id)
     {
         try {
-            $timeSlot = TimeSlot::find($id);
-            $slot = $timeSlot->slot;
-            $timeSlot->delete();
-            toastr()->success('Xóa thời gian thành công: ' . $slot);
+            $isDeleted = TimeSlot::findOrFail($id);
+            $isDeleted->delete();
+
+            if ($isDeleted) {
+                toastr()->success('Xóa thành công');
+            } else {
+                toastr()->warning('Hiện tại ca học đang có dữ liệu phụ thuộc!');
+            }
+    
             return redirect()->route('admin.timeslots.index');
         } catch (QueryException $e) {
-            if ($e->getCode()) {
-                return redirect()->route('admin.timeslots.index');
-            }
+            toastr()->warning('Đã xảy ra lỗi khi xóa ca học. Vui lòng thử lại!');
             return redirect()->route('admin.timeslots.index');
         }
     }

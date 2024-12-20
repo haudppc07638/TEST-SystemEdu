@@ -1,16 +1,16 @@
 @extends('layouts.master')
 
-@section('title', 'Chỉnh Sửa Lớp Học')
+@section('title', 'Chỉnh Sửa Lớp Học Phần')
 
 @section('main')
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Chỉnh sửa lớp học</h1>
+        <h1>Chỉnh sửa lớp học phần</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('admin.subjectclasses.index') }}">Lớp học</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.subjectclasses.index') }}">Lớp học phần</a></li>
                 <li class="breadcrumb-item active">Chỉnh Sửa</li>
             </ol>
         </nav>
@@ -30,7 +30,7 @@
 
             <div class="col-lg-12">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body p-4">
                         <form method="POST" action="{{ route('admin.subjectclasses.update', $subjectClass->id) }}">
                             @csrf
                             @method('PUT')
@@ -169,10 +169,8 @@
                                 </div>
                             </div>
 
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-primary">Cập Nhật</button>
-                                <a href="{{ route('admin.subjectclasses.index') }}" class="btn btn-secondary">Hủy</a>
-                            </div>
+                            <button type="submit" class="btn btn-cBlue">Cập nhật</button>
+
                         </form>
                     </div>
                 </div>

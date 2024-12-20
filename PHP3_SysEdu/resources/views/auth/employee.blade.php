@@ -22,7 +22,7 @@
                             <img src="{{ asset('assets/images/syseduicon.png') }}" alt="BootstrapBrain Logo" width="140">
                           </a>
                         </div>
-                        <h4 class="text-center">Đăng Nhập Cho Phòng Đào Tạo</h4>
+                        <h4 class="text-center">Đăng Nhập Cho Cán Bộ Đào Tạo</h4>
                       </div>
                     </div>
                   </div>

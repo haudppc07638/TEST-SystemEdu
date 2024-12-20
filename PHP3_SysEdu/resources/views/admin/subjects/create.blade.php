@@ -10,7 +10,7 @@
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('admin.subjects.index') }}">Môn</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.subjects.index') }}">Môn học</a></li>
                     <li class="breadcrumb-item active">Thêm mới</li>
                 </ol>
             </nav>
@@ -29,7 +29,7 @@
                                     <div class="col-sm-10">
                                         <select name="major_id" class="form-select" id="major_id">
                                             <option value="">...Chọn chuyên ngành...</option>
-                                            <option value="">Môn cơ bản</option>
+                                            <option value="">Cơ bản</option>
                                             @foreach ($majors as $major)
                                                 <option value="{{ $major->id }}"
                                                     {{ old('major_id') == $major->id ? 'selected' : '' }}>
@@ -153,7 +153,7 @@
                                     </div>
                                 </div>
 
-                                <button type="submit" class="btn btn-success">Thêm mới</button>
+                                <button type="submit" class="btn btn-cBlue">Thêm</button>
                             </form>
                         </div>
                     </div>

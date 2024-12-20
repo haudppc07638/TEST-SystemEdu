@@ -10,11 +10,12 @@
         <h4 class="mb-4 text-sm font-semibold">Chuyên ngành: {{ $major->name }}</h4>
         
         @foreach($studentSubjectClasses->groupBy('subjectClass.subject_id') as $subjectId => $subjectClasses)
-        <div class="w-full mb-8 overflow-hidden rounded-lg shadow-xs">
+        <div class="w-full mb-8 rounded-lg shadow-lg bg-white p-6">
             <h3 class="text-lg font-semibold text-gray-700 mb-4">
                 Môn: {{ $subjectClasses->first()->subjectClass->subject->name }}
             </h3>
-            <div class="w-full overflow-x-auto">
+            
+            <div class="overflow-hidden rounded-lg shadow-sm">
                 <table class="w-full whitespace-no-wrap">
                     <thead>
                         <tr class="text-xs font-semibold tracking-wide text-left uppercase border-b">
@@ -28,7 +29,7 @@
                             <th class="px-4 py-3">Trạng thái</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y dark:divide-gray-700">
+                    <tbody class="bg-white divide-y">
                         @foreach($subjectClasses as $index => $studentSubjectClass)
                         <tr class="text-gray-700">
                             <td class="px-4 py-3">{{ $studentSubjectClasses->firstItem() + $index }}</td>
@@ -51,19 +52,18 @@
                             </td>
                         </tr>
                         @endforeach
-                    </tbody>                    
+                    </tbody>
                 </table>
             </div>
 
-            <div class="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t dark:border-gray-700 bg-gray-50 sm:grid-cols-9">
-                <span class="flex items-center col-span-3">
+            <div class="flex justify-between items-center mt-4">
+                <span class="text-xs font-semibold text-gray-500">
                     Hiển thị {{ $studentSubjectClasses->firstItem() }}-{{ $studentSubjectClasses->lastItem() }} trên {{ $studentSubjectClasses->total() }}
                 </span>
-                <span class="col-span-2"></span>
-                <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
+                <div class="mt-2 sm:mt-0">
                     {{ $studentSubjectClasses->links() }}
-                </span>
-            </div>            
+                </div>
+            </div>
         </div>
         @endforeach
     </div>

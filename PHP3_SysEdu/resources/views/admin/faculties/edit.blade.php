@@ -9,9 +9,8 @@
             <h1>Quản Lý Khoa</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Trang Chủ</a></li>
-                    <li class="breadcrumb-item">Đào Tạo</li>
-                    <li class="breadcrumb-item">Khoa</li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.faculties.index') }}">Khoa</a></li>
                     <li class="breadcrumb-item active">Sửa khoa</li>
                 </ol>
             </nav>
@@ -70,16 +69,16 @@
                         <label for="description" class="col-sm-2 col-form-label">Mô tả</label>
                         <div class="col-sm-10">
                             <div id="editor-container"></div>
-                            <input type="hidden" name="description" id="description" value="{{ old('description', $faculty->description) }}">
+                            <textarea name="description" id="description" class="form-control" rows="7">{{ old('description', $faculty->description) }}</textarea>
                             @error('description')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
                     </div>
 
-                    <div class="row mb-3">
+                    <div class="row mb-4">
                         <div class="col-sm-10">
-                            <button type="submit" class="btn btn-primary">Sửa</button>
+                            <button type="submit" class="btn btn-cBlue">Cập nhật</button>
                         </div>
                     </div>
                 </form>

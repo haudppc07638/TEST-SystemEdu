@@ -20,13 +20,12 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="card-title">
-                                <a href="{{ route('admin.classes.create') }}" type="submit" class="btn btn-primary m-2">Thêm mới</a>
+                                <a href="{{ route('admin.classes.create') }}" type="submit" class="btn btn-cBlue m-2">Thêm</a>
                             </div>
 
                             <form method="GET" action="{{ route('admin.classes.index') }}">
                                 <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <label for="facultySelect" class="form-label">Chọn Khoa</label>
+                                    <div class="col-md-5">                       
                                         <select id="facultySelect" name="faculty_id" class="form-select">
                                             <option value=""> -- Chọn Khoa -- </option>
                                             @foreach ($faculties as $faculty)
@@ -37,8 +36,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-md-6">
-                                        <label for="majorSelect" class="form-label">Chọn Chuyên Ngành</label>
+                                    <div class="col-md-5">
                                         <select id="majorSelect" name="major_id" class="form-select">
                                             <option value=""> -- Chọn Chuyên Ngành -- </option>
                                             @foreach ($faculties as $faculty)
@@ -50,9 +48,11 @@
                                             @endforeach
                                         </select>
                                     </div>
+                                    <div class="col-md-2 d-flex justify-content-start align-items-center">
+                                        <button type="submit" class="btn btn-cBlue">Lọc</button>
+                                    </div>
                                 </div>
 
-                                <button type="submit" class="btn btn-outline-secondary">Lọc</button>
                             </form>
 
                             <!-- Table with stripped rows -->
@@ -102,6 +102,7 @@
                                                         <i class="bx bx-dots-vertical-rounded"></i>
                                                     </button>
                                                     <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="{{ route('admin.classes.detail', $class->id) }}"><i class="bx bx-info-circle me-2"></i> Chi tiết</a>
                                                         <a class="dropdown-item" href="{{ route('admin.classes.edit', $class->id) }}"><i class="bx bx-edit-alt me-2"></i> Chỉnh sửa</a>
                                                         <form action="{{ route('admin.classes.destroy', $class->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa lớp chuyên ngành này không?');">
                                                             @csrf
@@ -120,6 +121,9 @@
                                 </tbody>
                             </table>
                             <!-- End Table with stripped rows -->
+                            <div class="d-flex justify-content-end">
+                                {{ $majorClasses->links() }} 
+                            </div>
                         </div>
                     </div>
                 </div>

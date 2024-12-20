@@ -23,14 +23,14 @@
                 <div class="row mb-3">
                     <label for="price" class="col-sm-2 col-form-label">Giá Tiền (1TC)</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control @error('price') is-invalid @enderror" id="price" name="price" value="{{ old('price', number_format($credit->price)) }}">
+                        <input type="text" class="form-control @error('price') is-invalid @enderror" id="price" name="price" value="{{ old('price', $credit->price) }}">
                         @error('price')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="vat" class="col-sm-2 col-form-label">Thuế (VAT)</label>
+                    <label for="vat" class="col-sm-2 col-form-label">Tỷ lệ tăng (%/năm)</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control @error('vat') is-invalid @enderror" id="vat" name="vat" value="{{ old('vat', number_format($credit->vat)) }}">
                         @error('vat')
@@ -40,7 +40,7 @@
                 </div>                
                 <div class="row mb-3">
                     <div class="col-sm-10 offset-sm-2">
-                        <button type="submit" class="btn btn-primary">Cập nhật</button>
+                        <button type="submit" class="btn btn-cBlue">Cập nhật</button>
                     </div>
                 </div>
             </form>

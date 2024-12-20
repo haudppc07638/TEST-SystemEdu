@@ -20,9 +20,9 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="card-title d-flex justify-content-end">
+                            <div class="card-title d-flex">
                                 <a href="{{ route('admin.semesters.create') }}" type="submit"
-                                    class="btn btn-success m-2">Thêm mới</a>
+                                    class="btn btn-cBlue m-2">Thêm</a>
                             </div>
                             <table id="tableSemester" class="table datatable">
                                 <thead>
@@ -30,6 +30,8 @@
                                         <th>STT</th>
                                         <th>Kỳ</th>
                                         <th>Năm</th>
+                                        <th>Bắt đầu</th>
+                                        <th>Kết thúc</th>
                                         <th>Tác vụ</th>
                                     </tr>
                                 </thead>
@@ -39,7 +41,8 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $semester->block }}</td>
                                             <td>{{ $semester->year }}</td>
-                                            </td>
+                                            <td>{{ $semester->start_date }}</td>
+                                            <td>{{ $semester->end_date }}</td>
                                             <td>
                                                 <div class="dropdown">
                                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
@@ -49,15 +52,11 @@
                                                     <div class="dropdown-menu">
                                                         <a class="dropdown-item"
                                                             href="{{ route('admin.semesters.edit', $semester->id) }}"><i
-                                                                class="bx bx-edit-alt me-2"></i> Sửa</a>
-                                                        <form action="{{ route('admin.semesters.destroy', $semester->id) }}"
-                                                            method="POST"
-                                                            onsubmit="return confirm('Bạn có chắc chắn muốn xóa không?');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="dropdown-item"><i
-                                                                    class="bx bx-trash me-2"></i> Xóa</button>
-                                                        </form>
+                                                                class="bx bx-edit-alt me-2"></i> Chỉnh sửa</a>
+                                                        <button type="button" class="dropdown-item delete-semester"
+                                                            data-id="{{ $semester->id }}">
+                                                            <i class="bx bx-trash me-2"></i> Xóa
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </td>
@@ -66,6 +65,9 @@
                                 </tbody>
                             </table>
                             <!-- End Table with stripped rows -->
+                            <div class="d-flex justify-content-end">
+                                {{ $semestersView->links() }} 
+                            </div>
 
                         </div>
                     </div>
@@ -81,4 +83,35 @@
 @endpush
 
 @push('script')
+    <script>
+        document.querySelectorAll('.delete-semester').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const semesterId = this.getAttribute('data-id');
+
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn xóa học kỳ này?',
+                    text: "Việc này không thể hoàn tác!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '{{ route('admin.semesters.destroy', ':id') }}'.replace(
+                            ':id', semesterId);
+                        form.innerHTML = `
+                @csrf
+                @method('DELETE')
+            `;
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
 @endpush

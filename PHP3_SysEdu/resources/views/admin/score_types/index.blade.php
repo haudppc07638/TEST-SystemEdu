@@ -21,8 +21,8 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title d-flex justify-content-end">
-                            <a href="{{ route('admin.score_types.create') }}" class="btn btn-success">Thêm mới</a>
+                        <div class="card-title d-flex">
+                            <a href="{{ route('admin.score_types.create') }}" class="btn btn-cBlue">Thêm</a>
                         </div>
 
                         <!-- Table -->
@@ -40,27 +40,22 @@
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $scoreType->name }}</td>
-                                        <td>{{ $scoreType->type }}</td>
+                                        <td>{{ $scoreType->type === 'multi' ? 'Điểm quá trình' : 'Điểm bảo vệ'}}</td>
                                         <td>
                                             <div class="dropdown">
-                                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" 
-                                                        data-bs-toggle="dropdown">
+                                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
+                                                    data-bs-toggle="dropdown">
                                                     <i class="bx bx-dots-vertical-rounded"></i>
                                                 </button>
                                                 <div class="dropdown-menu">
-                                                    <a class="dropdown-item" 
-                                                       href="{{ route('admin.score_types.edit', $scoreType->id) }}">
-                                                        <i class="bx bx-edit-alt me-2"></i> Chỉnh sửa
-                                                    </a>
-                                                    <form action="{{ route('admin.score_types.delete', $scoreType->id) }}" 
-                                                          method="POST" 
-                                                          onsubmit="return confirm('Bạn có chắc chắn muốn xóa loại điểm này không?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="dropdown-item">
-                                                            <i class="bx bx-trash me-2"></i> Xóa
-                                                        </button>
-                                                    </form>
+                                                    <a class="dropdown-item"
+                                                        href="{{ route('admin.score_types.edit', $scoreType->id) }}"><i
+                                                            class="bx bx-edit-alt me-2"></i> Chỉnh sửa</a>
+                                                    <!-- Xóa tin tức với popup xác nhận -->
+                                                    <button type="button" class="dropdown-item delete-score-type"
+                                                        data-id="{{ $scoreType->id }}">
+                                                        <i class="bx bx-trash me-2"></i> Xóa
+                                                    </button>
                                                 </div>
                                             </div>
                                         </td>
@@ -83,4 +78,37 @@
 @endpush
 
 @push('script')
+<script>
+    // Thêm sự kiện xóa chuyên ngành
+    document.querySelectorAll('.delete-score-type').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const scoreTypeId = this.getAttribute('data-id');
+
+            Swal.fire({
+                title: 'Bạn có chắc chắn muốn xóa loại điểm này?',
+                text: "Việc này không thể hoàn tác!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Tạo form xóa chuyên ngành
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '{{ route('admin.score_types.destroy', ':id') }}'.replace(
+                        ':id', scoreTypeId); // Sửa URL
+                    form.innerHTML = `
+                    @csrf
+                    @method('DELETE')
+                `;
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
 @endpush

@@ -58,8 +58,8 @@
                 <div class="col-12 col-lg-6 order-1 order-lg-0">
                     <h1 class="display-3 fw-bolder mb-3">Chào Mừng Đến Với<br><mark
                             class="bsb-tpl-highlight bsb-tpl-highlight-blue"><span
-                                class="bsb-tpl-font-hw display-2 text-accent fw-normal">Hệ Thống </span></mark> Trường Đại
-                        Học Công Nghệ </h1>
+                                class="bsb-tpl-font-hw display-2 text-accent fw-normal">Hệ Thống </span></mark> Trường Cao
+                            Đẳng Công Nghệ </h1>
                     <p class="fs-4 mb-5">Công nghệ thông tin là sự sáng tạo và sức mạnh biến đổi <br>mọi ngóc ngách của cuộc
                         sống.</p>
                 </div>
@@ -79,11 +79,11 @@
                 <div class="row gy-4 gy-md-0">
                     <div class="col-xs-12 col-md-7 order-1 order-md-0">
                         <div class="copyright text-center text-md-start">
-                            &copy; 2023. All Rights Reserved.
+                            &copy; 2024. SysEdu
                         </div>
                         <div class="credits text-secondary text-center text-md-start mt-2 fs-7">
-                            Built by <a href="https://bootstrapbrain.com/"
-                                class="link-secondary text-decoration-none">BootstrapBrain</a> with <span
+                            Built by <a href="https://fpt.edu.vn/"
+                                class="link-secondary text-decoration-none">SysEdu Team</a> with <span
                                 class="text-primary">&#9829;</span>
                         </div>
                     </div>

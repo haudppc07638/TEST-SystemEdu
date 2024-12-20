@@ -49,7 +49,7 @@ class SubjectController extends Controller
     public function store(SubjectRequest $request)
     {
         $validated = $request->validated();
-        $this->validateTotalWeight($request);
+
         $subject = Subject::createSubject($validated);
 
         toastr()->success('Thêm thành công môn học: ' . $subject->name);
@@ -118,15 +118,18 @@ class SubjectController extends Controller
     public function destroy(string $id)
     {
         try {
-            $subject = Subject::findOrFail($id);
-            $name = $subject->name;
-            $subject->delete();
-            toastr()->success('Xóa thành công môn học: ' . $name);
+            $isDeleted = Subject::findOrFail($id);
+            $isDeleted->delete();
+
+            if ($isDeleted) {
+                toastr()->success('Xóa thành công');
+            } else {
+                toastr()->warning('Hiện tại môn học đang có dữ liệu phụ thuộc!');
+            }
+    
             return redirect()->route('admin.subjects.index');
         } catch (QueryException $e) {
-            if ($e->getCode()) {
-                return redirect()->route('admin.subjects.index');
-            }
+            toastr()->warning('Đã xảy ra lỗi khi xóa môn học. Vui lòng thử lại!');
             return redirect()->route('admin.subjects.index');
         }
     }

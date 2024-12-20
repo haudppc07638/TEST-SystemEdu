@@ -17,9 +17,10 @@ class ClassroomRequest extends FormRequest
         $classroomId=$this->route('id');
         return [
             'code' => ['required', 'string', 'max:10', Rule::unique('classrooms')->ignore($classroomId)],
+            'capacity' => ['required', 'integer', 'min:1'],
         ];
     }
-//h
+
     public function messages(): array
     {
         return [
@@ -27,6 +28,9 @@ class ClassroomRequest extends FormRequest
             'code.string' => 'Mã phòng học phải là một chuỗi ký tự',
             'code.max' => 'Mã phòng học không được vượt quá 10 ký tự',
             'code.unique' => 'Mã phòng học đã tồn tại',
+            'capacity.required' => 'Sức chứa không được để trống',
+            'capacity.integer' => 'Sức chứa phải là một số nguyên',
+            'capacity.min' => 'Sức chứa phải lớn hơn 0',
         ];
     }
 }

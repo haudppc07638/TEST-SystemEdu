@@ -9,50 +9,71 @@
             Đăng ký lớp môn
         </h2>
 
-        <div class="grid gap-6 mb-8 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            @foreach ($subjectClasses as $subjectClass)
-                @if(\Carbon\Carbon::now()->lessThanOrEqualTo(\Carbon\Carbon::parse($subjectClass->registration_deadline)))
-                    <div class="min-w-0 p-4 bg-gray-100 text-gray-900 rounded-lg shadow-md border border-gray-300">
-                        <h4 class="mb-4 font-semibold text-lg">
-                            <span class="font-bold">Môn:</span> {{ $subjectClass->subject->name ?? 'N/A' }}
-                        </h4>
-                        <p class="mb-2"><span class="font-bold">Lớp Môn:</span> {{ $subjectClass->name }}</p>
-                        <p class="mb-2"><span class="font-bold">Giảng viên:</span> {{ $subjectClass->employee->full_name ?? 'N/A' }}</p>
-                        <p class="mb-2"><span class="font-bold">Ngày học:</span> {{ $subjectClass->start_date }}</p>
-                        <p class="mb-2"><span class="font-bold">Học kỳ:</span> {{ $subjectClass->semester->block ?? 'N/A' }}</p>
-                        <p class="mb-2"><span class="font-bold">Mã môn:</span> {{ $subjectClass->subject->code ?? 'N/A' }}</p>
-                        <p class="mb-2"><span class="font-bold">Hạn chót đăng ký:</span> {{ $subjectClass->registration_deadline }}</p>
-                        <p class="mb-4"><span class="font-bold">Số lượng đã đăng ký:</span> {{ $subjectClass->studentsCountText() }}</p>
+        <!-- Bảng thông tin các lớp môn -->
+        <div class="overflow-x-auto bg-white shadow-md sm:rounded-lg">
+            <table class="w-full text-sm text-left text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">Môn</th>
+                        <th scope="col" class="px-6 py-3">Lớp Môn</th>
+                        <th scope="col" class="px-6 py-3">Giảng viên</th>
+                        <th scope="col" class="px-6 py-3">Ngày học</th>
+                        <th scope="col" class="px-6 py-3">Học kỳ</th>
+                        <th scope="col" class="px-6 py-3">Mã môn</th>
+                        <th scope="col" class="px-6 py-3">Hạn chót đăng ký</th>
+                        <th scope="col" class="px-6 py-3">Số lượng đã đăng ký</th>
+                        <th scope="col" class="px-6 py-3">Tác vụ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($subjectClasses as $subjectClass)
+                        @if(\Carbon\Carbon::now()->lessThanOrEqualTo(\Carbon\Carbon::parse($subjectClass->registration_deadline)))
+                            <tr class="bg-gray-50 border-b">
+                                <td class="px-6 py-4">{{ $subjectClass->subject->name ?? 'N/A' }}</td>
+                                <td class="px-6 py-4">{{ $subjectClass->name }}</td>
+                                <td class="px-6 py-4">{{ $subjectClass->employee->full_name ?? 'N/A' }}</td>
+                                <td class="px-6 py-4">{{ $subjectClass->start_date }}</td>
+                                <td class="px-6 py-4">{{ $subjectClass->semester->block ?? 'N/A' }}</td>
+                                <td class="px-6 py-4">{{ $subjectClass->subject->code ?? 'N/A' }}</td>
+                                <td class="px-6 py-4">{{ $subjectClass->registration_deadline }}</td>
+                                <td class="px-6 py-4">{{ $subjectClass->studentsCountText() }}</td>
+                                <td class="px-6 py-4">
+                                    @php
+                                        $isRegistered = $registeredClasses->contains(function ($registeredClass) use ($subjectClass) {
+                                            return $registeredClass->subjectClass->id === $subjectClass->id;
+                                        });
+                                    @endphp
 
-                        @php
-                            $isRegistered = $registeredClasses->contains(function ($registeredClass) use ($subjectClass) {
-                                return $registeredClass->subjectClass->id === $subjectClass->id;
-                            });
-                        @endphp
-
-                        @if ($isRegistered)
-                            @if (\Carbon\Carbon::now()->lessThanOrEqualTo(\Carbon\Carbon::parse($subjectClass->registration_deadline)))
-                                <form action="{{ route('cancelClass', $subjectClass->id) }}" method="POST" class="inline-block">
-                                    @csrf
-                                    <button type="submit" 
-                                            class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
-                                        Hủy đăng ký lớp
-                                    </button>
-                                </form>
-                            @else
-                                <p class="text-sm text-gray-500">Bạn đã đăng ký lớp này.</p>
-                            @endif
-                        @else
-                            <form action="{{ route('joinClass', $subjectClass->id) }}" method="POST" class="inline-block">
-                                @csrf
-                                <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700">
-                                    Đăng ký
-                                </button>
-                            </form>
+                                    @if ($isRegistered)
+                                        @if (\Carbon\Carbon::now()->lessThanOrEqualTo(\Carbon\Carbon::parse($subjectClass->registration_deadline)))
+                                            <form action="{{ route('cancelClass', $subjectClass->id) }}" method="POST" class="inline-block">
+                                                @csrf
+                                                <button type="submit" 
+                                                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
+                                                    Hủy đăng ký lớp
+                                                </button>
+                                            </form>
+                                        @else
+                                            <p class="text-sm text-gray-500">Bạn đã đăng ký lớp này.</p>
+                                        @endif
+                                    @else
+                                        <form action="{{ route('joinClass', $subjectClass->id) }}" method="POST" class="inline-block">
+                                            @csrf
+                                            <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700">
+                                                Đăng ký
+                                            </button>
+                                        </form>
+                                    @endif
+                                </td>
+                            </tr>
                         @endif
-                    </div>
-                @endif
-            @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="9" class="text-center">Không có lớp môn nào để đăng ký</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 </main>

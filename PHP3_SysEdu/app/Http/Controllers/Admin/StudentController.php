@@ -181,15 +181,14 @@ class StudentController extends Controller
         return redirect()->route('admin.students.index');
     }
     catch (QueryException $e) {
-        if ($e->getCode()) {
-            return redirect()->route('admin.students.index');
-        }
+        toastr()->warning('Đã xảy ra lỗi khi xóa học sinh. Vui lòng thử lại!');
         return redirect()->route('admin.students.index');
-    }}
+    }
+    }
 
     public function showDetail($id)
     {
-        $student = Student::getStudentDetailById($id);
+        $student = Student::getDetailedStudent($id);
 
         return view('admin.students.detail', [
             'student' => $student

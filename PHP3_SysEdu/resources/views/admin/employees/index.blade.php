@@ -20,11 +20,11 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="card-title d-flex justify-content-end">
-                                <a href="{{ route('admin.employees.create') }}" type="submit" class="btn btn-success">Thêm mới</a>
+                            <div class="card-title d-flex">
+                                <a href="{{ route('admin.employees.create') }}" type="submit" class="btn btn-cBlue">Thêm</a>
                             </div>
                             <div class="row mb-3">
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <select id="majorFilter" class="form-select" name="major_id" onchange="filterEmployees()">
                                         <option value="">Chọn chuyên ngành</option>
                                         @foreach ($majors as $major)
@@ -34,7 +34,7 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <select id="departmentFilter" class="form-select" name="department_id" onchange="filterEmployees()">
                                         <option value="">Chọn Phòng Ban</option>
                                         @foreach ($departments as $department)
@@ -111,6 +111,9 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        <div class="d-flex justify-content-end">
+                            {{ $employees->links() }}
+                        </div>
                     </div>
                 </div>
             </div>

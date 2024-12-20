@@ -85,15 +85,16 @@ class DepartmentsController extends Controller
     public function destroy($id)
     {
         try {
-        Department::deleteDepartment($id);
-        toastr()->success('Xoá thành công');
-        return redirect()->route('admin.departments.index');;
-    }
-    catch (QueryException $e) {
-        if ($e->getCode()) {
-            return redirect()->route('admin.departments.index');
+            $isDeleted = Department::deleteDepartment($id);
+            if ($isDeleted) {
+                toastr()->success('Xoá thành công');
+            } else {
+                toastr()->warning('Hiện tại phòng ban đang có dữ liệu phụ thuộc!');
+            }   
+        }
+        catch (QueryException $e) {
+            toastr()->warning('Đã xảy ra lỗi khi xóa khoa. Vui lòng thử lại!');
         }
         return redirect()->route('admin.departments.index');
     }
-}
 }

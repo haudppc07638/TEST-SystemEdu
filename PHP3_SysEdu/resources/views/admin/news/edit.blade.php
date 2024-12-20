@@ -61,7 +61,7 @@
 
                     <div class="row my-3">
                         <div class="col-sm-12">
-                            <button type="submit" class="btn btn-success">Cập nhật</button>
+                            <button type="submit" class="btn btn-cBlue">Cập nhật</button>
                         </div>
                     </div>
                 </form>

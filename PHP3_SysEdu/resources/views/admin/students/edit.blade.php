@@ -201,8 +201,7 @@
                 </div>
 
                 <div class="col-12">
-                    <button type="submit" class="btn btn-success">Lưu thay đổi</button>
-                    <a href="{{ route('admin.students.index') }}" class="btn btn-secondary">Quay lại</a>
+                    <button type="submit" class="btn btn-cBlue">Cập nhật</button>
                 </div>
             </form>
         </div>

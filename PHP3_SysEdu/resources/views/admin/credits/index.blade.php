@@ -9,7 +9,7 @@
         <h1>Tín chỉ</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.html">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
                 <li class="breadcrumb-item">Đào tạo</li>
                 <li class="breadcrumb-item active">Tín chỉ</li>
             </ol>
@@ -21,8 +21,8 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title d-lg-flex justify-content-end">
-                            <a href="{{ route('admin.credits.create') }}" type="submit" class="btn btn-success">Thêm mới</a>
+                        <div class="card-title d-lg-flex">
+                            <a href="{{ route('admin.credits.create') }}" type="submit" class="btn btn-cBlue">Thêm</a>
                         </div>
                         <!-- Table with stripped rows -->
                         <table id="tableDepartment" class="table datatable" style="width:100%">
@@ -30,7 +30,7 @@
                                 <tr>
                                     <th>STT</th>
                                     <th>Giá Tiền (1TC)</th>
-                                    <th>Tỷ lệ tăng (%/năm)</th>
+                                    <th>Tỷ lệ tăng <i class="fw-normal">(%/năm)</i></th>
                                     <th>Thành tiền</th>
                                     <th>Ngày cập nhật</th>
                                     <th>Tác vụ</th>
@@ -40,9 +40,9 @@
                                 @foreach($creditView as $index => $credit)
                                 <tr>
                                     <td>{{ $index +1 }}</td>
-                                    <td>{{ number_format($credit->price) }}</td>
+                                    <td>{{ number_format($credit->price) }} VND</td>
                                     <td>{{ $credit->vat }}</td>
-                                    <td>{{ number_format($credit->total_price) }}</td>
+                                    <td>{{ number_format($credit->total_price) }} VND</td>
                                     <td>{{ $credit->updated_at }}</td>
                                     <td>
                                         <div class="dropdown">
@@ -75,3 +75,40 @@
 
 </main><!-- End #main -->
 @endsection
+
+
+@push('script')
+    <script>
+        // Thêm sự kiện xóa tin tức
+        document.querySelectorAll('.delete-credit').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const creditId = this.getAttribute('data-id');
+
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn xóa tín chỉ này?',
+                    text: "Việc này không thể hoàn tác!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Tạo form xóa tin tức
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '{{ route('admin.credits.destroy', ':id') }}'.replace(
+                            ':id', creditId); // Sửa URL
+                        form.innerHTML = `
+                        @csrf
+                        @method('DELETE')
+                    `;
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

@@ -21,8 +21,8 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-body">
-                            <div class="card-title d-flex justify-content-end">
-                                <a href="{{ route('admin.majors.create') }}" type="submit" class="btn btn-success m-2">Thêm mới</a>
+                            <div class="card-title d-flex">
+                                <a href="{{ route('admin.majors.create') }}" type="submit" class="btn btn-cBlue m-2">Thêm mới</a>
                             </div>
                             <div class="col-lg-12">
                                 <form action="{{ route('admin.majors.index') }}" method="GET" class="mb-4">
@@ -86,14 +86,11 @@
                                                         <a class="dropdown-item"
                                                             href="{{ route('admin.majors.edit', $major->id) }}"><i
                                                                 class="bx bx-edit-alt me-2"></i> Chỉnh sửa</a>
-                                                        <form action="{{ route('admin.majors.destroy', $major->id) }}"
-                                                            method="POST"
-                                                            onsubmit="return confirm('Bạn có chắc chắn muốn xóa chuyên ngành này không?');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="dropdown-item"><i
-                                                                    class="bx bx-trash me-2"></i> Xóa</button>
-                                                        </form>
+                                                        <!-- Xóa tin tức với popup xác nhận -->
+                                                        <button type="button" class="dropdown-item delete-major"
+                                                            data-id="{{ $major->id }}">
+                                                            <i class="bx bx-trash me-2"></i> Xóa
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </td>
@@ -103,6 +100,9 @@
                                 </tbody>
                             </table>
                             <!-- End Table with stripped rows -->
+                            <div class="d-flex justify-content-end">
+                                {{ $majorsView->links() }} 
+                            </div>
 
                         </div>
                     </div>
@@ -118,4 +118,37 @@
 @endpush
 
 @push('script')
+<script>
+    // Thêm sự kiện xóa chuyên ngành
+    document.querySelectorAll('.delete-major').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const majorId = this.getAttribute('data-id');
+
+            Swal.fire({
+                title: 'Bạn có chắc chắn muốn xóa chuyên ngành này?',
+                text: "Việc này không thể hoàn tác!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Tạo form xóa chuyên ngành
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '{{ route('admin.majors.destroy', ':id') }}'.replace(
+                        ':id', majorId); // Sửa URL
+                    form.innerHTML = `
+                    @csrf
+                    @method('DELETE')
+                `;
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
 @endpush

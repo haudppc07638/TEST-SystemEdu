@@ -106,7 +106,7 @@ Route::middleware(['admin'])->group(function () {
         Route::post('create', [FacultyController::class, 'store'])->name('create.post');
         Route::get('edit/{id}', [FacultyController::class, 'edit'])->name('edit');
         Route::put('{id}', [FacultyController::class, 'update'])->name('update');
-        Route::delete('delete/{id}', [FacultyController::class, 'destroy'])->name('delete');
+        Route::delete('delete/{id}', [FacultyController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('majors')->name('admin.majors.')->group(function () {
@@ -259,7 +259,7 @@ Route::middleware(['admin'])->group(function () {
         Route::post('create', [CreditController::class, 'store'])->name('store.post');
         Route::get('edit/{id}', [CreditController::class, 'edit'])->name('edit');
         Route::put('{id}', [CreditController::class, 'update'])->name('update');
-        Route::delete('{id}', [CreditController::class, 'destroy'])->name('delete');
+        Route::delete('{id}', [CreditController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('scoreTypes')->name('admin.score_types.')->group(function () {
@@ -268,7 +268,7 @@ Route::middleware(['admin'])->group(function () {
         Route::post('create', [ScoreTypeController::class, 'store'])->name('store');
         Route::get('edit/{id}', [ScoreTypeController::class, 'edit'])->name('edit');
         Route::put('{id}', [ScoreTypeController::class, 'update'])->name('update');
-        Route::delete('{id}', [ScoreTypeController::class, 'destroy'])->name('delete');
+        Route::delete('{id}', [ScoreTypeController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('admin')->name('admin.subject_lecturers.')->group(function () {
@@ -295,6 +295,7 @@ Route::middleware(['admin'])->group(function () {
     Route::prefix('enrollments')->name('admin.enrollments.')->group(function () {
         Route::get('/', [AdminEnrollmentController::class, 'index'])->name('index');
         Route::get('detail/{id}', [AdminEnrollmentController::class, 'detail'])->name('detail');
+        Route::delete('{id}', [AdminEnrollmentController::class, 'destroy'])->name('destroy');
     });
     // Ajax
     Route::get('/majors-by-faculty', [DashboardController::class, 'getMajorsByFaculty'])->name('majors.by.faculty');
@@ -330,7 +331,7 @@ Route::middleware(['student'])->group(function () {
     Route::get('/bang-diem-theo-ky', [ScoreController::class, 'index'])->name('scores');
 
     Route::get('feedback', [StudentFeedbackController::class, 'index'])->name('feedback.list');
-    Route::get('feedback/{studentSubjectClassId}/form', [StudentFeedbackController::class, 'showFeedbackForm'])->name('feedback.form');
+    Route::get('feedback/{studentSubjectClassId}/form', [StudentFeedbackController::class, 'showFeedbackForm'])->name('student.feedback.form');
     Route::post('feedback/{studentSubjectClassId}/store', [StudentFeedbackController::class, 'storeFeedback'])->name('feedback.store');
 });
 

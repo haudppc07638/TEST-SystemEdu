@@ -13,7 +13,7 @@ class SemesterController extends Controller
 
     public function index()
     {
-        $semesters = Semester::getAllSemester();
+        $semesters = Semester::orderBy('start_date', 'desc')->paginate(10);
         return view('admin.semesters.index', ['semestersView' => $semesters]);
     }
 
@@ -26,18 +26,9 @@ class SemesterController extends Controller
 
     public function store(SemesterRequest $request)
     {
-        $rules = $request->rules();
-        $messages = $request->messages();
-        $data = $request->only(['block', 'year']);
-        $validator = Validator::make($data, $rules, $messages);
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-
-        }
-        $validatedData = $validator->validated();
-        $semester = Semester::create($validatedData);
+        $validated = $request->validated();
+        $semester = Semester::create($validated);
+        
         toastr()->success('Thêm thành công: ' . $semester->block);
         return redirect()->route('admin.semesters.index');
     }
@@ -56,19 +47,9 @@ class SemesterController extends Controller
      */
     public function update(SemesterRequest $request, $id)
     {
-        $rules = $request->rules();
-        $messages = $request->messages();
-        $data = $request->only(['block', 'year']);
-
-        $validator = Validator::make($data, $rules, $messages);
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-        $validatedData = $validator->validated();
+        $validated = $request->validated();
         $semester = Semester::findOrFail($id);
-        $semester->update($validatedData);
+        $semester->update($validated);
         toastr()->success('Cập nhật thành công: ' . $semester->block);
         return redirect()->route('admin.semesters.index');
     }
@@ -76,15 +57,18 @@ class SemesterController extends Controller
     public function destroy($id)
     {
         try {
-            $semester = Semester::find($id);
-            $block = $semester->block;
-            $semester->delete();
-            return redirect()->route('admin.semesters.index');
-
-        } catch (QueryException $e) {
-            if ($e->getCode()) {
-                return redirect()->route('admin.semesters.index');
+            $isDeleted = Semester::findOrFail($id);
+            $isDeleted->delete();
+            
+            if ($isDeleted) {
+                toastr()->success('Xóa thành công');
+            } else {
+                toastr()->warning('Hiện tại học kỳ đang có dữ liệu phụ thuộc!');
             }
+    
+            return redirect()->route('admin.semesters.index');
+        } catch (QueryException $e) {
+            toastr()->warning('Đã xảy ra lỗi khi xóa học kỳ. Vui lòng thử lại!');
             return redirect()->route('admin.semesters.index');
         }
     }

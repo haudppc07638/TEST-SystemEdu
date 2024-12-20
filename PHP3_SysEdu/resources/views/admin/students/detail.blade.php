@@ -1,85 +1,146 @@
 @extends('layouts.master')
 
-@section('title', 'Chi tiết sinh viên')
+@section('title', 'Thông tin chi tiết sinh viên')
 
 @section('main')
-<main id="main" class="main">
+    <main id="main" class="main">
+        <div class="pagetitle">
+            <h1>Thông tin chi tiết sinh viên</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.students.index') }}">Sinh viên</a></li>
+                    <li class="breadcrumb-item active">Thông tin chi tiết sinh viên</li>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
 
-    <div class="pagetitle">
-        <h1>Chi tiết sinh viên: {{ $student->full_name }}</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                <li class="breadcrumb-item"><a>Sinh viên</a></li>
-                <li class="breadcrumb-item active">Chi tiết sinh viên</li>
-            </ol>
-        </nav>
-    </div><!-- End Page Title -->
-
-    <div class="card mb-4 shadow-sm">
-        <div class="row g-0">
-            <div class="col-md-4 text-center bg-light d-flex align-items-center justify-content-center">
-                <img src="{{ $student->image ? asset('storage/avatars/' . $student->image) : asset('assets/images/default-avatar1.jpg') }}"
-                    alt="Avatar" class="img-fluid rounded-circle" style="width: 200px; height: 200px;">
-            </div>
-            <div class="col-md-8">
-                <div class="card-body">
-                    <h3 class="title text-center m-2">Thông tin cá nhân</h3>
-                    <h5 class="card-title">{{ $student->full_name }}</h5>
-                    <p class="card-text"><strong>Email:</strong> {{ $student->email }}</p>
-                    <p class="card-text"><strong>Mã số sinh viên:</strong> {{ $student->code }}</p>
-                    <p class="card-text"><strong>Số điện thoại:</strong> {{ $student->phone }}</p>
-                    <p class="card-text"><strong>Giới tính:</strong> {{ $student->gender == 1 ? 'Nam' : 'Nữ' }}</p>
-                    <p class="card-text"><strong>Chuyên ngành:</strong> {{ $student->major->name }}</p>
-                    <p class="card-text"><strong>Lớp:</strong> {{ $student->stuClass->name ?? 'Chưa có lớp học' }}</p>
-                    <p class="card-text"><strong>Ngày sinh:</strong> {{ $student->date_of_birth }}</p>
+        <div class="card">
+            <div class="card-body mt-4">
+                <!-- Thông tin cơ bản -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-subtitle my-3 fw-bold">Thông tin cá nhân</h6>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th width="35%">Họ và tên:</th>
+                                        <td>{{ $student->full_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Ngày sinh:</th>
+                                        <td>{{ $student->date_of_birth->format('d/m/Y') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Giới tính:</th>
+                                        <td>{{ $student->gender ? 'Nam' : 'Nữ' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Số điện thoại:</th>
+                                        <td>{{ $student->phone }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Dân tộc:</th>
+                                        <td>{{ $student->nation }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Địa chỉ:</th>
+                                        <td>
+                                            {{ $student->house_number }},
+                                            {{ $student->commune_level }},
+                                            {{ $student->district }},
+                                            {{ $student->provice_city }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h6 class="card-subtitle my-3 fw-bold">Thông tin học tập</h6>
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th width="35%">Mã sinh viên:</th>
+                                        <td>{{ $student->code }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email:</th>
+                                        <td>{{ $student->email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Ngành:</th>
+                                        <td>{{ $student->major->name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Thuộc lớp CN:</th>
+                                        <td>{{ $student->stuClass->name }}</td>
+                                    </tr>
+                                    
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Kết quả học tập -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h6 class="card-subtitle my-3 fw-bold">Kết quả học tập</h6>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Môn học</th>
+                                        <th>Lớp học phần</th>
+                                        <th>Điểm tổng kết</th>
+                                        <th>Xếp loại</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($student->getGroupedSubjectResults() as $subjectId => $attempts)
+                                        @php
+                                            $subject = $attempts->first()->subjectClass->subject;
+                                        @endphp
+
+                                        @foreach ($attempts as $index => $result)
+                                            <tr @if ($index > 0) class="table-warning" @endif>
+                                                @if ($index === 0)
+                                                    <td rowspan="{{ $attempts->count() }}">
+                                                        {{ $subject->name }}
+                                                        @if ($attempts->count() > 1)
+                                                            <br>
+                                                            <small class="text-muted">(Học {{ $attempts->count() }}
+                                                                lần)</small>
+                                                        @endif
+                                                    </td>
+                                                @endif
+                                                <td>{{ $result->subjectClass->name }}</td>
+                                                <td class="text-center">
+                                                    {{ number_format($result->total_score, 1) }}
+                                                </td>
+                                                <td class="text-center">
+                                                        {{ $result->classification }}
+                                                </td>
+                                                <td class="text-center">
+                                                    <span
+                                                        class="badge bg-{{ $result->status === 'passed' ? 'success' : 'danger' }}">
+                                                        {{ $result->status === 'passed' ? 'Pass' : 'Fail' }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
-    </div>
-
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header bg-success text-white">
-            <h6 class="mb-0">Thông tin chi tiết</h6>
-        </div>
-        <div class="card-body">
-            <div class="row m-3">
-                <div class="col-md-6">
-                    <p><strong>Quốc tịch:</strong> {{ $student->nation }}</p>
-                    <p><strong>Số CMND/CCCD:</strong> {{ $student->identity_card }}</p>
-                    <p><strong>Ngày cấp:</strong> {{ $student->card_issuance_date }}</p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Nơi cấp:</strong> {{ $student->card_location }}</p>
-                    <p><strong>Địa chỉ:</strong> {{ $student->house_number }}, {{ $student->commune_level }},
-                        {{ $student->district }}, {{ $student->provice_city }}</p>
-                    <p><strong>Người bảo trợ:</strong> {{ $student->sponsor_name }} - {{ $student->sponsor_phone }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
+    </main>
 @endsection
-
-@push('script')
-<script>
-    // $(document).ready(function() {
-    //     $('#subjects').select2({
-    //         placeholder: "Chọn môn học",
-    //         allowClear: true,
-    //         minimumResultsForSearch: Infinity
-    //     });
-
-    //     $('#subjects').on('change', function() {
-    //         let subjects = $(this).val();
-    //         $('#selected-subjects').text(subjects ? subjects.join(', ') : '');
-    //     });
-
-    //     $('#edit-button').click(function() {
-    //         $('#subject-selection').toggle();
-    //         let subjects = $('#subjects').val();
-    //         $('#selected-subjects').text(subjects ? subjects.join(', ') : '');
-    //     });
-    // });
-</script>
-@endpush

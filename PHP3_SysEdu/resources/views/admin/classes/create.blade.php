@@ -90,8 +90,8 @@
                 </div>
 
                 <!-- Nút Submit -->
-                <div class="col-12 d-flex justify-content-center">
-                    <button type="submit" class="btn btn-success">Thêm mới</button>
+                <div class="col-12 d-flex">
+                    <button type="submit" class="btn btn-cBlue">Thêm</button>
                 </div>
             </form>
         </div>

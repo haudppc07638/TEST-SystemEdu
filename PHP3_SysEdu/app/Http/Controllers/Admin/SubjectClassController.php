@@ -22,10 +22,12 @@ class SubjectClassController extends Controller
     public function index(Request $request)
     {
         $subjectClasses = SubjectClass::latest()->get();
-        $subjects = Subject::select('id', 'name')->get();
+        $subjects = Subject::select('id', 'name', 'major_id')->with('major')->orderBy('major_id', 'asc')->get();
+        $employees = Employee::select('id', 'full_name', 'code')->get();
 
         $filters = [
             'subject_id' => $request->get('subject_id', null),
+            'employee_id' => $request->get('employee_id', null),
         ];
     
         $subjectClasses = SubjectClass::filterBySubject($filters)->paginate(10);
@@ -33,13 +35,14 @@ class SubjectClassController extends Controller
         return view('admin.subjectclasses.index', [
             'subjectClasses' => $subjectClasses,
             'subjects' => $subjects,
-            'subjectId' => $filters['subject_id'],
+            'employees' => $employees,
+            'filters' => $filters,
         ]);
     }
 
     public function create()
     {
-        $subjects = Subject::with('major')->get();
+        $subjects = Subject::with('major')->orderBy('major_id', 'asc')->get();
         $semesters = Semester::getSemester();
         $employees = Employee::getNameEmployees();
         $credits = Credit::getAllCredit();

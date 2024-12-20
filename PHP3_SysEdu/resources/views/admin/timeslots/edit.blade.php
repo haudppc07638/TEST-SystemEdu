@@ -9,8 +9,8 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
-                <li class="breadcrumb-item">Thời gian</li>
-                <li class="breadcrumb-item active">Sửa thời gian</li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.timeslots.index') }}">Thời gian ca học</a></li>
+                <li class="breadcrumb-item active">Sửa ca học</li>
             </ol>
         </nav>
     </div>
@@ -48,8 +48,8 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-sm-10 offset-sm-2">
-                        <button type="submit" class="btn btn-primary">Cập nhật</button>
+                    <div class="col-sm-12">
+                        <button type="submit" class="btn btn-cBlue">Cập nhật</button>
                     </div>
                 </div>
             </form>

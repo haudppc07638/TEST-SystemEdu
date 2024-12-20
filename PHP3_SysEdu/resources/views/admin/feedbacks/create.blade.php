@@ -5,11 +5,21 @@
 @section('main')
 <main id="main" class="main">
     <div class="container">
-        <h1 class="mb-4">Tạo câu hỏi phản hồi</h1>
-
-        <form action="{{ route('admin.feedbacks.store') }}" method="POST">
-            @csrf
-            <div class="form-group">
+        <div class="pagetitle">
+            <h1>Tạo câu hỏi phản hồi</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{{route('admin.feedbacks.index')}}">Phản hồi</a></li>
+                    <li class="breadcrumb-item active">Tạo câu hỏi phản hồi</li>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
+        <div class="card">
+            <div class="card-body p-4">
+                <form action="{{ route('admin.feedbacks.store') }}" method="POST">
+                    @csrf
+                    <div class="form-group">
                 <label for="subject_class_id">Lớp môn</label>
                 <select name="subject_class_id" id="subject_class_id" class="form-control @error('subject_class_id') is-invalid @enderror">
                     <option value="">Chọn lớp môn</option>
@@ -48,8 +58,10 @@
                 @enderror
             </div>            
 
-            <button type="submit" class="btn btn-primary">Lưu</button>
-        </form>
+                    <button type="submit" class="btn btn-cBlue">Lưu</button>
+                </form>
+            </div>
+        </div>
     </div>
 </main>
 @endsection

@@ -21,7 +21,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="card-title">
-                            <a href="{{ route('admin.feedbacks.create') }}" class="btn btn-primary m-2">Tạo câu hỏi phản hồi</a>
+                            <a href="{{ route('admin.feedbacks.create') }}" class="btn btn-cBlue m-2">Tạo câu hỏi phản hồi</a>
                         </div>
 
                         <h3>Phản hồi của sinh viên</h3>
@@ -86,7 +86,7 @@
                             @endphp
 
                             <tbody>
-                                @foreach ($feedbackResultsForStudents as $index => $feedbackResult)
+                                @forelse ($feedbackResultsForStudents as $index => $feedbackResult)
                                     <tr>
                                         <td>{{ $index + 1 }}</td> <!-- Thêm số thứ tự -->
                                         <td>{{ $feedbackResult->studentSubjectClass->student->full_name }}</td>
@@ -103,15 +103,21 @@
                                             {{ $feedbackResult->expertise ?? 'Sinh viên chưa đánh giá' }}
                                         </td>                                                   
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center">Không có dữ liệu</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                             </table>
                         </div>        
                         {{-- Phân trang cho feedbacks của sinh viên --}}
-                        {{ $feedbackResultsForStudents->appends(request()->query())->links() }}
+                        <div class="d-flex justify-content-end">  
+                            {{ $feedbackResultsForStudents->appends(request()->query())->links() }}
+                        </div>
 
                         {{-- Danh sách phản hồi của giáo viên --}}
-                        <h3>Phản hồi của giáo viên</h3>
+                        <h3 class="mt-5">Phản hồi của giáo viên</h3>
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -123,7 +129,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($feedbackResultsForTeachers as $index => $feedbackResult)
+                                @forelse ($feedbackResultsForTeachers as $index => $feedbackResult)
                                     <tr>
                                         <td>{{ $index + 1 }}</td> <!-- Thêm số thứ tự -->
                                         <td>{{ $feedbackResult->employee->full_name }}</td>
@@ -133,11 +139,17 @@
                                             {{ $feedbackResult->expertise ?? 'Giáo viên chưa đánh giá' }}
                                         </td>                        
                                     </tr>
-                                @endforeach
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center">Không có dữ liệu</td>
+                                    </tr>
+                                @endforelse
                             </tbody>
                         </table>
                         {{-- Phân trang cho feedbacks của giáo viên --}}
-                        {{ $feedbackResultsForTeachers->appends(request()->query())->links() }}
+                        <div class="d-flex justify-content-end">  
+                            {{ $feedbackResultsForTeachers->appends(request()->query())->links() }}
+                        </div>
                     </div>
                 </div>
             </div>

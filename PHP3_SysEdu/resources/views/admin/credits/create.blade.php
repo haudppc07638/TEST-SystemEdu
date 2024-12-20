@@ -9,7 +9,7 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                <li class="breadcrumb-item">Đào Tạo</li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.credits.index') }}">Tín Chỉ</a></li>
                 <li class="breadcrumb-item active">Thêm Tín Chỉ</li>
             </ol>
         </nav>
@@ -29,7 +29,7 @@
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <label for="vat" class="col-sm-2 col-form-label">Thuế (VAT)</label>
+                    <label for="vat" class="col-sm-2 col-form-label">Tỷ lệ tăng (%/năm)</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control @error('vat') is-invalid @enderror" id="vat" name="vat" value="{{ old('vat') }}">
                         @error('vat')
@@ -39,7 +39,7 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-sm-10 offset-sm-2">
-                        <button type="submit" class="btn btn-primary">Thêm mới</button>
+                        <button type="submit" class="btn btn-cBlue">Thêm</button>
                     </div>
                 </div>
             </form>

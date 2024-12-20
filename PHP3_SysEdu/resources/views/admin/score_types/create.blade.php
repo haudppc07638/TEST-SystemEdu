@@ -15,11 +15,11 @@
             </nav>
         </div><!-- End Page Title -->
 
-        <section class="section">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card">
-                        <div class="card-body  mt-3">
+            <section class="section">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body  mt-3">
                             <form action="{{ route('admin.score_types.store') }}" method="POST">
                                 @csrf
                                 <div class="mb-3">
@@ -37,9 +37,11 @@
                                     <select name="type" id="type"
                                         class="form-select @error('type') is-invalid @enderror">
                                         <option>-- Chọn loại điểm --</option>
-                                        <option value="single" {{ old('type') === 'single' ? 'selected' : '' }}>Single
+                                        <option value="single" {{ old('type') === 'single' ? 'selected' : '' }}>Điểm
+                                            bảo vệ
                                         </option>
-                                        <option value="multi" {{ old('type') === 'multi' ? 'selected' : '' }}>Multi
+                                        <option value="multi" {{ old('type') === 'multi' ? 'selected' : '' }}>Điểm
+                                            quá trình
                                         </option>
                                     </select>
                                     @error('type')
@@ -47,7 +49,7 @@
                                     @enderror
                                 </div>
 
-                                <button type="submit" class="btn btn-success">Lưu</button>
+                                <button type="submit" class="btn btn-cBlue">Thêm</button>
                             </form>
 
                         </div>

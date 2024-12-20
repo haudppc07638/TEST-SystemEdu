@@ -39,18 +39,22 @@
                                     <select name="type" id="type"
                                         class="form-select @error('type') is-invalid @enderror">
                                         <option disabled>-- Chọn loại điểm --</option>
+
                                         <option value="single"
-                                            {{ old('type', $scoreType->type) === 'single' ? 'selected' : '' }}>Single
+                                            {{ old('type', $scoreType->type) === 'single' ? 'selected' : '' }}>Điểm
+                                            bảo vệ
                                         </option>
                                         <option value="multi"
-                                            {{ old('type', $scoreType->type) === 'multi' ? 'selected' : '' }}>Multi</option>
+                                            {{ old('type', $scoreType->type) === 'multi' ? 'selected' : '' }}>Điểm
+                                            quá trình
+                                        </option>
                                     </select>
                                     @error('type')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
-                                <button type="submit" class="btn btn-primary">Cập nhật</button>
+                                <button type="submit" class="btn btn-cBlue">Cập nhật</button>
                             </form>
 
                         </div>

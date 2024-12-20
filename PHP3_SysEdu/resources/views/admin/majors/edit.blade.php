@@ -66,9 +66,9 @@
                         @enderror
                     </div>
                 
-                    <div class="col-12">
+                    <div class="col-12 mt-4">
                         <div class="col-sm-10">
-                            <button type="submit" class="btn btn-success">Lưu</button>
+                            <button type="submit" class="btn btn-cBlue">Cập nhật</button>
                         </div>
                     </div>
                 </form>

@@ -184,7 +184,7 @@
                 </div>
 
                 <div class="col-12">
-                    <button type="submit" class="btn btn-primary">Thêm Sinh Viên</button>
+                    <button type="submit" class="btn btn-cBlue">Thêm</button>
                 </div>
 
             </form>

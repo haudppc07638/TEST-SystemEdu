@@ -9,7 +9,7 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
-                <li class="breadcrumb-item">Đào tạo</li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.classrooms.index') }}">Phòng học</a></li>
                 <li class="breadcrumb-item active">Thêm phòng học</li>
             </ol>
         </nav>
@@ -29,8 +29,17 @@
                     </div>
                 </div>
                 <div class="row mb-3">
+                    <label for="capacity" class="col-sm-2 col-form-label">Sức chứa</label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control @error('capacity') is-invalid @enderror" id="capacity" name="capacity" value="{{ old('capacity') }}">
+                        @error('capacity')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="row mb-3">
                     <div class="col-sm-10 offset-sm-2">
-                        <button type="submit" class="btn btn-success">Thêm mới</button>
+                        <button type="submit" class="btn btn-cBlue">Thêm</button>
                     </div>
                 </div>
             </form>
