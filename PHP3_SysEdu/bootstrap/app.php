@@ -18,7 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
             'teacher' => \App\Http\Middleware\TeacherMiddleware::class,
             'student' => \App\Http\Middleware\StudentMiddleware::class,
-            'csrf' => \App\Http\Middleware\VerifyCsrfToken::class, // Thêm middleware CSRF
+            'web' => \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

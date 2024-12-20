@@ -12,9 +12,9 @@ class NewsController extends Controller
     public function index()
     {
         $news = News::all();
-        
+
         return response()->json($news)
-            ->header('Access-Control-Allow-Origin', '*') 
+            ->header('Access-Control-Allow-Origin', '*')
             ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
             ->header('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With');
     }
@@ -28,7 +28,10 @@ class NewsController extends Controller
             return response()->json(['message' => 'News not found'], 404);
         }
 
-        return response()->json($news, 200);
+        return response()->json($news, 200)
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+            ->header('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With');
     }
 
     // Thêm tin tức mới

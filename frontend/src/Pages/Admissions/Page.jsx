@@ -1,6 +1,5 @@
 import React from "react";
 import BannerTop from "../../Components/Admissions/BannerTop";
-import Content from "../../Components/Home/Content";
 import Header from "../../Components/Admissions/Header";
 import Introduce from "../../Components/Home/Introduce";
 import BannerSection from "../../Components/Admissions/BannerSection";
@@ -9,6 +8,7 @@ import AdmissionImfo from "../../Components/Admissions/AdmissionsImfo";
 import RegisterImfo from "../../Components/Admissions/RegisterImfo";
 import Partners from "../../Components/Home/Partners";
 import CommentSection from "../../Components/Admissions/CommentSection";
+import TrainingSectors from "../../Components/TrainingProgram/TrainingSectors";
 
 function Admissions() {
     return (
@@ -29,8 +29,8 @@ function Admissions() {
             <BannerContent />
 
             {/* content */}
-            <Content />
-
+            <TrainingSectors />
+            
             {/* admissions imfo */}
             <AdmissionImfo />
 
@@ -42,6 +42,7 @@ function Admissions() {
 
             {/* comment */}
             <CommentSection />
+
         </div>
     );
 }

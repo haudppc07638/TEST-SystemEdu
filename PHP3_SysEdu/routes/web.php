@@ -46,13 +46,20 @@ use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Admin\ExamScheduleController;
 
 use App\Http\Controllers\Client\HomeController;
+use App\Http\Middleware\CorsMiddleware;
 
-//Evirouments===============================================================================
+//MajorName=================================================================================
+
+Route::prefix('majors')->group(function () {
+    Route::get('/list', [MajorController::class, 'list']);
+});
+
+//Enrollments===============================================================================
 
 Route::prefix('enrollments')->group(function () {
-    Route::get('/', [EnrollmentController::class, 'index']); 
+    Route::get('/', [EnrollmentController::class, 'index']);
     // Route::get('/{id}', [EnrollmentController::class, 'show']); 
-    Route::post('/', [EnrollmentController::class, 'store'])->middleware('csrf-token'); 
+    Route::post('/', [EnrollmentController::class, 'store']);
     // Route::put('/{id}', [EnrollmentController::class, 'update']); 
     // Route::delete('/{id}', [EnrollmentController::class, 'destroy']);
 });
@@ -60,10 +67,10 @@ Route::prefix('enrollments')->group(function () {
 //News======================================================================================
 
 Route::prefix('news')->group(function () {
-    Route::get('/', [NewsController::class, 'index']); 
-    Route::get('/{id}', [NewsController::class, 'show']); 
-    Route::post('/', [NewsController::class, 'store']); 
-    Route::put('/{id}', [NewsController::class, 'update']); 
+    Route::get('/', [NewsController::class, 'index']);
+    Route::get('/{id}', [NewsController::class, 'show']);
+    Route::post('/', [NewsController::class, 'store']);
+    Route::put('/{id}', [NewsController::class, 'update']);
     Route::delete('/{id}', [NewsController::class, 'destroy']);
 });
 

@@ -38,7 +38,7 @@ function BannerSection() {
     graduationWard: "",
     student: false,
     guardian: false,
-    address:false,
+    address: false,
     atschool: false,
     idFront: "",
     idBack: "",
@@ -85,52 +85,62 @@ function BannerSection() {
     fetchEnrollment();
   }, []);
 
-  // Hàm lấy CSRF token
-  const getCsrfToken = () => {
-    const token = document
-      .querySelector('meta[name="csrf-token"]')
-      .getAttribute("content");
-    return token;
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) {
+      return parts.pop().split(";").shift();
+    }
+    return null;
   };
-
-  // Cấu hình axios instance
-  const axiosInstance = axios.create({
-    baseURL: "http://127.0.0.1:8000", // Thay đổi URL backend của bạn
-    headers: {
-      "X-CSRF-TOKEN": getCsrfToken(), // Đảm bảo CSRF token được gửi
-      "Content-Type": "application/json", // Hoặc multipart/form-data nếu có file
-    },
-    withCredentials: true, // Đảm bảo gửi cookies với request
-  });
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-
+  
     try {
-      const csrfToken = getCsrfToken(); // Dùng hàm getCsrfToken() để lấy token
+      // 1. Lấy CSRF cookie từ backend
+      await axios.get('http://127.0.0.1:8000/sanctum/csrf-cookie', {
+        withCredentials: true, 
+      }).then(response => {
+        console.log("CSRF Cookie received", response);
+      }).catch(error => {
+        console.log("Error fetching CSRF cookie:", error);
+      });
+  
+      // 2. Lấy CSRF token từ cookie
+      const csrfToken = getCookie("XSRF-TOKEN");
+      console.log("CSRF Token:", csrfToken);
+      if (!csrfToken) {
+        throw new Error("CSRF token not found.");
+      }
+  
+      // 3. Chuẩn bị dữ liệu gửi đi
       const formDataToSend = new FormData();
-
       Object.entries(formData).forEach(([key, value]) => {
         formDataToSend.append(key, value);
       });
-
-      // Gửi request POST với CSRF token và multipart/form-data (nếu có file)
-      const response = await axiosInstance.post(
-        "/enrollments",
+  
+      // 4. Gửi request POST với CSRF token
+      const response = await axios.post(
+        "http://127.0.0.1:8000/enrollments",
         formDataToSend,
         {
           headers: {
-            "X-CSRF-TOKEN": csrfToken,
+            Accept: "application/json",
+            "X-XSRF-TOKEN": csrfToken,
             "Content-Type": "multipart/form-data",
           },
+          withCredentials: true,
         }
       );
-
+  
+      // 5. Xử lý thành công
       setSubmitSuccess(true);
       setSubmitError(null);
       console.log("Form submitted successfully:", response.data);
     } catch (error) {
+      // 6. Xử lý lỗi
       setSubmitError(error.response?.data?.message || "Error submitting form.");
       setSubmitSuccess(false);
       console.error("Error submitting form:", error);
@@ -138,6 +148,7 @@ function BannerSection() {
       setIsSubmitting(false);
     }
   };
+    
 
   return (
     <div className="container mx-auto py-16">
@@ -185,6 +196,8 @@ function BannerSection() {
               &times;
             </button>
             <form
+              method="POST"
+              action="http://127.0.0.1:8000/enrollments"
               onSubmit={handleSubmit}
               className="bg-white p-8 rounded-lg space-y-8 shadow-sm border border-gray-100"
             >
@@ -441,7 +454,7 @@ function BannerSection() {
                             key={item.id}
                             value={item.first_major_id}
                           >
-                            {item.fetchEnrollment?.name || "Tên ngành không có"}
+                            {item.name || "Tên ngành không có"}
                           </option>
                         ))}
                       </select>
@@ -453,7 +466,7 @@ function BannerSection() {
                         onChange={handleChange}
                       >
                         <option value="">Phương thức dự tuyển</option>
-                        <option value="hocba">Điểm học bạ</option>
+                        <option value="học bạ">Điểm học bạ</option>
                         <option value="thpt">Điểm thi THPT quốc gia</option>
                       </select>
                     </div>
@@ -477,7 +490,7 @@ function BannerSection() {
                             key={item.id}
                             value={item.first_major_id}
                           >
-                            {item.first_major_id?.name || "Tên ngành không có"}
+                            {item.name || "Tên ngành không có"}
                           </option>
                         ))}
                       </select>
@@ -490,7 +503,7 @@ function BannerSection() {
                         onChange={handleChange}
                       >
                         <option value="">Phương thức dự tuyển</option>
-                        <option value="hocba">Điểm học bạ</option>
+                        <option value="học bạ">Điểm học bạ</option>
                         <option value="thpt">Điểm thi THPT quốc gia</option>
                       </select>
                     </div>
@@ -529,7 +542,7 @@ function BannerSection() {
                         onChange={handleChange}
                       >
                         <option value="">Chọn Quận/Huyện</option>
-                        <option value="LongHo">Long Hồ</option>
+                        <option value="Long Hồ">Long Hồ</option>
                       </select>
                       <select
                         className="w-full border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"

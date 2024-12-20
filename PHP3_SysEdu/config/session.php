@@ -129,7 +129,7 @@ return [
 
     'cookie' => env(
         'SESSION_COOKIE',
-        Str::slug(env('APP_NAME', 'laravel'), '_').'_session'
+        Str::slug(env('APP_NAME', 'laravel'), '_') . '_session'
     ),
 
     /*
@@ -212,6 +212,21 @@ return [
     |
     */
 
-    'partitioned' => env('SESSION_PARTITIONED_COOKIE', false),
+    'partitioned' => env('SESSION_PARTITIONED_COOKIE', true),
+    'session' => [
+    'driver' => env('SESSION_DRIVER', 'cookie'),
+    'lifetime' => 120,  // Thời gian hết hạn session (theo phút)
+    'expire_on_close' => false,
+    'encrypt' => true,
+    'files' => storage_path('framework/sessions'),
+    'connection' => null,
+    'table' => 'sessions',
+    'store' => null,
+    'cookie' => env('SESSION_COOKIE', 'laravel_session'),
+    'path' => '/',
+    'domain' => env('SESSION_DOMAIN', null),
+    'secure' => env('SESSION_SECURE_COOKIE', false), 
+    'same_site' => 'none',  
+],
 
 ];

@@ -8,6 +8,7 @@ use App\Models\Major;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Models\Faculty;
+
 class MajorController extends Controller
 {
     /**
@@ -20,13 +21,29 @@ class MajorController extends Controller
         $facultyId = $request->get('faculty_id', null);
         $search = $request->get('search', null);
         $search = $request->input('search');
-        $majors = Major::getAllMajor($facultyId,$search);
+        Major::updateTotalCreditsForAllMajors();
+        $majors = Major::getAllMajor($facultyId, $search);
         return view('admin.majors.index', [
             'majorsView' => $majors,
             'faculties' => $faculties,
             'facultyId' => $facultyId,
             'search' => $search,
         ]);
+    }
+
+    public function list(Request $request)
+    {
+        $majors = Major::all();
+        $majors = $majors->map(function ($major) {
+            $major->image = $major->image ?? 'default-image.jpg';
+            return $major;
+        });
+        if ($request->expectsJson()) {
+            return response()->json($majors, 201)
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+            ->header('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With');
+        }
     }
 
     /**

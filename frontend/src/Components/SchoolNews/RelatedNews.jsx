@@ -12,22 +12,6 @@ const sidebarItems = [
   { id: 7, text: "Câu hỏi thường gặp", icon: "fa-question-circle" },
 ];
 
-const featuredNews = [
-  { id: 1, title: "Ngày hội việc làm tại Cao đẳng Sysedu", link: "#" },
-  {
-    id: 2,
-    title:
-      "Thông báo tuyển dụng TTS tại Công ty Công nghệ CND Quận 7 TP.Hồ Chí Minh",
-    link: "#",
-  },
-  { id: 3, title: "Tuyển dụng nhân viên Thiết kế Content", link: "#" },
-  {
-    id: 4,
-    title: "Tuyển dụng Leader Quản lý sản xuất tại Cty TNHH Samsung",
-    link: "#",
-  },
-];
-
 function RelatedNews() {
   const [news, setNews] = useState([]);
   const [error, setError] = useState(null);
@@ -94,7 +78,7 @@ function RelatedNews() {
                 {post.description}
               </p>
               <a
-                href={post.link}
+                href={`/news/${post.id}`}
                 className="text-blue-600 hover:text-blue-500 text-sm mt-auto"
               >
                 Xem thêm...
@@ -140,7 +124,7 @@ function RelatedNews() {
             Tin Nổi Bật
           </h3>
           <ul className="space-y-3">
-            {featuredNews.map((news) => (
+            {news.slice(0,5).map((news) => (
               <li
                 key={news.id}
                 className="hover:translate-x-2 transition-transform duration-200"
