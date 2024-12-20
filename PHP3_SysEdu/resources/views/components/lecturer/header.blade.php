@@ -43,9 +43,9 @@
                     </li>
 
                     <li>
-                        <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.profile') }}">
+                        <a class="dropdown-item d-flex align-items-center" href="{{ route('teacher.profile') }}">
                             <i class="bi bi-person"></i>
-                            <span>My Profile</span>
+                            <span>Hồ sơ của tôi</span>
                         </a>
                     </li>
 

@@ -93,7 +93,7 @@ Route::prefix('auth/login')->group(function () {
 
 Route::get('auth/callback/google', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
-
+Route::get('my-profile', [ProfileController::class, 'profileTeacher'])->name('teacher.profile');
 Route::get('profile', [ProfileController::class, 'profileEmployee'])->name('admin.profile');
 Route::get('ho-so', [ProfileController::class, 'profileStudent'])->name('profile');
 

@@ -1,6 +1,6 @@
-@extends('layouts.master')
+@extends('layouts.lecturer')
 
-@section('title', 'profile')
+@section('title', 'Hồ sơ cá nhânnhân | SysEdu')
 
 @section('main')
 
@@ -10,7 +10,7 @@
       <h1>Thông tin cá nhân</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}">Trang chủ</a></li>
+          <li class="breadcrumb-item"><a href="{{route('teacher.home')}}">Trang chủ</a></li>
           <li class="breadcrumb-item active">Hồ sơ</li>
         </ol>
       </nav>
@@ -71,7 +71,7 @@
                   </div>
 
                   <div class="row">
-                    <div class="col-lg-3 col-md-4 label">Chuyên ngànhngành</div>
+                    <div class="col-lg-3 col-md-4 label">Chuyên ngành</div>
                     <div class="col-lg-9 col-md-8">{{ $user->major->name }}</div>
                   </div>
 

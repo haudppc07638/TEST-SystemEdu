@@ -41,12 +41,12 @@
                                                                                 <tr>
                                                                                     <td align="center"
                                                                                         class="esd-block-image"
-                                                                                        style="font-size:0px">
+                                                                                        style="font-size:0px; padding: 30px 0;">
                                                                                         <a target="_blank"
                                                                                             href="https://viewstripo.email">
                                                                                             <img src="https://ennjpye.stripocdn.email/content/guids/cc855092-9bf2-4a96-9c83-4499425d2324/images/syseduicon.png"
                                                                                                 alt="Logo"
-                                                                                                width="100"
+                                                                                                width="120"
                                                                                                 title="Logo"
                                                                                                 style="display:block">
                                                                                         </a>
@@ -92,7 +92,7 @@
                                                                                 <tr>
                                                                                     <td align="left"
                                                                                         class="esd-block-text es-p20t es-p5b es-m-txt-l">
-                                                                                        <h2 style="line-height:120%">
+                                                                                        <h2 style="line-height:120%; padding: 0 30px;">
                                                                                             {{$title}}
                                                                                         </h2>
                                                                                     </td>
@@ -100,10 +100,9 @@
                                                                                 <tr>
                                                                                     <td align="left"
                                                                                         class="esd-block-text es-p10t es-p10b es-m-txt-l">
-                                                                                       
+                                                                                        <div style="padding: 20px 30px;">
                                                                                             {!!$content!!}
-                                                                                            
-                                                                                        </p>
+                                                                                        </div>
                                                                                     </td>
                                                                                 </tr>
                                                                             </tbody>
@@ -150,14 +149,14 @@
                                                                                             <img src="https://ennjpye.stripocdn.email/content/guids/cc855092-9bf2-4a96-9c83-4499425d2324/images/syseduicon.png"
                                                                                                 alt=""
                                                                                                 width="80"
-                                                                                                style="display:block padding-left: 20px">
+                                                                                                style="display:block; padding-left: 30px">
                                                                                         </a>
                                                                                     </td>
                                                                                 </tr>
                                                                                 <tr>
                                                                                     <td align="left"
                                                                                         class="esd-block-text es-p10t es-p10b"
-                                                                                        style="padding-left: 20px">
+                                                                                        style="padding-left: 30px">
                                                                                         <p>
                                                                                             Chúng tôi làm việc với niềm
                                                                                             đam mê đón nhận thử thách và

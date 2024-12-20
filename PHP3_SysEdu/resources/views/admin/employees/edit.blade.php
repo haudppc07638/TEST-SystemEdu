@@ -242,11 +242,9 @@
                     </div>
     
                     <div class="col-12">
-                        <button type="submit" class="btn btn-success">Thêm mới</button>
+                        <button type="submit" class="btn btn-success">Cập nhật</button>
                     </div>
                 </form>
-
-
             </div>
         </div>
 

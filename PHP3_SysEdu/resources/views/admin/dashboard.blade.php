@@ -12,36 +12,69 @@
         <section class="section dashboard">
             <div class="row">
 
+                <!-- Cards for statistics -->
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card info-card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Khoa</h5>
+                            <div class="d-flex align-items-center">
+                                <div class="icon rounded-circle bg-primary-light text-primary me-3">
+                                    <i class="bi bi-bank"></i>
+                                </div>
+                                <h6 class="mb-0">{{ $facultyCount }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card info-card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Chuyên ngành</h5>
+                            <div class="d-flex align-items-center">
+                                <div class="icon rounded-circle bg-success-light text-success me-3">
+                                    <i class="bi bi-list-task"></i>
+                                </div>
+                                <h6 class="mb-0">{{ $majorCount }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card info-card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Sinh viên</h5>
+                            <div class="d-flex align-items-center">
+                                <div class="icon rounded-circle bg-warning-light text-warning me-3">
+                                    <i class="bi bi-person"></i>
+                                </div>
+                                <h6 class="mb-0">{{ $studentCount }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="card info-card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Nhân sự</h5>
+                            <div class="d-flex align-items-center">
+                                <div class="icon rounded-circle bg-danger-light text-danger me-3">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <h6 class="mb-0">{{ $employeeCount }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End of statistics cards -->
+
+                <!-- Form and chart section -->
                 <div class="col-12">
                     <div class="card">
-
                         <div class="card-body">
-                            <h5 class="card-title"> Kết quả học tập theo chuyên ngành</h5>
-
-                            <form id="filterForm" method="GET" action="{{ route('admin.dashboard') }}">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label for="facultySelect" class="form-label">Chọn khoa</label>
-                                        <select id="facultySelect" name="faculty_id" class="form-select">
-                                            <option value="">Chọn khoa</option>
-                                            @foreach ($faculties as $faculty)
-                                                <option value="{{ $faculty->id }}">{{ $faculty->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <label for="majorSelect" class="form-label">Chọn chuyên ngành</label>
-                                        <select id="majorSelect" name="major_id" class="form-select">
-                                            <option value="">Chọn chuyên ngành</option>
-                                            <!-- Options sẽ được cập nhật qua AJAX -->
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="mt-4 text-center">
-                                    <button type="submit" class="btn btn-success">Xem biểu đồ</button>
-                                </div>
-                            </form>
+                            <h5 class="card-title">Thống kê số lượng sinh viên nhập học / tháng</h5>
 
                             <div class="mt-4">
                                 <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
@@ -49,6 +82,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </section>
 
@@ -62,7 +96,6 @@
     <script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/chart.js/chart.umd.js') }}"></script>
     <script src="{{ asset('assets/vendor/echarts/echarts.min.js') }}"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const chartData = @json($chartData);
@@ -70,79 +103,30 @@
             const echart = echarts.init(document.querySelector("#trafficChart"));
             echart.setOption({
                 tooltip: {
-                    trigger: 'item'
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
                 },
-                legend: {
-                    top: '5%',
-                    left: 'center'
+                xAxis: {
+                    type: 'category',
+                    data: Object.keys(chartData),
+                    axisTick: {
+                        alignWithLabel: true
+                    }
+                },
+                yAxis: {
+                    type: 'value'
                 },
                 series: [{
-                    name: 'Tỉ Lệ',
-                    type: 'pie',
-                    radius: ['40%', '70%'],
-                    avoidLabelOverlap: false,
-                    label: {
-                        show: false,
-                        position: 'center'
-                    },
-                    emphasis: {
-                        label: {
-                            show: true,
-                            fontSize: '18',
-                            fontWeight: 'bold'
-                        }
-                    },
-                    labelLine: {
-                        show: false
-                    },
-                    data: Object.entries(chartData).map(([key, value]) => ({
-                        name: key,
-                        value: value,
-                        itemStyle: {
-                            color: getColorByClassification(key)
-                        }
-                    }))
+                    name: 'Số lượng',
+                    type: 'bar',
+                    barWidth: '50%',
+                    data: Object.values(chartData),
+                    itemStyle: {
+                        color: '#3498db'
+                    }
                 }]
-            });
-
-            function getColorByClassification(classification) {
-                switch (classification) {
-                    case 'Loại yếu':
-                        return '#FF4C4C';
-                    case 'Loại trung bình':
-                        return '#FFCE5C';
-                    case 'Loại khá':
-                        return '#5CFF5C';
-                    case 'Loại giỏi':
-                        return '#5CC2FF';
-                    default:
-                        return '#0D6EFD';
-                }
-            }
-
-            // Xử lý sự kiện khi chọn khoa
-            $('#facultySelect').change(function() {
-                let faculty_id = $(this).val();
-                if (faculty_id) {
-                    $.ajax({
-                        url: '{{ route('majors.by.faculty') }}',
-                        type: 'GET',
-                        data: {
-                            faculty_id: faculty_id
-                        },
-                        success: function(data) {
-                            let majorSelect = $('#majorSelect');
-                            majorSelect.empty();
-                            majorSelect.append('<option value="">Chọn chuyên ngành</option>');
-                            $.each(data, function(index, major) {
-                                majorSelect.append('<option value="' + major.id + '">' +
-                                    major.name + '</option>');
-                            }); 
-                        }
-                    });
-                } else {
-                    $('#majorSelect').empty().append('<option value="">Chọn chuyên ngành</option>');
-                }
             });
         });
     </script>

@@ -14,6 +14,12 @@ class ProfileController extends Controller
             'user' => $user
         ]);
     }
+    public function profileTeacher(){
+        $user = Auth::guard('employee')->user();
+        return view('teacher.profile', [
+            'user' => $user
+        ]);
+    }
     public function profileStudent () {
         $user = Auth::guard('student')->user();
         $formatDate = Carbon::parse($user->created_at)->format('d/m/Y');
@@ -22,4 +28,5 @@ class ProfileController extends Controller
             'formatDate' => $formatDate
         ]);
     }
+
 }
