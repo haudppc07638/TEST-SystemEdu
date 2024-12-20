@@ -21,16 +21,19 @@
                                             <li class="list-group-item border-0 py-2">
                                                 <i class="bi bi-bell text-primary me-2"></i>
                                                 <a href="{{ route('notifications.show', $notification->id) }}" 
-                                                  <small class="text-muted ms-2">
+                                                   class="text-primary text-decoration-none">
+                                                    {{ $notification->title }}
+                                                    <small class="text-muted ms-2">
                                                         ({{ $notification->date_sent->format('d/m/Y H:i') }})
                                                     </small>
-                                                </a>
+                                                </a>    
                                             </li>
                                         @empty
                                             <li class="list-group-item border-0 py-2 text-center">
                                                 Không có thông báo nào
                                             </li>
                                         @endforelse
+
                                     </ul>
                                     
                                     @if($notifications->count() > 10)
@@ -50,6 +53,4 @@
     </main>
 
 @endsection
-              class="text-primary text-decoration-none">
-                                                    {{ $notification->title }}
                                        
