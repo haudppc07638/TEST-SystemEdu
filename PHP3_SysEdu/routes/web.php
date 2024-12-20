@@ -48,6 +48,11 @@ use App\Http\Controllers\Admin\ExamScheduleController;
 use App\Http\Controllers\Client\HomeController;
 use App\Http\Middleware\CorsMiddleware;
 
+//
+Route::prefix('departments')->group(function () {
+    Route::get('/list', [DepartmentsController::class, 'list']);
+});
+
 //MajorName=================================================================================
 
 Route::prefix('majors')->group(function () {

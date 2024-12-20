@@ -28,10 +28,10 @@ function Header() {
                         GIỚI THIỆU CHUNG
                     </a>
                     <a
-                        href="/admissions"
+                        href="/organizational-chart"
                         className="text-blue-600 hover:text-blue-300 transition duration-300 text-sm font-medium"
                     >
-                        THÔNG TIN TUYỂN SINH
+                        SƠ ĐỒ TỔ CHỨC
                     </a>
                     <a
                         href="/"

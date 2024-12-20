@@ -58,7 +58,7 @@ function RelatedNews() {
               Đã xảy ra lỗi: {error}
             </div>
           )}
-          {currentPosts.map((post) => (
+          {currentPosts.slice(1).map((post) => (
             <div
               key={post.id}
               className="flex flex-col p-4 shadow-md rounded-lg items-start bg-white hover:shadow-lg transition-shadow duration-300"
@@ -86,7 +86,6 @@ function RelatedNews() {
             </div>
           ))}
         </div>
-
         <div className="flex justify-center text-sm mt-8 space-x-2">
           {pageNumbers.length > 1 &&
             pageNumbers.map((page) => (
@@ -104,6 +103,7 @@ function RelatedNews() {
             ))}
         </div>
       </div>
+
       <div className="space-y-6">
         <div className="space-y-2">
           {sidebarItems.map((item) => (

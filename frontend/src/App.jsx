@@ -9,6 +9,7 @@ import GeneralIntroduction from "./Pages/GeneralIntroduction/Page";
 import ContactPage from "./Pages/ContactPage/Page";
 import ShoolNews from "./Pages/NewsSchool/Page";
 import NewDetails from "./Pages/NewDetail/Page";
+import OrganizationalChart from "./Pages/OrganizationalChart/Page";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/contacts" element={<ContactPage />} />
           <Route path="/news" element={<ShoolNews />} />
           <Route path="/news/:id" element={<NewDetails />} />
+          <Route path="/organizational-chart" element={<OrganizationalChart />} />
         </Routes>
       </LayoutBlog>
     </Router>

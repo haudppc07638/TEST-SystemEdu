@@ -10,17 +10,19 @@ function BlogHome() {
   const fetchNews = async () => {
     try {
       const response = await axios.get("http://localhost:8000/news");
-      const sortedNews = response.data.sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+      const sortedNews = response.data.sort(
+        (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
+      );
       setNews(sortedNews);
     } catch (err) {
       setError(err.message);
     }
   };
-
   useEffect(() => {
     fetchNews();
   }, []);
 
+  
   const truncateDescription = (description) => {
     const words = description.split(" ");
     if (words.length > 20) {
@@ -62,7 +64,7 @@ function BlogHome() {
           )}
           <ul>
             {news.length > 0 &&
-              news.slice(0, 2).map((article) => (
+              news.slice(1, 3).map((article) => (
                 <li key={article.id} className="mb-2">
                   <a
                     href={`/news/${article.id}`}

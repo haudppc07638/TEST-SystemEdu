@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import HeaderTraining from "../../Components/TrainingProgram/Header";
-import ContentTraining from "../../Components/TrainingProgram/ContentTraining";
+import OrganizationalCharts from "../../Components/OrganizationalCharts/OrganizationalChart";
 
-function TrainingProgram() {
+function OrganizationalChart() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -23,13 +22,11 @@ function TrainingProgram() {
 
   return (
     <div>
-      {/* header */}
-      <HeaderTraining />
+      {/* organizational-charts */}
+      <OrganizationalCharts />
 
-      {/* content-training */}
-      <ContentTraining />
     </div>
   );
 }
 
-export default TrainingProgram;
+export default OrganizationalChart;

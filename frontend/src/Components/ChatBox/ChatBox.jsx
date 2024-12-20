@@ -21,6 +21,8 @@ function ChatBox() {
       "Chính sách học bổng của trường?",
       "Cơ sở vật chất của trường?",
       "Chương trình thực tập tại trường?",
+      "Công nghệ thông tin có chuyên ngành nào?",
+      "Thiết kế đồ họa có chuyên ngành nào?",
     ],
     []
   );
@@ -56,6 +58,10 @@ function ChatBox() {
         "Trường có cơ sở vật chất hiện đại với phòng học máy lạnh, thư viện, phòng thực hành, căng tin, khu thể thao và nhiều tiện ích khác.",
       "chương trình thực tập tại trường?":
         "Sinh viên được tham gia thực tập tại các doanh nghiệp đối tác của trường từ năm 2. Trường có mạng lưới hơn 100 doanh nghiệp liên kết.",
+      "công nghệ thông tin có chuyên ngành nào?":
+        "Công nghệ thông tin (CNTT) là một lĩnh vực rộng lớn, hiện tại trường đang đào tạo các chuyên ngành cơ bản như: Lập trình Website, Phát triển phần mềm,...",
+      "thiết kế đồ họa có chuyên ngành nào?":
+        "Thiết kế đồ họa (Graphic Design) là một lĩnh vực sáng tạo hiện dang được trường đào tạo gồm có: Thiết kế thương hiệu, Thiết kế giao diện người dùng, Thiết kế in ấn,...",
     };
 
     const normalizedMessage = userMessage.toLowerCase().trim();

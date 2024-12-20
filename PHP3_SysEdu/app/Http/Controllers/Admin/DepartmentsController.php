@@ -20,6 +20,16 @@ class DepartmentsController extends Controller
         return view('admin.departments.index', ['departmentsView' => $departments]);
     }
 
+    public function list()
+    {
+        $departments = Department::getNameDepartments();
+        return response()->json($departments, 201) 
+                    ->header('Access-Control-Allow-Origin', '*')
+                    ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+                    ->header('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With');
+    }
+    
+
     /**
      * Show the form for creating a new resource.
      */
