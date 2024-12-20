@@ -19,7 +19,7 @@ use App\Http\Controllers\Admin\ScheduleController as AdminScheduleController;
 use App\Http\Controllers\Client\ScheduleController as ClientScheduleController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\EmployeeController;
-use App\Http\Controllers\Admin\EnrollmentController;
+use App\Http\Controllers\Admin\EnrollmentController as AdminEnrollmentController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Client\GradeController as ClientGradeController;
 use App\Http\Controllers\Admin\SemesterController;
@@ -273,7 +273,7 @@ Route::middleware(['admin'])->group(function () {
         Route::post('update/{id}', [TeacherFreeSlotController::class, 'storeOrUpdate'])->name('storeOrUpdate');
     });
 
-    Route::prefix('news')->name('admin.news.')->group(function () {
+    Route::prefix('news-admin')->name('admin.news.')->group(function () {
         Route::get('/', [NewController::class, 'index'])->name('index');
         Route::get('create', [NewController::class, 'create'])->name('create');
         Route::post('store', [NewController::class, 'store'])->name('store');
@@ -283,8 +283,8 @@ Route::middleware(['admin'])->group(function () {
     });
 
     Route::prefix('enrollments')->name('admin.enrollments.')->group(function () {
-        Route::get('/', [EnrollmentController::class, 'index'])->name('index');
-        Route::get('detail/{id}', [EnrollmentController::class, 'detail'])->name('detail');
+        Route::get('/', [AdminEnrollmentController::class, 'index'])->name('index');
+        Route::get('detail/{id}', [AdminEnrollmentController::class, 'detail'])->name('detail');
     });
     // Ajax
     Route::get('/majors-by-faculty', [DashboardController::class, 'getMajorsByFaculty'])->name('majors.by.faculty');
