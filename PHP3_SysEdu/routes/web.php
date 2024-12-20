@@ -320,7 +320,7 @@ Route::middleware(['student'])->group(function () {
     Route::get('thanh-toan', [TuitionController::class, 'index'])->name('tuition');
 
     // Route::get('/generate-vietqr', [HomeController::class, 'generateVietQr'])->name('vietqr');
-    Route::get('/generate-vietqr/{studentId}', [HomeController::class, 'generateVietQr'])->name('vietqr');
+    Route::get('/generate-vietqr/{studentId}', [TuitionController::class, 'generateVietQr'])->name('vietqr');
 
     Route::get('diem', [ClientGradeController::class, 'index'])->name('grades');
 

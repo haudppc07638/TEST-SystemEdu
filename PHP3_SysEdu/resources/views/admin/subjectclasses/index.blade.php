@@ -35,7 +35,7 @@
                             </div>
                             <div class="col-md-6">
                                 <select id="employeeFilter" class="form-select" name="employee_id" onchange="filterSubjectClasses()">
-                                    <option value=""> -- Chọn cố vấn --</option>
+                                    <option value=""> -- Chọn giảng viên --</option>
                                     @foreach ($employees as $employee)
                                         <option value="">Tất cả</option>
                                         <option value="{{ $employee->id }}" {{ $filters['employee_id'] == $employee->id ? 'selected' : '' }}>

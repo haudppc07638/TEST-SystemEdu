@@ -42,9 +42,8 @@
                                         <input type="text" name="search" class="form-control"
                                             placeholder="Tìm kiếm môn học" value="{{ request('search') }}">
                                     </div>
-
                                     <div class="col-lg-4">
-                                        <button type="submit" class="btn btn-primary">Lọc</button>
+                                        <button type="submit" class="btn btn-primary">Tìm Kiếm</button>
                                         <a href="{{ route('admin.subjects.index') }}" class="btn btn-secondary">Reset</a>
                                     </div>
                                 </div>

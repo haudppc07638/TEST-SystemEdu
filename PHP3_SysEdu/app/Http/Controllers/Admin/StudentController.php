@@ -39,9 +39,10 @@ class StudentController extends Controller
         return view('admin.students.index', [
             'students' => $students,
             'majors' => $majors,
-            'majorId' => $filters['major_id'],
+            'filters' => $filters,
         ]);
     }
+    
     
     
 

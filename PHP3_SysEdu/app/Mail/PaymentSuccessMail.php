@@ -58,7 +58,7 @@ class PaymentSuccessMail extends Mailable
     public function build()
     {
         return $this->subject('Thông báo thanh toán học phí thành công')
-                    ->view('email.payment')
+                    ->view('mail.payment')
                     ->with([
                         'student' => $this->student,
                         'total_amount' => $this->total_amount,

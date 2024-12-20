@@ -42,27 +42,34 @@
                                         $isRegistered = $registeredClasses->contains(function ($registeredClass) use ($subjectClass) {
                                             return $registeredClass->subjectClass->id === $subjectClass->id;
                                         });
+                                        $isRegisteredSameSubject = $registeredClasses->contains(function ($registeredClass) use ($subjectClass) {
+                                    return $registeredClass->subjectClass->subject_id === $subjectClass->subject_id &&
+                                        $registeredClass->subjectClass->semester_id === $subjectClass->semester_id &&
+                                        $registeredClass->subjectClass->id !== $subjectClass->id;
+                                        });
                                     @endphp
 
                                     @if ($isRegistered)
-                                        @if (\Carbon\Carbon::now()->lessThanOrEqualTo(\Carbon\Carbon::parse($subjectClass->registration_deadline)))
-                                            <form action="{{ route('cancelClass', $subjectClass->id) }}" method="POST" class="inline-block">
-                                                @csrf
-                                                <button type="submit" 
-                                                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
-                                                    Hủy đăng ký lớp
-                                                </button>
-                                            </form>
-                                        @else
-                                            <p class="text-sm text-gray-500">Bạn đã đăng ký lớp này.</p>
-                                        @endif
-                                    @else
-                                        <form action="{{ route('joinClass', $subjectClass->id) }}" method="POST" class="inline-block">
+                                    @if (\Carbon\Carbon::now()->lessThanOrEqualTo(\Carbon\Carbon::parse($subjectClass->registration_deadline)))
+                                        <form action="{{ route('cancelClass', $subjectClass->id) }}" method="POST" class="inline-block">
                                             @csrf
-                                            <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700">
-                                                Đăng ký
+                                            <button type="submit" 
+                                                    class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700">
+                                                Hủy đăng ký lớp
                                             </button>
                                         </form>
+                                    @else
+                                        <p class="text-sm text-gray-500">Bạn đã đăng ký lớp này.</p>
+                                    @endif
+                                    @elseif ($isRegisteredSameSubject)
+                                    <p class="text-sm font-medium text-yellow-600">Đã đăng ký lớp khác</p>
+                                    @else
+                                    <form action="{{ route('joinClass', $subjectClass->id) }}" method="POST" class="inline-block">
+                                        @csrf
+                                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700">
+                                            Đăng ký
+                                        </button>
+                                    </form>
                                     @endif
                                 </td>
                             </tr>

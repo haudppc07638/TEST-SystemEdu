@@ -21,8 +21,20 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="card-title d-flex">
-                                <a href="{{ route('admin.students.create') }}" type="submit"
-                                    class="btn btn-cBlue mt-2">Thêm</a>
+                                <a href="{{ route('admin.students.create') }}" type="submit" class="btn btn-cBlue">Thêm</a>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <select id="majorFilter" class="form-select" name="major_id" onchange="filterEmployees()">
+                                        <option value="">Chọn chuyên ngành</option>
+                                        @foreach ($majors as $major)
+                                            <option value="{{ $major->id }}" 
+                                                {{ $filters['major_id'] == $major->id ? 'selected' : '' }}>
+                                                {{ $major->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
                             <table id="tableStudent" class="table datatable">
                                 <thead>

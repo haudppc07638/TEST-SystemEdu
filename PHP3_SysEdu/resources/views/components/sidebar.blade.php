@@ -32,7 +32,7 @@
                  </li>
                  <li>
                      <a href="{{ route('admin.score_types.index') }}">
-                         <i class="bi bi-circle"></i><span>Điểm quá trình</span>
+                         <i class="bi bi-circle"></i><span>Quản lí loại điểm</span>
                      </a>
                  </li>
                  <li class="nav-item">

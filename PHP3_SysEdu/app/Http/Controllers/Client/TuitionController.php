@@ -20,7 +20,15 @@ class TuitionController extends Controller
 
         $tuition = Tuition::getSubjectStudentRegister();
         $totalTuition = TotalTuition::getTotal();
+        $totalTuitions = TotalTuition::where('student_id', $student->id)->first();
 
+        // Kiểm tra xem học phí đã được thanh toán chưa
+        if ($totalTuitions && $totalTuitions->payment_status === 'paid') {
+            return view('client.tuition', [
+                'student' => $student,
+                'message' => 'Bạn đã thanh toán học phí. Không có dữ liệu hiển thị.',
+            ]);
+        }
         if ($studentSubjectClasses->isNotEmpty()) {
             return view('client.home-feedback', [
                 'studentSubjectClasses' => $studentSubjectClasses,
@@ -32,6 +40,7 @@ class TuitionController extends Controller
             'totalTuitionView' => $totalTuition,
         ]);
     }
+
     public function tuition($id)
     {
         $studentSubjectClass = StudentSubjectClass::findOrFail($id);
@@ -39,6 +48,7 @@ class TuitionController extends Controller
 
         return redirect()->route('tuition.success')->with('success', 'Tuition created successfully');
     }
+
     public function generateVietQr(Request $request, $studentId)
     {
         $clientId = env('VIETQR_CLIENT_ID');
@@ -53,9 +63,12 @@ class TuitionController extends Controller
             return back()->with('error', 'Số tiền thanh toán phải lớn hơn 0.');
         }
 
+        // Kiểm tra nếu học phí không có
         if ($amount <= 0) {
             return back()->with('error', 'Không có học phí cần thanh toán.');
         }
+
+        // Thiết lập thông tin thanh toán
         $accountNo = '06301360240402';
         $accountName = 'VO MINH KHANH';
         $acqId = 970422;
@@ -70,24 +83,38 @@ class TuitionController extends Controller
             'template' => 'J5NYvUt',
         ];
 
+        // Gửi yêu cầu đến API VietQR
         $response = Http::withHeaders([
             'x-client-id' => $clientId,
             'x-api-key' => $apiKey,
             'Accept' => 'application/json',
         ])->post($apiUrl, $data);
 
+        // Kiểm tra và xử lý phản hồi từ API
         if ($response->successful()) {
             $responseData = $response->json();
 
             if (isset($responseData['code']) && $responseData['code'] === '00') {
                 $qrCodeUrl = $responseData['data']['qrDataURL'];
-                // dd($qrCodeUrl);
+
+                // Cập nhật trạng thái thanh toán thành "paid"
+                $totalTuition = TotalTuition::where('student_id', $student->id)->first();
+                if ($totalTuition) {
+                    $totalTuition->payment_status = 'paid';
+                    $totalTuition->payment_date = now();
+                    $totalTuition->save();
+                }
+
+                // Hiển thị mã QR thanh toán
                 return view('vietqr.index', compact('qrCodeUrl'));
             } else {
                 return back()->with('error', 'Lỗi từ API: ' . ($responseData['desc'] ?? 'Không rõ lỗi.'));
             }
         }
+
+        return back()->with('error', 'Có lỗi xảy ra khi tạo mã QR.');
     }
+}
 
     //     public function showVietQr()
     // {
@@ -107,4 +134,3 @@ class TuitionController extends Controller
     //         return back()->with('error', $e->getMessage());
     //     }
     // }
-}

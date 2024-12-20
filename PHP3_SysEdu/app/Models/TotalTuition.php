@@ -13,7 +13,8 @@ class TotalTuition extends Model
     protected $fillable = [
         'total_amount',
         'total_credit',
-        'tuition_status',
+        'payment_date',
+        'payment_status',
         'student_id',
     ];
 
@@ -38,6 +39,11 @@ class TotalTuition extends Model
             ]);
         return true;
        
+    }
+    public static function hasPaid($studentId)
+    {
+        $record = self::where('student_id', $studentId)->first();
+        return $record && $record->payment_status === 'paid';
     }
     public static function getTotalByStudentId($studentId)
     {

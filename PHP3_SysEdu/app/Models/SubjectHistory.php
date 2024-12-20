@@ -41,17 +41,17 @@ class SubjectHistory extends Model
     $previousPassed = $previousClasses->where('status', 'passed')->isNotEmpty();
     return $previousPassed ? 'Cải thiện' : 'Học lại';
   }
-  protected static function boot()
-    {
-        parent::boot();
+  // protected static function boot()
+  //   {
+  //       parent::boot();
 
-        static::created(function (StudentSubjectClass $studentSubjectClass) {
-            $subjectHistory = new SubjectHistory();
-            $type = $subjectHistory->determineTypeBasedOnStatus($studentSubjectClass);
-            SubjectHistory::insert([
-                'student_subject_class_id' => $studentSubjectClass->id,
-                'type' => $type,
-            ]);
-        });
-    }
+  //       static::created(function (StudentSubjectClass $studentSubjectClass) {
+  //           $subjectHistory = new SubjectHistory();
+  //           $type = $subjectHistory->determineTypeBasedOnStatus($studentSubjectClass);
+  //           SubjectHistory::insert([
+  //               'student_subject_class_id' => $studentSubjectClass->id,
+  //               'type' => $type,
+  //           ]);
+  //       });
+  //   }
 }
