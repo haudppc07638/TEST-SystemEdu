@@ -31,8 +31,7 @@ class SendSystemNotificationJob implements ShouldQueue
 
     public function failed(\Exception $exception)
     {
-        // Cập nhật trạng thái thành 'failed' nếu job thất bại
         $this->notification->update(['status' => 'failed']);
-        toastr()->error('Gửi thông báo thất bại, vui lòng thử lại sau !');
+        return redirect()->back()->with('error', 'Gửi thông báo thất bại, vui lòng thử lại sau !');
     }
 }

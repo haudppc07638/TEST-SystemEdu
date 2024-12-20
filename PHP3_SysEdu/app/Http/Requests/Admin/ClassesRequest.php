@@ -22,18 +22,26 @@ class ClassesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:10',
+            'name' => 'required|string|max:100',
             'employee_id' => $this->isMethod('put') ? ['nullable'] : ['required'],
-            'start_date' => [
+            'start_date' => $this->isMethod('put') ? ['date'] : [
                 'required',
                 'date',
                 'after:today',
+            ],
+            'end_date' => [
+                'required',
+                'date',
+                'after:start_date',
             ],
             'quantity' => [
                 'required',
                 'integer',
                 'min:1',
                 'max:60'
+            ],
+            'major_id' => [
+                'required',
             ],
         ];
     }
@@ -43,7 +51,7 @@ class ClassesRequest extends FormRequest
         return [
             'name.required' => 'Tên lớp không được để trống',
             'name.string' => 'Tên lớp phải là 1 chuỗi ký tự',
-            'name.max' => 'Tên lớp không được nhập quá 10 ký tự',
+            'name.max' => 'Tên lớp không được nhập quá 100 ký tự',
 
             'employee_id.required' => 'Nhân viên không được để trống',
 
@@ -51,10 +59,16 @@ class ClassesRequest extends FormRequest
             'start_date.date' => 'Ngày bắt đầu phải là một ngày hợp lệ',
             'start_date.after' => 'Ngày bắt đầu phải lớn hơn ngày hiện tại',
 
+            'end_date.required' => 'Ngày kết thúc không được để trống',
+            'end_date.date' => 'Ngày kết thúc phải là một ngày hợp lệ',
+            'end_date.after' => 'Ngày kết thúc phải lớn hơn ngày bắt đầu',
+
             'quantity.required' => 'Số lượng không được để trống',
             'quantity.integer' => 'Số lượng phải là một số nguyên',
             'quantity.min' => 'Số lượng phải ít nhất là 1',
             'quantity.max' => 'Số lượng không được vượt quá 60',
+
+            'major_id.required' => 'Chuyên ngành không được để trống',
         ];
     }
 }

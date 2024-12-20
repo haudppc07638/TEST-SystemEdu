@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Enrollment extends Model
 {
-    protected $table = 'news';
+    protected $table = 'enrollments';
 
     protected $fillable = [
         'full_name',
@@ -29,7 +29,7 @@ class Enrollment extends Model
         'second_major_id',
         'application_method_2',
         'year_graduation',
-        'province_city_graduate',
+        'provice_city_graduate',
         'district_graduate',
         'commune_level_graduate',
         'recipient',
@@ -37,8 +37,5 @@ class Enrollment extends Model
         'front_id_card',
         'back_id_card',
         'graduation_certificate',
-    ];   
-    
+    ];
 }
-
-

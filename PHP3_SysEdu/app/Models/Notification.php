@@ -44,6 +44,16 @@ class Notification extends Model
             ->findOrFail($id);
     }
 
+    public static function getPendingNotifications()
+    {
+        return self::where('status', 'pending')->paginate(10);
+    }
+
+    public static function getSentNotifications()
+    {
+        return self::where('status', 'sent')->paginate(10);
+    }
+
     public static function createNotificationStudent($title, $content, $type, $date_sent, $employeeId, $majorIds)
     {
         $majors = Major::whereIn('id', $majorIds)->pluck(column: 'name')->toArray();

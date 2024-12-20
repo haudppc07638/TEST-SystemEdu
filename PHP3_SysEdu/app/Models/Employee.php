@@ -92,7 +92,7 @@ class Employee extends Authenticatable
         return $this->hasMany(ScheduleHistory::class, 'substitute_employee_id');
     }
 
-    public static function getAvailableTeachers($major_id){
+    public static function getAvailableTeachers(){
         return self::where('position', 'teacher')
             ->whereDoesntHave('classes', function ($query) {
                 $query->where('status', 0);

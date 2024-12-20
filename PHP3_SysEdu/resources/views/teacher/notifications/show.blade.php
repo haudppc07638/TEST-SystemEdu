@@ -9,7 +9,7 @@
             <div class="card-header">
                 <h5 class="card-title">{{ $notification->title }}</h5>
                 <small class="text-muted">
-                    Gửi bởi: {{ $notification->employee->fullname }} - 
+                    Gửi bởi: {{ $notification->employee->full_name }} - 
                     {{ $notification->date_sent->format('H:i d/m/Y') }}
                 </small>
             </div>

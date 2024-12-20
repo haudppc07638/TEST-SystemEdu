@@ -21,9 +21,7 @@
                                             <li class="list-group-item border-0 py-2">
                                                 <i class="bi bi-bell text-primary me-2"></i>
                                                 <a href="{{ route('notifications.show', $notification->id) }}" 
-                                                   class="text-primary text-decoration-none">
-                                                    {{ $notification->title }}
-                                                    <small class="text-muted ms-2">
+                                                  <small class="text-muted ms-2">
                                                         ({{ $notification->date_sent->format('d/m/Y H:i') }})
                                                     </small>
                                                 </a>
@@ -52,3 +50,6 @@
     </main>
 
 @endsection
+              class="text-primary text-decoration-none">
+                                                    {{ $notification->title }}
+                                       

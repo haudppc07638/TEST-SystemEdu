@@ -13,7 +13,6 @@ class HomeController extends Controller
     {
         $teacher = Auth::guard('employee')->user();
         $notifications = Notification::getTeacherNotifications($teacher->major_id);
-        dd($notifications);
         return view('teacher.home', compact('notifications'));
     }
 

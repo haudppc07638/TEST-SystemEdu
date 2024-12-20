@@ -19,46 +19,32 @@ class ClassController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function showFaculties()
+    public function index(Request $request)
     {
-        $faculties = Faculty::getNameFaculties();
-        return view('admin.classes.faculties', [
-            'faculties' => $faculties
-        ]);
-    }
+        $faculties = Faculty::all();
+        $majorClasses = StuClass::query();
 
-    public function showMajors($id)
-    {
-        $majors = Major::getMajorsWithFacultyId($id);
-
-        return view('admin.classes.majors', [
-            'majors' => $majors
-        ]);
-    }
-
-    public function showClasses($id)
-    {
-        $classes = StuClass::getClassesWithMajorId($id);
-        $studentQuantities = [];
-        foreach ($classes as $class) {
-            $studentQuantities[$class->id] = StuClass::studentCount($class->id);
+        if ($request->filled('faculty_id')) {
+            $majorClasses->whereHas('major.faculty', function ($query) use ($request) {
+                $query->where('id', $request->faculty_id);
+            });
         }
-    
-        $major = Major::getNameMajorById($id);
-        return view('admin.classes.classes', [
-            'classes' => $classes,
-            'major' => $major,
-            'studentQuantities' => $studentQuantities
-        ]);
+
+        if ($request->filled('major_id')) {
+            $majorClasses->where('major_id', $request->major_id);
+        }
+
+        $majorClasses = $majorClasses->get();
+        return view('admin.classes.index', compact('faculties', 'majorClasses'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create($id)
+    public function create()
     {
-        $major = Major::getNameMajorById($id);
-        $employees = Employee::getAvailableTeachers($id);
+        $major = Major::all();
+        $employees = Employee::getAvailableTeachers();
         return view('admin.classes.create', [
             'major' => $major,
             'employees' => $employees,
@@ -70,19 +56,10 @@ class ClassController extends Controller
      */
     public function store(ClassesRequest $request)
     {
-        $rules = $request->rules();
-        $messages = $request->messages();
-        $data = $request->only(['name', 'major_id', 'start_date', 'quantity', 'employee_id']);
-
-        $validator = Validator::make($data, $rules, $messages);
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-        $class = StuClass::createClass($data);
-        toastr()->success('Thêm thành công lớp: ' . $class->name);
-        return redirect()->route('admin.classes', $data['major_id']);
+        $data = $request->validated();
+        $class = StuClass::create($data);
+        toastr()->success('Thêm thành công lớp chuyên ngành: ' . $class->name);
+        return redirect()->route('admin.classes.index', $data['major_id']);
     }
 
     /**
@@ -108,11 +85,11 @@ class ClassController extends Controller
         $class = StuClass::getClassById($id);
 
         if ($class->status == 1) {
-            toastr()->error('Lớp học đã kết thúc và không thể chỉnh sửa.');
-            return redirect()->route('admin.classes', $class->major_id);
+            toastr()->warning('Lớp học đã kết thúc và không thể chỉnh sửa.');
+            return redirect()->route('admin.classes.index', $class->major_id);
         }
 
-        $employees = Employee::getAvailableTeachers($class->major_id);
+        $employees = Employee::getAvailableTeachers();
         return view('admin.classes.edit', [
             'class' => $class,
             'employees' => $employees
@@ -123,20 +100,10 @@ class ClassController extends Controller
      */
     public function update(ClassesRequest $request, $id)
     {
-        $rules = $request->rules();
-        $messages = $request->messages();
-        $data = $request->only(['name', 'major_id', 'start_date', 'quantity', 'employee_id']); // Bỏ training_system
-
-        $validator = Validator::make($data, $rules, $messages);
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
+        $data = $request->validated();
         $class = StuClass::updateClassById($id, $data);
         toastr()->success('Cập nhập thành công thông tin của lớp: ' . $class->name);
-        return redirect()->route('admin.classes', $data['major_id']);
+        return redirect()->route('admin.classes.index', $data['major_id']);
     }
 
     /**
@@ -148,10 +115,10 @@ class ClassController extends Controller
         try {
             StuClass::deleteClass($id);
             toastr()->success('Xóa thành công ');
-            return redirect()->route('admin.classes', $class->major_id);
-        } catch (QueryException $e) {     
+            return redirect()->route('admin.classes.index', $class->major_id);
+        } catch (QueryException $e) {
             toastr()->error('Không thể xóa do có sinh viên trong lớp !');
-            return redirect()->route('admin.classes', $class->major_id);    
+            return redirect()->route('admin.classes.index', $class->major_id);
         }
     }
 

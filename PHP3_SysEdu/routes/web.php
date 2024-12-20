@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\ScheduleController as AdminScheduleController;
 use App\Http\Controllers\Client\ScheduleController as ClientScheduleController;
 use App\Http\Controllers\Admin\StudentController;
 use App\Http\Controllers\Admin\EmployeeController;
+use App\Http\Controllers\Admin\EnrollmentController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Client\GradeController as ClientGradeController;
 use App\Http\Controllers\Admin\SemesterController;
@@ -35,6 +36,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Admin\SubjectClassController;
 use App\Http\Controllers\Client\ScoreController;
 use App\Http\Controllers\Admin\FeedbackController;
+use App\Http\Controllers\Admin\NewController;
 use App\Http\Controllers\Admin\ScoreTypeController;
 use App\Http\Controllers\Admin\SubjectLecturerController;
 use App\Http\Controllers\Teacher\StudentLookupController;
@@ -94,7 +96,7 @@ Route::post('/dang-xuat', [LogoutController::class, 'logoutStudent'])->name('log
 
 // admin route ==============================================================================
 Route::middleware(['admin'])->group(function () {
-
+    
     Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
     Route::prefix('faculties')->name('admin.faculties.')->group(function () {
@@ -115,17 +117,15 @@ Route::middleware(['admin'])->group(function () {
         Route::delete('{id}', [MajorController::class, 'destroy'])->name('destroy');
     });
 
-    Route::name('admin.')->group(function () {
-        Route::get('Faculties', [ClassController::class, 'showFaculties'])->name('faculties');
-        Route::get('Faculty/Majors/{id}', [ClassController::class, 'showMajors'])->name('majors');
-        Route::get('Faculty/Major/Classes/{id}', [ClassController::class, 'showClasses'])->name('classes');
-        Route::get('Faculty/Major/Classes/detail/{majorClassId}', [ClassController::class, 'showClassDetail'])->name('detail');
-        Route::get('Faculty/Major/Classes/create/{id}', [ClassController::class, 'create'])->name('create');
-        Route::post('Faculty/Major/Classes/create', [ClassController::class, 'store'])->name('create.post');
-        Route::get('Faculty/Major/Classes/edit/{id}', [ClassController::class, 'edit'])->name('edit');
-        Route::put('Faculty/Major/Classes/update/{id}', [ClassController::class, 'update'])->name('update');
-        Route::delete('Faculty/Major/Classes/delete/{id}', [ClassController::class, 'destroy'])->name('destroy');
-        Route::put('Faculty/Major/Classes/{id}/update-status', [ClassController::class, 'updateStatus'])->name('updateStatus');
+    Route::prefix('classes')->name('admin.classes.')->group(function () {
+        Route::get('/', [ClassController::class, 'index'])->name('index');
+        Route::get('detail/{majorClassId}', [ClassController::class, 'showClassDetail'])->name('detail');
+        Route::get('create', [ClassController::class, 'create'])->name('create');
+        Route::post('create', [ClassController::class, 'store'])->name('create.post');
+        Route::get('edit/{id}', [ClassController::class, 'edit'])->name('edit');
+        Route::put('{id}', [ClassController::class, 'update'])->name('update');
+        Route::delete('/delete/{id}', [ClassController::class, 'destroy'])->name('destroy');
+        Route::put('/{id}/update-status', [ClassController::class, 'updateStatus'])->name('updateStatus');
     });
 
     Route::prefix('classes')->name('admin.classes.')->group(function () {
@@ -271,6 +271,20 @@ Route::middleware(['admin'])->group(function () {
         Route::get('/', [TeacherFreeSlotController::class, 'index'])->name('index');
         Route::get('update/{id}', [TeacherFreeSlotController::class, 'createOrUpdate'])->name('createOrUpdate');
         Route::post('update/{id}', [TeacherFreeSlotController::class, 'storeOrUpdate'])->name('storeOrUpdate');
+    });
+
+    Route::prefix('news')->name('admin.news.')->group(function () {
+        Route::get('/', [NewController::class, 'index'])->name('index');
+        Route::get('create', [NewController::class, 'create'])->name('create');
+        Route::post('store', [NewController::class, 'store'])->name('store');
+        Route::get('edit/{id}', [NewController::class, 'edit'])->name('edit');
+        Route::put('{id}', [NewController::class, 'update'])->name('update');
+        Route::delete('{id}', [NewController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('enrollments')->name('admin.enrollments.')->group(function () {
+        Route::get('/', [EnrollmentController::class, 'index'])->name('index');
+        Route::get('detail/{id}', [EnrollmentController::class, 'detail'])->name('detail');
     });
     // Ajax
     Route::get('/majors-by-faculty', [DashboardController::class, 'getMajorsByFaculty'])->name('majors.by.faculty');

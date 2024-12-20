@@ -84,7 +84,7 @@
         </li><!-- End Class Page Nav -->
 
          <li class="nav-item">
-             <a class="nav-link collapsed" href="{{ route('admin.faculties') }}">
+             <a class="nav-link collapsed" href="{{ route('admin.classes.index') }}">
                  <i class="bi bi-folder-fill"></i>
                  <span>Lớp chuyên ngành </span>
              </a>
@@ -111,6 +111,21 @@
                  <span>Gửi thông báo</span>
              </a>
          </li><!-- End Notifications  Page Nav -->
+
+         <li class="nav-item">
+            <a class="nav-link collapsed" href="{{ route('admin.news.index') }}">
+                <i class="bi bi-newspaper"></i>
+                <span>Tin tức</span>
+            </a>
+        </li><!-- End News Page Nav -->
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="{{ route('admin.enrollments.index') }}">
+                <i class="bi bi-person-check"></i>
+                <span>Duyệt tuyển sinh</span>
+            </a>
+        </li><!-- End Enrollments Page Nav -->
+
          <li class="nav-item">
              <a class="nav-link collapsed" href="{{ route('admin.timeslots.index') }}">
                  <i class="bi bi-clock"></i>

@@ -24,6 +24,16 @@ class StuClass extends Model
         'employee_id',
     ];
 
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::retrieved(function ($stuClass) {
+            $stuClass->checkAndUpdateStatus();
+        });
+    }
+
     public function major(): BelongsTo
     {
         return $this->belongsTo(Major::class);
@@ -40,6 +50,10 @@ class StuClass extends Model
     public function students(): HasMany
     {
         return $this->hasMany(Student::class, 'major_class_id');
+    }
+
+    public static function getMajorClasses(){
+        return self::with('major', 'employee')->latest()->paginate(10);
     }
     public static function getClassesWithMajorId($id)
     {
@@ -101,5 +115,17 @@ class StuClass extends Model
         return self::with('major', 'employee')
             ->findOrFail($major_class_id);
     }
+
+    public function checkAndUpdateStatus()
+    {
+        $today = Carbon::now()->toDateString();
+
+        if ($this->end_date === $today && $this->status != 1) {
+            $this->status = 1;
+            $this->save();
+        }
+    }
+
+
    
 }

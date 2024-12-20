@@ -21,7 +21,7 @@
         <div class="card">
             <div class="card-body">
                 <form class="row g-3 mt-3 needs-validation" novalidate method="POST"
-                    action="{{ route('admin.update', $class->id) }}">
+                    action="{{ route('admin.classes.update', $class->id) }}">
                     @csrf
                     @method('PUT')
                     <!-- Chuyên ngành -->
@@ -59,7 +59,7 @@
                     </div>
 
                     <!-- Số lượng tối đa -->
-                    <div class="col-md-6 mb-2">
+                    <div class="col-md-12 mb-2">
                         <label class="form-label">Số lượng tối đa</label>
                         <input type="number" id="quantity" class="form-control @error('quantity') is-invalid @enderror"
                             name="quantity" value="{{ old('quantity', $class->quantity) }}" max="60">
@@ -74,6 +74,16 @@
                         <input type="date" id="start_date" class="form-control @error('start_date') is-invalid @enderror"
                             name="start_date" value="{{ old('start_date', $class->start_date) }}">
                         @error('start_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Ngày kết thúc -->
+                    <div class="col-md-6 mb-2">
+                        <label class="form-label">Ngày kết thúc</label>
+                        <input type="date" id="end_date" class="form-control @error('end_date') is-invalid @enderror"
+                            name="end_date" value="{{ old('end_date', $class->end_date) }}">
+                        @error('end_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

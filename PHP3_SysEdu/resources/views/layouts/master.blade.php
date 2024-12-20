@@ -22,9 +22,7 @@
     <!-- Vendor CSS Files -->
     <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/vendor/quill/quill.snow.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('assets/vendor/quill/quill.bubble.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
 
     <!-- dataTables CSS -->
@@ -58,8 +56,6 @@
             class="bi bi-arrow-up-short"></i></a>
 
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/quill/quill.js') }}"></script>
-    <script src="{{ asset('assets/vendor/tinymce/tinymce.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/php-email-form/validate.js') }}"></script>
 
     <!-- jQuery CDN -->
@@ -74,39 +70,13 @@
 
     <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Template Main JS File -->
     <script src="{{ asset('assets/admin/js/main.js') }}"></script>
-    
-
-    @push('script')
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                var quill = new Quill('#editor-container', {
-                    theme: 'snow',
-                    modules: {
-                        toolbar: [
-                            ['bold', 'italic', 'underline'],
-                            ['link', 'image'],
-                            [{
-                                'list': 'ordered'
-                            }, {
-                                'list': 'bullet'
-                            }]
-                        ]
-                    }
-                });
-
-                quill.root.innerHTML = document.getElementById('description').value;
-
-                quill.on('text-change', function() {
-                    var content = quill.root.innerHTML;
-                    document.getElementById('description').value = content.replace(/<\/?[^>]+(>|$)/g, "");
-                });
-            });
-        </script>
-    @endpush
 
     @stack('script')
+
 </body>
 
 </html>

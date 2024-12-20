@@ -10,9 +10,7 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                <li class="breadcrumb-item">Khoa</li>
-                <li class="breadcrumb-item">Chuyên ngành</li>
-                <li class="breadcrumb-item">Lớp chuyên ngành</li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.classes.index') }}">Lớp Chuyên ngành</a></li>
                 <li class="breadcrumb-item active">Thêm lớp chuyên ngành</li>
             </ol>
         </nav>
@@ -20,14 +18,20 @@
 
     <div class="card">
         <div class="card-body">
-            <form class="row g-3 mt-3 needs-validation" novalidate method="POST" action="{{ route('admin.create.post') }}">
+            <form class="row g-3 mt-3 needs-validation" novalidate method="POST" action="{{ route('admin.classes.create.post') }}">
                 @csrf
 
                 <!-- Chuyên ngành -->
                 <div class="col-md-12 mb-2">
                     <label class="form-label">Chuyên ngành</label>
-                    <input type="hidden" name="major_id" value="{{ $major->id }}">
-                    <input type="text" value="{{ $major->name }}" class="form-control" readonly>
+                    <select class="form-select @error('major_id') is-invalid @enderror" name="major_id">
+                        <option disabled selected>...Chọn chuyên ngành...</option>
+                        @foreach ($major as $major)
+                            <option value="{{ $major->id }}" {{ old('major_id') == $major->id ? 'selected' : '' }}>
+                                {{ $major->name }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <!-- Tên lớp -->
@@ -56,7 +60,7 @@
                 </div>
 
                 <!-- Số lượng tối đa -->
-                <div class="col-md-6 mb-2">
+                <div class="col-md-12 mb-2">
                     <label class="form-label">Số lượng tối đa</label>
                     <input type="number" id="quantity" class="form-control @error('quantity') is-invalid @enderror" 
                            name="quantity" value="{{ old('quantity') }}" max="60">
@@ -71,6 +75,16 @@
                     <input type="date" id="start_date" class="form-control @error('start_date') is-invalid @enderror" 
                            name="start_date" value="{{ old('start_date') }}">
                     @error('start_date')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Ngày kết thúc -->
+                <div class="col-md-6 mb-2">
+                    <label class="form-label">Ngày kết thúc</label>
+                    <input type="date" id="end_date" class="form-control @error('end_date') is-invalid @enderror" 
+                           name="end_date" value="{{ old('end_date') }}">
+                    @error('end_date')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>

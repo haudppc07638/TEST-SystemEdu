@@ -51,15 +51,16 @@
                                             <td>{{ $student->student->code }}</td>
                                             <td>{{ $student->student->full_name }}</td>
                                             <td class="text-center">
-                                                <div class="checkbox-wrapper-59">
-                                                    <input type="hidden" name="attendance[{{ $student->id }}]" value="0"> <!-- Giá trị mặc định -->
-                                                    <label class="switch">
-                                                        <input type="checkbox" class="attendance-checkbox"
-                                                            name="attendance[{{ $student->id }}]"
-                                                            data-student-id="{{ $student->id }}"
-                                                            {{ $student->attendances->first()?->status ? 'checked' : '' }}>
-                                                        <span class="slider"></span>
-                                                    </label>
+                                                <div class="checkbox-wrapper-7">
+                                                    <input type="hidden" name="attendance[{{ $student->id }}]"
+                                                        value="0">
+                                                    <input class="tgl tgl-ios attendance-checkbox"
+                                                        id="attendance-{{ $student->id }}"
+                                                        name="attendance[{{ $student->id }}]" type="checkbox"
+                                                        data-student-id="{{ $student->id }}"
+                                                        checked
+                                                        {{ $student->attendances->first()?->status ? 'checked' : '' }}>
+                                                    <label class="tgl-btn" for="attendance-{{ $student->id }}"></label>
                                                 </div>
                                             </td>
                                         </tr>
@@ -90,56 +91,54 @@
 
 @push('style')
     <style>
-        .checkbox-wrapper-59 input[type="checkbox"] {
-            visibility: hidden;
+        .checkbox-wrapper-7 .tgl {
             display: none;
         }
 
-        .checkbox-wrapper-59 *,
-        .checkbox-wrapper-59 ::after,
-        .checkbox-wrapper-59 ::before {
+        .checkbox-wrapper-7 .tgl,
+        .checkbox-wrapper-7 .tgl:after,
+        .checkbox-wrapper-7 .tgl:before,
+        .checkbox-wrapper-7 .tgl *,
+        .checkbox-wrapper-7 .tgl *:after,
+        .checkbox-wrapper-7 .tgl *:before,
+        .checkbox-wrapper-7 .tgl+.tgl-btn {
             box-sizing: border-box;
         }
 
-        .checkbox-wrapper-59 .switch {
-            width: 60px;
-            height: 30px;
+        .checkbox-wrapper-7 .tgl+.tgl-btn {
+            outline: 0;
+            display: block;
+            width: 4em;
+            height: 2em;
             position: relative;
-            display: inline-block;
-        }
-
-        .checkbox-wrapper-59 .slider {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            border-radius: 30px;
-            box-shadow: 0 0 0 2px #dc1414, 0 0 4px #dc1414;
             cursor: pointer;
-            border: 4px solid transparent;
-            overflow: hidden;
-            transition: 0.2s;
+            user-select: none;
+            background: #6b6969;
+            border-radius: 2em;
+            padding: 2px;
+            transition: all 0.4s ease;
+            border: 1px solid #e8eae9;
         }
 
-        .checkbox-wrapper-59 .slider:before {
-            position: absolute;
+        .checkbox-wrapper-7 .tgl+.tgl-btn:after {
             content: "";
-            width: 100%;
+            position: relative;
+            display: block;
+            width: 50%;
             height: 100%;
-            background-color: #dc1414;
-            border-radius: 30px;
-            transform: translateX(-56px);
-            transition: 0.2s;
+            background: #fbfbfb;
+            border-radius: 2em;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 4px 0 rgba(0, 0, 0, 0.08);
+            transition: left 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), padding 0.3s ease, margin 0.3s ease;
+            left: 0;
         }
 
-        .checkbox-wrapper-59 input:checked+.slider:before {
-            transform: translateX(4px);
-            background-color: limeGreen;
+        .checkbox-wrapper-7 .tgl-ios:checked+.tgl-btn {
+            background: #86d993;
         }
 
-        .checkbox-wrapper-59 input:checked+.slider {
-            box-shadow: 0 0 0 2px limeGreen, 0 0 8px limeGreen;
+        .checkbox-wrapper-7 .tgl-ios:checked+.tgl-btn:after {
+            left: 50%;
         }
     </style>
 @endpush
