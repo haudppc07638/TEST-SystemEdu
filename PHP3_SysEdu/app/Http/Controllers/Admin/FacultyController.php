@@ -31,15 +31,8 @@ class FacultyController extends Controller
      */
     public function store(FacultyRequest $request)
     {
-        $data = $request->only(['name', 'code', 'dean', 'asisstant_dean', 'description']);
-        $validator = Faculty::validate($data, $request);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-        Faculty::createFaculty($data);
+        $validated = $request->validated();
+        Faculty::createFaculty($validated);
         toastr()->success('Thêm Thành Công');
         return redirect()->route('admin.faculties.index');
     }
@@ -88,7 +81,7 @@ class FacultyController extends Controller
     
             return redirect()->route('admin.faculties.index');
         } catch (QueryException $e) {
-            toastr()->warning('Đã xảy ra lỗi khi xóa khoa. Vui lòng thử lại!');
+            toastr()->warning('Hiện tại khoa đang có dữ liệu phụ thuộc!');
             return redirect()->route('admin.faculties.index');
         }
     }

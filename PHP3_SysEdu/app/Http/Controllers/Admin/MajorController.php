@@ -8,6 +8,7 @@ use App\Models\Major;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Models\Faculty;
+use App\Models\Subject;
 
 class MajorController extends Controller
 {
@@ -21,8 +22,17 @@ class MajorController extends Controller
         $facultyId = $request->get('faculty_id', null);
         $search = $request->get('search', null);
         $search = $request->input('search');
-        Major::updateTotalCreditsForAllMajors();
         $majors = Major::getAllMajor($facultyId, $search);
+
+        foreach ($majors as $major) {
+            $totalSubjectCredits = Subject::where('major_id', $major->id)
+                ->sum('credit');
+            $totalBasicCredits = Subject::whereNull('major_id')
+                ->sum('credit');
+
+            $major->total_subject_credits = $totalSubjectCredits + $totalBasicCredits;
+        }
+
         return view('admin.majors.index', [
             'majorsView' => $majors,
             'faculties' => $faculties,
@@ -60,17 +70,10 @@ class MajorController extends Controller
      */
     public function store(MajorRequest $request)
     {
-        $data = $request->only(['name', 'faculty_id', 'code', 'total_credits']);
-        $validator = Major::validate($data, $request);
+        $validated = $request->validated();
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
+        $major = Major::create($validated);
 
-        $validatedData = $validator->validate();
-        $major = Major::createMajor($validatedData);
         toastr()->success('Thêm thành công chuyên ngành: ' . $major->name);
         return redirect()->route('admin.majors.index');
     }
@@ -90,16 +93,19 @@ class MajorController extends Controller
      */
     public function update(MajorRequest $request, string $id)
     {
-        $data = $request->only(['name', 'faculty_id', 'code', 'total_credits']); // Thêm total_credits
-        $validator = Major::validate($data, $request);
+        $validated = $request->validated();
 
-        if ($validator->fails()) {
-            return redirect()->route('admin.majors.edit', $id) // Thêm $id vào route
-                ->withErrors($validator)
-                ->withInput();
+        $totalSubjectCredits = Subject::where('major_id', $id)->sum('credit');
+        $totalBasicSubjectCredits = Subject::whereNull('major_id')->sum('credit');
+        $total = $totalSubjectCredits + $totalBasicSubjectCredits;
+        // Kiểm tra xem total_credits có nhỏ hơn total_subject_credits không
+        if ($validated['total_credits'] < $total) {
+            return redirect()->back()->withErrors([
+                'total_credits' => 'Tổng tín chỉ của chuyên ngành không được nhỏ hơn '.$total.' tổng tín chỉ của các môn học đã có.'
+            ])->withInput();
         }
-        $validatedData = $validator->validate();
-        $major = Major::updateMajor($id, $validatedData);
+        $major = Major::updateMajor($id, $validated);
+
         toastr()->success('Cập nhật thành công chuyên ngành: ' . $major->name);
         return redirect()->route('admin.majors.index');
     }
@@ -110,7 +116,8 @@ class MajorController extends Controller
     public function destroy(string $id)
     {
         try {
-            $isDeleted = Major::deleteMajorId($id);
+            $isDeleted = Major::findOrFail($id);
+            $isDeleted->delete();
 
             if ($isDeleted) {
                 toastr()->success('Xóa thành công');
@@ -120,7 +127,7 @@ class MajorController extends Controller
 
             return redirect()->route('admin.majors.index');
         } catch (QueryException $e) {
-            toastr()->warning('Đã xảy ra lỗi khi xóa chuyên ngành. Vui lòng thử lại!');
+            toastr()->warning('Hiện tại chuyên ngành đang có dữ liệu phụ thuộc!');
             return redirect()->route('admin.majors.index');
         }
     }

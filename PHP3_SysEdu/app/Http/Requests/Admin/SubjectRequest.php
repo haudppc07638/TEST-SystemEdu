@@ -33,6 +33,7 @@ class SubjectRequest extends FormRequest
             'weights' => 'required|array',
             'prerequisites' => 'nullable|array',
             'sub_scores' => 'nullable|array',
+            'major_id'=> 'nullable',
         ];
     }
 

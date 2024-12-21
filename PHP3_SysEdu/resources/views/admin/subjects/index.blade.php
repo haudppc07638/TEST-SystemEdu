@@ -22,7 +22,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="card-title d-flex">
-                                <a href="{{ route('admin.subjects.create') }}" class="btn btn-cBlue  m-2">Thêm</a>
+                                <a href="{{ route('admin.subjects.create') }}" class="btn btn-cBlue">Thêm</a>
                             </div>
                             <form action="{{ route('admin.subjects.index') }}" method="GET" class="mb-4">
                                 <div class="row">
@@ -69,7 +69,7 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $subject->code }}</td>
                                             <td>{{ $subject->name }}</td>
-                                            <td>{{ $subject->major->name ?? 'Môn cơ bản' }}</td>
+                                            <td>{{ $subject->major ? $subject->major->name : 'Cơ bản' }}</td>
                                             <td>{{ $subject->credit }}</td>
                                             <td>
                                                 @if ($subject->prerequisites->isNotEmpty())
@@ -103,6 +103,10 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                            <!-- End Table with stripped rows -->
+                            <div class="d-flex justify-content-end">
+                                {{ $subjectView->links() }}
+                            </div>
                         </div>
 
                     </div>

@@ -103,7 +103,7 @@ class DepartmentsController extends Controller
             }   
         }
         catch (QueryException $e) {
-            toastr()->warning('Đã xảy ra lỗi khi xóa khoa. Vui lòng thử lại!');
+            toastr()->warning('Hiện tại phòng ban đang có dữ liệu phụ thuộc!');
         }
         return redirect()->route('admin.departments.index');
     }

@@ -28,7 +28,7 @@ class MajorRequest extends FormRequest
             'name' => 'required|string|max:100',
             'faculty_id' => 'required|exists:faculties,id',
             'code' => ['required', 'string', 'max:15', Rule::unique('majors')->ignore($majorId)],
-            'total_credits' => 'required|integer|min:1',
+            'total_credits' => 'required|integer|min:60|max:90',
         ];
     }
 
@@ -54,7 +54,9 @@ class MajorRequest extends FormRequest
 
             'total_credits.required' => 'Tổng tín chỉ không được để trống', 
             'total_credits.integer' => 'Tổng tín chỉ phải là một số nguyên',
-            'total_credits.min' => 'Tổng tín chỉ phải lớn hơn hoặc bằng 1', 
+            'total_credits.min' => 'Tổng tín chỉ tối thiểu 60', 
+            'total_credits.max' => 'Tổng tín chỉ tối đa 90', 
+
         ];
     }
 }

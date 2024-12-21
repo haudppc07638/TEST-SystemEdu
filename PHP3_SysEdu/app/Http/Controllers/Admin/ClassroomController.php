@@ -55,10 +55,10 @@ class ClassroomController extends Controller
         }
         catch (QueryException $e) {
             if ($e->getCode() == 23000) {
-                toastr()->warning('Không thể xóa phòng học. Nó có liên kết với lịch học.');
+                toastr()->warning('Không thể xóa phòng học này vì có dữ liệu phụ thuộc !');
                 return redirect()->route('admin.classrooms.index');
             }
-            toastr()->warning('Có lỗi xảy ra khi xóa phòng học. Vui lòng thử lại.');
+            toastr()->warning('Không thể xóa phòng học này vì có dữ liệu phụ thuộc !');
             return redirect()->route('admin.classrooms.index');
         }
     }

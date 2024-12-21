@@ -15,11 +15,10 @@ class SubjectLecturerController extends Controller
     public function create(Request $request)
     {
         $majorId = $request->input('major_id');
-        $subjects = Subject::orderBy('major_id', 'asc')->get();
-        $employees = Employee::all();
+        $subjects = Subject::orderBy('major_id', 'asc')->paginate(10);
         $majors = Major::all();
 
-        return view('admin.subject_lecturers.create', compact('subjects', 'employees', 'majors', 'majorId'));
+        return view('admin.subject_lecturers.create', compact('subjects', 'majors', 'majorId'));
     }
 
 
@@ -56,6 +55,24 @@ class SubjectLecturerController extends Controller
             ->where('subject_id', $subjectId)
             ->get()
             ->pluck('employee');
+
+        return response()->json($lecturers);
+    }
+
+    public function getSubjectLecturers(Request $request)
+    {
+        $subjectId = $request->input('subject_id');
+
+        $lecturers = SubjectLecturer::with('employee')
+            ->where('subject_id', $subjectId)
+            ->get()
+            ->map(function ($lecturer) {
+                return [
+                    'id' => $lecturer->employee->id,
+                    'code' => $lecturer->employee->code,
+                    'full_name' => $lecturer->employee->full_name,
+                ];
+            });
 
         return response()->json($lecturers);
     }

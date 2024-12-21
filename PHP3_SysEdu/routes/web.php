@@ -158,6 +158,8 @@ Route::middleware(['admin'])->group(function () {
         Route::delete('{id}', [EmployeeController::class, 'destroy'])->name('destroy');
         Route::get('detail/{id}', [EmployeeController::class, 'showDetail'])->name('detail');
         Route::post('updateSubjects/{id}', [EmployeeController::class, 'updateSubjects'])->name('updateSubjects');
+        Route::get('/all', [EmployeeController::class, 'getAllEmployees'])->name('all');
+
     });
 
     Route::prefix('students')->name('admin.students.')->group(function () {
@@ -289,6 +291,8 @@ Route::middleware(['admin'])->group(function () {
         Route::get('subject-lecturers', [SubjectLecturerController::class, 'create'])->name('create');
         Route::post('subject-lecturers', [SubjectLecturerController::class, 'storeOrUpdate'])->name('storeOrUpdate');
         Route::get('subject-lecturers/filter', [SubjectLecturerController::class, 'filter'])->name('filter');
+        Route::get('subject-lecturers/lecturers', [SubjectLecturerController::class, 'getSubjectLecturers'])->name('getSubjectLecturers');
+
     });
 
     Route::prefix('teacherFreeSlot')->name('admin.teacher_free_slots.')->group(function () {
@@ -315,6 +319,7 @@ Route::middleware(['admin'])->group(function () {
     Route::get('/majors-by-faculty', [DashboardController::class, 'getMajorsByFaculty'])->name('majors.by.faculty');
     Route::get('admin/lecturers-by-subject', [SubjectLecturerController::class, 'getLecturersBySubject'])->name('admin.lecturers.by.subject');
     Route::get('admin/majorclasses-by-subject', [ClassController::class, 'getMajorClassesBySubject'])->name('admin.majorclasses.by.subject');
+
 });
 
 //end admin route ==============================================================================

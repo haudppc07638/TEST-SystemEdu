@@ -17,7 +17,7 @@ class ClassroomRequest extends FormRequest
         $classroomId=$this->route('id');
         return [
             'code' => ['required', 'string', 'max:10', Rule::unique('classrooms')->ignore($classroomId)],
-            'capacity' => ['required', 'integer', 'min:1'],
+            'capacity' => ['required', 'integer', 'min:1', 'max:60' ],
         ];
     }
 
@@ -31,6 +31,7 @@ class ClassroomRequest extends FormRequest
             'capacity.required' => 'Sức chứa không được để trống',
             'capacity.integer' => 'Sức chứa phải là một số nguyên',
             'capacity.min' => 'Sức chứa phải lớn hơn 0',
+            'capacity.max' => 'Sức chứa tối đa 60',
         ];
     }
 }

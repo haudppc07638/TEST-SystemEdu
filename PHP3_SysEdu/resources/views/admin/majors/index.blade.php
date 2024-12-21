@@ -22,7 +22,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="card-title d-flex">
-                                <a href="{{ route('admin.majors.create') }}" type="submit" class="btn btn-cBlue m-2">Thêm mới</a>
+                                <a href="{{ route('admin.majors.create') }}" type="submit" class="btn btn-cBlue">Thêm</a>
                             </div>
                             <div class="col-lg-12">
                                 <form action="{{ route('admin.majors.index') }}" method="GET" class="mb-4">
@@ -61,8 +61,8 @@
                                 <thead>
                                     <tr>
                                         <th>STT</th>
-                                        <th>Khoa</th>
                                         <th>Chuyên ngành</th>
+                                        <th>Thuộc Khoa</th>
                                         <th>Mã</th>
                                         <th>Tín Chỉ <small><i>(Yêu cầu)</i></small></th>
                                         <th>Tác vụ</th>
@@ -72,10 +72,10 @@
                                     @foreach ($majorsView as $index => $major)
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
-                                            <td>{{ $major->faculty->name ?? 'Chưa sắp' }}</td>
                                             <td>{{ $major->name }}</td>
+                                            <td>{{ $major->faculty->name ?? 'Chưa sắp' }}</td>
                                             <td>{{ $major->code }}</td>
-                                            <td>{{ $major->total_credits }}</td>
+                                            <td>{{ $major->total_credits }} / {{ $major->total_subject_credits }}</td>
                                             <td>
                                                 <div class="dropdown">
                                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow"

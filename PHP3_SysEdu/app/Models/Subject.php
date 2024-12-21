@@ -60,19 +60,19 @@ class Subject extends Model
 
     public static function getAllSubjects($majorId = null, $search = null)
     {
-    return self::query()
-        ->when($majorId, function ($query, $majorId) {
-            $query->where('major_id', $majorId);
-        })
-        ->when($search, function ($query, $search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('code', 'like', "%{$search}%");
-            });
-        })
-        ->with(['major', 'prerequisites'])
-        ->orderBy('id', 'desc')
-        ->paginate(10); 
+        return self::query()
+            ->when($majorId, function ($query, $majorId) {
+                $query->where('major_id', $majorId);
+            })
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('code', 'like', "%{$search}%");
+                });
+            })
+            ->with(['major', 'prerequisites'])
+            ->orderBy('id', 'desc')
+            ->paginate(10);
     }
 
     public function setCreditAttribute($value)
@@ -130,15 +130,15 @@ class Subject extends Model
     public static function getAvailableSubjectsForStudent($majorId)
     {
         $today = now()->toDateString();
-    
+
         return self::where(function ($query) use ($majorId) {
-                    $query->where('major_id', $majorId)
-                          ->orWhereNull('major_id');
-                })
-                ->whereHas('subjectClasses', function ($query) use ($today) {
-                    $query->where('registration_deadline', '>=', $today);
-                })
-                ->get();
+            $query->where('major_id', $majorId)
+                ->orWhereNull('major_id');
+        })
+            ->whereHas('subjectClasses', function ($query) use ($today) {
+                $query->where('registration_deadline', '>=', $today);
+            })
+            ->get();
     }
 
     public function getSubjectByMajor($major_id)
@@ -241,19 +241,79 @@ class Subject extends Model
         $scoreTypes = $subject->scoreTypes;
         return $scoreTypes;
     }
-
-    protected static function boot()
+    
+    public static function checkTotalCredits($majorId, $newSubjectCredit)
     {
-        parent::boot();
+        if ($majorId !== null) {
+            $major = Major::find($majorId);
 
-        static::created(function (StudentSubjectClass $studentSubjectClass) {
-            $subjectHistory = new SubjectHistory();
-            $type = $subjectHistory->determineTypeBasedOnStatus($studentSubjectClass);
-            Log::info('SubjectHistory type determined:', ['type' => $type]);
-            SubjectHistory::insert([
-                'student_subject_class_id' => $studentSubjectClass->id,
-                'type' => $type,
-            ]);
-        });
+            $totalCredits = Subject::where('major_id', $majorId)
+                ->sum('credit');
+            $totalBasicCredits = Subject::whereNull('major_id')
+                ->sum('credit');
+
+            // Kiểm tra xem tổng tín chỉ cộng với môn mới có vượt quá giới hạn của chuyên ngành không
+            if (($totalCredits + $totalBasicCredits + $newSubjectCredit) > $major->total_credits) {
+                return false;
+            }
+        }
+
+        else {
+            $totalBasicCredits = Subject::whereNull('major_id')
+                ->sum('credit');
+
+            $majors = Major::all();
+            foreach ($majors as $major) {
+
+                $totalCreditsForMajor = Subject::where('major_id', $major->id)
+                    ->sum('credit');
+
+                if (($totalCreditsForMajor + $totalBasicCredits + $newSubjectCredit) > $major->total_credits) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public static function checkTotalCreditsWhenUpd($majorId, $newSubjectCredit, $subjectId = null)
+    {
+        if ($majorId !== null) {
+            $major = Major::find($majorId);
+
+            // Tính tổng tín chỉ của các môn học hiện tại thuộc chuyên ngành, loại trừ môn đang cập nhật (nếu có)
+            $totalCredits = Subject::where('major_id', $majorId)
+                ->where('id', '!=', $subjectId) 
+                ->sum('credit');
+
+            // Tính tổng tín chỉ của các môn cơ bản
+            $totalBasicCredits = Subject::whereNull('major_id')
+                ->sum('credit');
+
+            // Kiểm tra xem tổng tín chỉ cộng với môn mới có vượt quá giới hạn của chuyên ngành không
+            if (($totalCredits + $totalBasicCredits + $newSubjectCredit) > $major->total_credits) {
+                return false; 
+            }
+        }
+
+        else {
+            $totalBasicCredits = Subject::whereNull('major_id')
+                ->where('id', '!=', $subjectId)
+                ->sum('credit');
+
+            $majors = Major::all();
+            foreach ($majors as $major) {
+                $totalCreditsForMajor = Subject::where('major_id', $major->id)
+                    ->where('id', '!=', $subjectId) 
+                    ->sum('credit');
+
+                if (($totalCreditsForMajor + $totalBasicCredits + $newSubjectCredit) > $major->total_credits) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }

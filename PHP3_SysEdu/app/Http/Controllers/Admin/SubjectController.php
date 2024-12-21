@@ -50,6 +50,14 @@ class SubjectController extends Controller
     {
         $validated = $request->validated();
 
+        $isValid = Subject::checkTotalCredits($validated['major_id'], $validated['credit']);
+
+        if (!$isValid) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['credit' => 'Tổng tín chỉ môn học vượt quá giới hạn của chuyên ngành hiện tại hoặc chuyên ngành khác nếu đây là môn cơ bản !']);
+        }
+
         $subject = Subject::createSubject($validated);
 
         toastr()->success('Thêm thành công môn học: ' . $subject->name);
@@ -60,7 +68,7 @@ class SubjectController extends Controller
     {
         $subject = Subject::with('prerequisites')->findOrFail($id);
         $majors = Major::all();
-        $subjects = Subject::all();
+        $subjects = Subject::where('id', '<>' , $subject->id)->get();
         $scoreTypes = ScoreType::all();
         $subjectCoreType = SubjectScoreType::where('subject_id', $id)->get();
 
@@ -76,6 +84,15 @@ class SubjectController extends Controller
     public function update(SubjectRequest $request, string $id)
     {
         $validated = $request->validated();
+
+        $isValid = Subject::checkTotalCreditsWhenUpd($validated['major_id'], $validated['credit'], $id);
+
+        if (!$isValid) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['credit' => 'Tổng tín chỉ môn học vượt quá giới hạn của chuyên ngành hiện tại hoặc chuyên ngành khác nếu đây là môn cơ bản !']);
+        }
+
         $this->validateTotalWeight($request);
 
         $subject = Subject::findOrFail($id);
