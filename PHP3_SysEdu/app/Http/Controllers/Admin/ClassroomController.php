@@ -13,7 +13,7 @@ class ClassroomController extends Controller
 {
     public function index()
     {
-        $classrooms = Classroom::orderBy('id', 'desc')->get();
+        $classrooms = Classroom::orderBy('id', 'desc')->paginate(10);
         return view('admin.classrooms.index', ['classroomsView' => $classrooms]);
     }
     public function create()

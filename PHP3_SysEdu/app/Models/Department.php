@@ -27,7 +27,7 @@ class Department extends Model
     {
         return Department::select('id', 'name', 'location')
         ->orderBy('id', 'desc')
-        ->get();
+        ->paginate(10);
     }
 
     public static function updateDepartment($id, $data){
