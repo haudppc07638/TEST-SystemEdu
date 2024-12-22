@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
 
             // SubjectLecturersSeeder::class,
 
-            EnrollmentSeeder::class,
+            // EnrollmentSeeder::class,
         ]);
     }
 }

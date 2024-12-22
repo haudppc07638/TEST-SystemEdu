@@ -75,7 +75,7 @@
                                             <td>{{ $major->name }}</td>
                                             <td>{{ $major->faculty->name ?? 'Chưa sắp' }}</td>
                                             <td>{{ $major->code }}</td>
-                                            <td>{{ $major->total_credits }} / {{ $major->total_subject_credits }}</td>
+                                            <td>{{ $major->total_subject_credits }} / {{ $major->total_credits }} </td>
                                             <td>
                                                 <div class="dropdown">
                                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
