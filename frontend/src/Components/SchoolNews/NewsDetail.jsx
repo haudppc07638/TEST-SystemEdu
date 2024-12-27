@@ -54,14 +54,15 @@ function NewsDetail() {
           <p className="text-gray-600 text-justify mt-2">
             Ngày đăng: {formatDate(news.created_at)}
           </p>
-          <p className="text-gray-600 text-lg font-medium text-justify">
-            {news.description}
-          </p>
+          <p
+            className="text-gray-600 text-lg font-medium text-justify"
+            dangerouslySetInnerHTML={{ __html: news.content }}
+          ></p>
         </div>
 
         <div className="md:w-1/2 px-4">
           <img
-            src={`/images/${news.image}`}
+            src={`${news.image}`}
             alt={news.title}
             className="w-full h-100 shadow-md"
           />

@@ -64,9 +64,9 @@ Route::prefix('majors')->group(function () {
 //Enrollments===============================================================================
 
 Route::prefix('enrollments')->group(function () {
-    Route::get('/', [EnrollmentController::class, 'index']);
+    Route::get('/list', [EnrollmentController::class, 'index']);
     // Route::get('/{id}', [EnrollmentController::class, 'show']); 
-    Route::post('/', [EnrollmentController::class, 'store']);
+    Route::post('/create', [EnrollmentController::class, 'store']);
     // Route::put('/{id}', [EnrollmentController::class, 'update']); 
     // Route::delete('/{id}', [EnrollmentController::class, 'destroy']);
 });

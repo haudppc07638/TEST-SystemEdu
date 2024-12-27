@@ -23,12 +23,12 @@ class DepartmentsController extends Controller
     public function list()
     {
         $departments = Department::getNameDepartments();
-        return response()->json($departments, 201) 
-                    ->header('Access-Control-Allow-Origin', '*')
-                    ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
-                    ->header('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With');
+        return response()->json($departments, 200)
+            ->header('Access-Control-Allow-Origin', '*')
+            ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+            ->header('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With');
     }
-    
+
 
     /**
      * Show the form for creating a new resource.
@@ -41,23 +41,24 @@ class DepartmentsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(DepartmentRequest $request){
-   
+    public function store(DepartmentRequest $request)
+    {
+
         $rules = $request->rules();
         $messages = $request->messages();
 
         $data = $request->only(['name', 'location']);
-  
+
         $validator = Validator::make($data, $rules, $messages);
         if ($validator->stopOnFirstFailure()->fails()) {
-        return redirect()->back()
-        ->withErrors($validator)
-        ->withInput();
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
         }
         $department = Department::create($data);
         toastr()->success('Thêm thành công phòng ban: ' . $department->name);
         return redirect()->route('admin.departments.index');
-        }
+    }
     /**
      * Show the form for editing the specified resource.
      */
@@ -80,9 +81,9 @@ class DepartmentsController extends Controller
 
         if ($validator->stopOnFirstFailure()->fails()) {
             return redirect()->back()
-            ->withErrors($validator)
-            ->withInput();
-            }
+                ->withErrors($validator)
+                ->withInput();
+        }
 
         Department::updateDepartment($id, $data);
         toastr()->success('Cập nhập thành công');
@@ -100,9 +101,8 @@ class DepartmentsController extends Controller
                 toastr()->success('Xoá thành công');
             } else {
                 toastr()->warning('Hiện tại phòng ban đang có dữ liệu phụ thuộc!');
-            }   
-        }
-        catch (QueryException $e) {
+            }
+        } catch (QueryException $e) {
             toastr()->warning('Hiện tại phòng ban đang có dữ liệu phụ thuộc!');
         }
         return redirect()->route('admin.departments.index');

@@ -117,7 +117,7 @@
                                     <div class="info-box">
                                         <label class="fw-bold">Địa chỉ tốt nghiệp:</label>
                                         <p>
-                                            {{ $enrollment->provice_city_graduate }},
+                                            {{ $enrollment->province_city_graduate }},
                                             {{ $enrollment->district_graduate }},
                                             {{ $enrollment->commune_level_graduate }}
                                         </p>

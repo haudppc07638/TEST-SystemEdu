@@ -43,6 +43,7 @@ return new class extends Migration
             $table->string('front_id_card'); // Ảnh căn cước mặt trước
             $table->string('back_id_card');  // Ảnh căn cước mặt sau
             $table->string('graduation_certificate');
+            $table->timestamps();
         });
     }
 

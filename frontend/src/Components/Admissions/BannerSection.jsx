@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Cookies from "js-cookie";
 import CccdFront from "../../Assets/Images/cccd-mattruoc.jpg";
 import CccdBack from "../../Assets/Images/cccd-matsau.jpg";
 import DiplomaTHPT from "../../Assets/Images/bangtotnghiep.jpg";
@@ -36,10 +37,8 @@ function BannerSection() {
     graduationProvince: "",
     graduationDistrict: "",
     graduationWard: "",
-    student: false,
-    guardian: false,
-    address: false,
-    atschool: false,
+    recipient: "",
+    address: "",
     idFront: "",
     idBack: "",
     diploma: "",
@@ -72,9 +71,12 @@ function BannerSection() {
     };
   }, [isModalVisible]);
 
+  // Get data
   const fetchEnrollment = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/enrollments");
+      const response = await axios.get(
+        "http://127.0.0.1:8000/enrollments/list"
+      );
       setEnrollments(response.data);
     } catch (err) {
       setError(err.message);
@@ -85,70 +87,62 @@ function BannerSection() {
     fetchEnrollment();
   }, []);
 
-  const getCookie = (name) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) {
-      return parts.pop().split(";").shift();
-    }
-    return null;
-  };
+  //checkbox
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setFormData((prevData) => {
+      if (name === "student" || name === "parents") {
+        return { ...prevData, recipient: checked ? name : "" };
+      }
+      if (name === "residence_address" || name === "at_school") {
+        return { ...prevData, address: checked ? name : "" };
+      }
   
+      return prevData;
+    });
+  };
+
+  // Post data
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-  
+
     try {
-      // 1. Lấy CSRF cookie từ backend
-      await axios.get('http://127.0.0.1:8000/sanctum/csrf-cookie', {
-        withCredentials: true, 
-      }).then(response => {
-        console.log("CSRF Cookie received", response);
-      }).catch(error => {
-        console.log("Error fetching CSRF cookie:", error);
+      await axios.get("http://127.0.0.1:8000/sanctum/csrf-cookie", {
+        withCredentials: true,
       });
-  
-      // 2. Lấy CSRF token từ cookie
-      const csrfToken = getCookie("XSRF-TOKEN");
+      const csrfToken = Cookies.get("XSRF-TOKEN");
       console.log("CSRF Token:", csrfToken);
-      if (!csrfToken) {
-        throw new Error("CSRF token not found.");
-      }
-  
-      // 3. Chuẩn bị dữ liệu gửi đi
-      const formDataToSend = new FormData();
+      console.log("Form data:", formData);
+
+      const formDataSend = new FormData();
       Object.entries(formData).forEach(([key, value]) => {
-        formDataToSend.append(key, value);
+        formDataSend.append(key, value);
       });
-  
-      // 4. Gửi request POST với CSRF token
+
       const response = await axios.post(
-        "http://127.0.0.1:8000/enrollments",
-        formDataToSend,
+        "http://127.0.0.1:8000/enrollments/create",
+        formDataSend,
         {
           headers: {
-            Accept: "application/json",
-            "X-XSRF-TOKEN": csrfToken,
             "Content-Type": "multipart/form-data",
+            "X-XSRF-TOKEN": csrfToken,
           },
           withCredentials: true,
         }
       );
-  
-      // 5. Xử lý thành công
+
       setSubmitSuccess(true);
       setSubmitError(null);
-      console.log("Form submitted successfully:", response.data);
+      console.log("Gửi dữ liệu thành công:", response.data);
     } catch (error) {
-      // 6. Xử lý lỗi
-      setSubmitError(error.response?.data?.message || "Error submitting form.");
+      setSubmitError(error.response?.data?.message || "Lỗi khi gửi dữ liệu.");
       setSubmitSuccess(false);
-      console.error("Error submitting form:", error);
+      console.error("Lỗi gửi:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
-    
 
   return (
     <div className="container mx-auto py-16">
@@ -245,8 +239,8 @@ function BannerSection() {
                       onChange={handleChange}
                     >
                       <option value="">Chọn giới tính</option>
-                      <option value="Nam">Nam</option>
-                      <option value="Nữ">Nữ</option>
+                      <option value="0">Nam</option>
+                      <option value="1">Nữ</option>
                     </select>
                   </div>
 
@@ -426,11 +420,10 @@ function BannerSection() {
                   </label>
                   <select
                     className="w-1/2 border border-gray-300 p-2.5 rounded-lg bg-gray-100 text-gray-500 focus:outline-none cursor-not-allowed"
-                    name="Campus"
-                    value="Cần Thơ"
+                    name="campus"
                     onChange={handleChange}
-                    disabled
                   >
+                    <option value="">Chọn cơ sở</option>
                     <option value="Cần Thơ">Cần Thơ</option>
                   </select>
                 </div>
@@ -452,7 +445,7 @@ function BannerSection() {
                           <option
                             className="text-black"
                             key={item.id}
-                            value={item.first_major_id}
+                            value={item.id}
                           >
                             {item.name || "Tên ngành không có"}
                           </option>
@@ -466,8 +459,8 @@ function BannerSection() {
                         onChange={handleChange}
                       >
                         <option value="">Phương thức dự tuyển</option>
-                        <option value="học bạ">Điểm học bạ</option>
-                        <option value="thpt">Điểm thi THPT quốc gia</option>
+                        <option value="grade_score">Điểm học bạ</option>
+                        <option value="exam_score">Điểm thi THPT quốc gia</option>
                       </select>
                     </div>
                   </div>
@@ -488,7 +481,7 @@ function BannerSection() {
                           <option
                             className="text-black"
                             key={item.id}
-                            value={item.first_major_id}
+                            value={item.id}
                           >
                             {item.name || "Tên ngành không có"}
                           </option>
@@ -503,8 +496,8 @@ function BannerSection() {
                         onChange={handleChange}
                       >
                         <option value="">Phương thức dự tuyển</option>
-                        <option value="học bạ">Điểm học bạ</option>
-                        <option value="thpt">Điểm thi THPT quốc gia</option>
+                        <option value="grade_score">Điểm học bạ</option>
+                        <option value="exam_score">Điểm thi THPT quốc gia</option>
                       </select>
                     </div>
                   </div>
@@ -533,7 +526,7 @@ function BannerSection() {
                         onChange={handleChange}
                       >
                         <option value="">Chọn Tỉnh/Thành phố</option>
-                        <option value="Vinh Long">Vĩnh Long</option>
+                        <option value="Vĩnh Long">Vĩnh Long</option>
                       </select>
                       <select
                         className="w-full border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
@@ -551,7 +544,7 @@ function BannerSection() {
                         onChange={handleChange}
                       >
                         <option value="">Chọn Xã/Phường/Thị Trấn</option>
-                        <option value="DongPhu">Đồng Phú</option>
+                        <option value="Đồng Phú">Đồng Phú</option>
                       </select>
                     </div>
                   </div>
@@ -571,9 +564,9 @@ function BannerSection() {
                     <div className="space-y-4">
                       <label className="flex items-center space-x-3 cursor-pointer">
                         <input
-                          name="Student"
-                          value={formData.student}
-                          onChange={handleChange}
+                          name="student"
+                          checked={formData.recipient === "student"}
+                          onChange={handleCheckboxChange}
                           type="checkbox"
                           className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
                         />
@@ -581,9 +574,9 @@ function BannerSection() {
                       </label>
                       <label className="flex items-center space-x-3 cursor-pointer">
                         <input
-                          name="Guardian"
-                          value={formData.guardian}
-                          onChange={handleChange}
+                          name="parents"
+                          checked={formData.recipient === "parents"}
+                          onChange={handleCheckboxChange}
                           type="checkbox"
                           className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
                         />
@@ -601,9 +594,9 @@ function BannerSection() {
                     <div className="space-y-4">
                       <label className="flex items-center space-x-3 cursor-pointer">
                         <input
-                          name="Address"
-                          value={formData.address}
-                          onChange={handleChange}
+                          name="residence_address"
+                          checked={formData.address === "residence_address"} 
+                          onChange={handleCheckboxChange}
                           type="checkbox"
                           className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
                         />
@@ -613,9 +606,9 @@ function BannerSection() {
                       </label>
                       <label className="flex items-center space-x-3 cursor-pointer">
                         <input
-                          name="Atschool"
-                          value={formData.atschool}
-                          onChange={handleChange}
+                          name="at_school"
+                          checked={formData.address === "at_school"}
+                          onChange={handleCheckboxChange}
                           type="checkbox"
                           className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
                         />

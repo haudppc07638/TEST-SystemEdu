@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 function OrganizationalCharts() {
-  const [departments, setDepartments] = useState(null);
+  const [departments, setDepartments] = useState([]);
   const [error, setError] = useState(null);
 
   const fetchDepartments = async () => {
     try {
       const response = await axios.get("http://127.0.0.1:8000/departments/list");
-      setDepartments(response.data);
+      setDepartments(response.data.data || []);  
     } catch (err) {
       setError(err.message);
     }
@@ -25,7 +25,7 @@ function OrganizationalCharts() {
       </p>
     );
 
-  if (!departments) {
+  if (departments.length === 0) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="border-t-4 border-blue-500 border-solid rounded-full w-16 h-16 animate-spin"></div>

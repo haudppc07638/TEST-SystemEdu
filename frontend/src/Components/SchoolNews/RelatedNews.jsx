@@ -64,7 +64,7 @@ function RelatedNews() {
               className="flex flex-col p-4 shadow-md rounded-lg items-start bg-white hover:shadow-lg transition-shadow duration-300"
             >
               <img
-                src={`/images/${post.image}`} 
+                src={`/images/${post.image}`}
                 alt={post.title}
                 className="w-full h-60 object-cover mb-4 rounded-md"
               />
@@ -74,9 +74,10 @@ function RelatedNews() {
               <h3 className="text-sm mb-2">
                 Ngày đăng: {formatDate(post.created_at)}
               </h3>
-              <p className="text-gray-600 text-sm mb-2 line-clamp-3 text-justify">
-                {post.description}
-              </p>
+              <p
+                className="text-gray-600 text-sm mb-2 line-clamp-3 text-justify"
+                dangerouslySetInnerHTML={{ __html: post.content }}
+              ></p>
               <a
                 href={`/news/${post.id}`}
                 className="text-blue-600 hover:text-blue-500 text-sm mt-auto"
@@ -124,7 +125,7 @@ function RelatedNews() {
             Tin Nổi Bật
           </h3>
           <ul className="space-y-3">
-            {news.slice(0,5).map((news) => (
+            {news.slice(0, 5).map((news) => (
               <li
                 key={news.id}
                 className="hover:translate-x-2 transition-transform duration-200"

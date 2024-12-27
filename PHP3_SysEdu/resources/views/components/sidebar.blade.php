@@ -118,7 +118,7 @@
         <li class="nav-item">
             <a class="nav-link collapsed" href="{{ route('admin.enrollments.index') }}">
                 <i class="bi bi-person-check"></i>
-                <span>Duyệt tuyển sinh</span>
+                <span>Hồ sơ tuyển sinh</span>
             </a>
         </li><!-- End Enrollments Page Nav -->
 

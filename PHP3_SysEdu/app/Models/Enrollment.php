@@ -29,7 +29,7 @@ class Enrollment extends Model
         'second_major_id',
         'application_method_2',
         'year_graduation',
-        'provice_city_graduate',
+        'province_city_graduate',
         'district_graduate',
         'commune_level_graduate',
         'recipient',

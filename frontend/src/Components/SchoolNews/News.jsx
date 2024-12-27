@@ -19,12 +19,12 @@ function News() {
     fetchNews();
   }, []);
 
-  const truncateDescription = (description) => {
-    const words = description.split(" ");
+  const truncateDescription = (content) => {
+    const words = content.split(" ");
     if (words.length > 50) {
       return words.slice(0, 50).join(" ") + "...";
     }
-    return description;
+    return content;
   };
 
   const formatDate = (dateString) => {
@@ -51,8 +51,8 @@ function News() {
             </h3>
             <p className="text-gray-600 text-lg font-medium text-justify">
               {showMore
-                ? news[0].description
-                : truncateDescription(news[0].description)}
+                ? news[0].content
+                : truncateDescription(news[0].content)}
             </p>
             <p className="text-gray-600 text-justify mt-2">
               Ngày đăng: {formatDate(news[0].created_at)}
@@ -67,7 +67,7 @@ function News() {
 
           <div className="md:w-1/2 px-4">
             <img
-              src={`/images/${news[0].image}`} 
+              src={`${news[0].image}`} 
               alt={news[0].title}
               className="w-full h-100 shadow-md"
             />
