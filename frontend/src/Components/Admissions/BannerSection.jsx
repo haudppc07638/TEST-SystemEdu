@@ -9,6 +9,7 @@ function BannerSection() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [enrollments, setEnrollments] = useState([]);
   const [error, setError] = useState(null);
+  const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(null);
@@ -43,6 +44,103 @@ function BannerSection() {
     idBack: "",
     diploma: "",
   });
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (!formData.fullName) {
+      newErrors.fullName = "Họ và tên không được để trống!";
+    }
+    if (!formData.dob) {
+      newErrors.dob = "Ngày sinh không được để trống!";
+    }
+    if (!formData.gender) {
+      newErrors.gender = "Giới tính không được để trống!";
+    }
+    if (!formData.ethnicity) {
+      newErrors.ethnicity = "Dân tộc không được để trống!";
+    }
+    if (!formData.idNumber) {
+      newErrors.idNumber = "Số chứng minh không được để trống!";
+    }
+    if (!formData.issueDate) {
+      newErrors.issueDate = "Ngày cấp không được để trống!";
+    }
+    if (!formData.issuePlace) {
+      newErrors.issuePlace = "Nơi cấp không được để trống!";
+    }
+    if (!formData.province) {
+      newErrors.province = "Tỉnh thành không được để trống!";
+    }
+    if (!formData.district) {
+      newErrors.district = "Quận huyện không được để trống!";
+    }
+    if (!formData.ward) {
+      newErrors.ward = "Xã phường không được để trống!";
+    }
+    if (!formData.addressDetail) {
+      newErrors.addressDetail = "Số nhà không được để trống!";
+    }
+    if (!formData.phoneNumber) {
+      newErrors.phoneNumber = "Số điện thoại không được để trống!";
+    } else if (!/^[0-9]{10}$/.test(formData.phoneNumber)) {
+      newErrors.phoneNumber = "Số điện thoại phải có 10 chữ số!";
+    }
+    if (!formData.email) {
+      newErrors.email = "Email không được để trống!";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Email không hợp lệ!";
+    }
+    if (!formData.guardianName) {
+      newErrors.guardianName = "Họ tên phụ huynh không được để trống!";
+    }
+    if (!formData.guardianPhone) {
+      newErrors.guardianPhone = "Số điện thoại không được để trống!";
+    } else if (!/^[0-9]{10}$/.test(formData.guardianPhone)) {
+      newErrors.guardianPhone = "Số điện thoại phải có 10 chữ số!";
+    }
+    if (!formData.campus) {
+      newErrors.campus = "Vui lòng chọn cơ sở!";
+    }
+    if (!formData.major1) {
+      newErrors.major1 = "Chuyên ngành học không được để trống!";
+    }
+    if (!formData.method1) {
+      newErrors.method1 = "Phương thức xét tuyển không được để trống!";
+    }
+    if (!formData.year) {
+      newErrors.year = "Năm tốt nghiệp không được để trống!";
+    }
+    if (!formData.graduationProvince) {
+      newErrors.graduationProvince =
+        "Tỉnh thành tốt nghiệp không được để trống!";
+    }
+    if (!formData.graduationDistrict) {
+      newErrors.graduationDistrict =
+        "Quận huyện tốt nghiệp không được để trống!";
+    }
+    if (!formData.graduationWard) {
+      newErrors.graduationWard = "Xã phường tốt nghiệp không được để trống!";
+    }
+    if (!formData.recipient) {
+      newErrors.recipient = "Vui lòng chọn người nhận!";
+    }
+    if (!formData.address) {
+      newErrors.address = "Vui lòng chọn địa chỉ nhận!";
+    }
+    if (!formData.idFront) {
+      newErrors.idFront = "Ảnh mặt trước không được bỏ trống!";
+    }
+    if (!formData.idBack) {
+      newErrors.idBack = "Ảnh mặt sau không được bỏ trống!";
+    }
+    if (!formData.diploma) {
+      newErrors.diploma = "Ảnh bằng tốt nghiệp không được bỏ trống!";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleClick = () => {
     setIsModalVisible(true);
@@ -97,7 +195,7 @@ function BannerSection() {
       if (name === "residence_address" || name === "at_school") {
         return { ...prevData, address: checked ? name : "" };
       }
-  
+
       return prevData;
     });
   };
@@ -106,6 +204,9 @@ function BannerSection() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    if (validate()) {
+      console.log("Form dữ liệu:", formData);
+    }
 
     try {
       await axios.get("http://127.0.0.1:8000/sanctum/csrf-cookie", {
@@ -215,6 +316,9 @@ function BannerSection() {
                       value={formData.fullName}
                       onChange={handleChange}
                     />
+                    {errors.fullName && (
+                      <p className="text-red-600 text-sm">{errors.fullName}</p>
+                    )}
                   </div>
                   <div className="w-full">
                     <label className="block mb-2 font-semibold text-sm text-gray-700">
@@ -227,6 +331,9 @@ function BannerSection() {
                       value={formData.dob}
                       onChange={handleChange}
                     />
+                    {errors.dob && (
+                      <p className="text-red-600 text-sm">{errors.dob}</p>
+                    )}
                   </div>
                   <div className="w-full">
                     <label className="block mb-2 font-semibold text-sm text-gray-700">
@@ -242,6 +349,9 @@ function BannerSection() {
                       <option value="0">Nam</option>
                       <option value="1">Nữ</option>
                     </select>
+                    {errors.gender && (
+                      <p className="text-red-600 text-sm">{errors.gender}</p>
+                    )}
                   </div>
 
                   <div className="w-full">
@@ -256,6 +366,9 @@ function BannerSection() {
                       value={formData.ethnicity}
                       onChange={handleChange}
                     />
+                    {errors.ethnicity && (
+                      <p className="text-red-600 text-sm">{errors.ethnicity}</p>
+                    )}
                   </div>
                 </div>
 
@@ -272,6 +385,9 @@ function BannerSection() {
                       value={formData.idNumber}
                       onChange={handleChange}
                     />
+                    {errors.idNumber && (
+                      <p className="text-red-600 text-sm">{errors.idNumber}</p>
+                    )}
                   </div>
                   <div className="w-full">
                     <label className="block mb-2 font-semibold text-sm text-gray-700">
@@ -284,6 +400,9 @@ function BannerSection() {
                       value={formData.issueDate}
                       onChange={handleChange}
                     />
+                    {errors.issueDate && (
+                      <p className="text-red-600 text-sm">{errors.issueDate}</p>
+                    )}
                   </div>
                   <div className="w-full">
                     <label className="block mb-2 font-semibold text-sm text-gray-700">
@@ -297,6 +416,11 @@ function BannerSection() {
                       value={formData.issuePlace}
                       onChange={handleChange}
                     />
+                    {errors.issuePlace && (
+                      <p className="text-red-600 text-sm">
+                        {errors.issuePlace}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -316,6 +440,9 @@ function BannerSection() {
                       </option>
                       <option value="Vĩnh Long">Vĩnh Long</option>
                     </select>
+                    {errors.province && (
+                      <p className="text-red-600 text-sm">{errors.province}</p>
+                    )}
                   </div>
                   <div className="w-full">
                     <select
@@ -327,6 +454,9 @@ function BannerSection() {
                       <option value="Chọn Quận/Huyện">Chọn Quận/Huyện</option>
                       <option value="Long Hồ">Long Hồ</option>
                     </select>
+                    {errors.district && (
+                      <p className="text-red-600 text-sm">{errors.district}</p>
+                    )}
                   </div>
                   <div className="w-full">
                     <select
@@ -340,6 +470,9 @@ function BannerSection() {
                       </option>
                       <option value="Đồng Phú">Đồng Phú</option>
                     </select>
+                    {errors.ward && (
+                      <p className="text-red-600 text-sm">{errors.ward}</p>
+                    )}
                   </div>
                   <div className="w-full">
                     <input
@@ -350,6 +483,11 @@ function BannerSection() {
                       value={formData.addressDetail}
                       onChange={handleChange}
                     />
+                    {errors.addressDetail && (
+                      <p className="text-red-600 text-sm">
+                        {errors.addressDetail}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -366,6 +504,11 @@ function BannerSection() {
                       value={formData.phoneNumber}
                       onChange={handleChange}
                     />
+                    {errors.phoneNumber && (
+                      <p className="text-red-600 text-sm">
+                        {errors.phoneNumber}
+                      </p>
+                    )}
                   </div>
                   <div className="w-full">
                     <label className="block mb-2 font-semibold text-sm text-gray-700">
@@ -379,6 +522,9 @@ function BannerSection() {
                       placeholder="email@example.com"
                       name="email"
                     />
+                    {errors.email && (
+                      <p className="text-red-600 text-sm">{errors.email}</p>
+                    )}
                   </div>
                   <div className="w-full">
                     <label className="block mb-2 font-semibold text-sm text-gray-700">
@@ -392,6 +538,11 @@ function BannerSection() {
                       placeholder="Họ và tên"
                       name="guardianName"
                     />
+                    {errors.guardianName && (
+                      <p className="text-red-600 text-sm">
+                        {errors.guardianName}
+                      </p>
+                    )}
                   </div>
                   <div className="w-full">
                     <label className="block mb-2 font-semibold text-sm text-gray-700">
@@ -405,6 +556,11 @@ function BannerSection() {
                       value={formData.guardianPhone}
                       onChange={handleChange}
                     />
+                    {errors.guardianPhone && (
+                      <p className="text-red-600 text-sm">
+                        {errors.guardianPhone}
+                      </p>
+                    )}
                   </div>
                 </div>
               </section>
@@ -426,6 +582,9 @@ function BannerSection() {
                     <option value="">Chọn cơ sở</option>
                     <option value="Cần Thơ">Cần Thơ</option>
                   </select>
+                  {errors.campus && (
+                    <p className="text-red-600 text-sm">{errors.campus}</p>
+                  )}
                 </div>
 
                 <div className="space-y-6">
@@ -434,34 +593,50 @@ function BannerSection() {
                       Nguyện vọng thứ nhất
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <select
-                        className="w-full border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
-                        name="major1"
-                        value={formData.major1}
-                        onChange={handleChange}
-                      >
-                        <option value="">Chọn ngành</option>
-                        {enrollments.map((item) => (
-                          <option
-                            className="text-black"
-                            key={item.id}
-                            value={item.id}
-                          >
-                            {item.name || "Tên ngành không có"}
+                      <div>
+                        <select
+                          className="w-full border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
+                          name="major1"
+                          value={formData.major1}
+                          onChange={handleChange}
+                        >
+                          <option value="">Chọn ngành</option>
+                          {enrollments.map((item) => (
+                            <option
+                              className="text-black"
+                              key={item.id}
+                              value={item.id}
+                            >
+                              {item.name || "Tên ngành không có"}
+                            </option>
+                          ))}
+                        </select>
+                        {errors.major1 && (
+                          <p className="text-red-600 text-sm">
+                            {errors.major1}
+                          </p>
+                        )}
+                      </div>
+                      <div>
+                        <select
+                          className="w-full border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
+                          name="method1"
+                          value={formData.method1}
+                          onChange={handleChange}
+                        >
+                          <option value="">Phương thức dự tuyển</option>
+                          <option value="grade_score">Điểm học bạ</option>
+                          <option value="exam_score">
+                            Điểm thi THPT quốc gia
                           </option>
-                        ))}
-                      </select>
-                      {error && <p className="text-red-500 mt-2">{error}</p>}
-                      <select
-                        className="w-full border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
-                        name="method1"
-                        value={formData.method1}
-                        onChange={handleChange}
-                      >
-                        <option value="">Phương thức dự tuyển</option>
-                        <option value="grade_score">Điểm học bạ</option>
-                        <option value="exam_score">Điểm thi THPT quốc gia</option>
-                      </select>
+                        </select>
+                        <br />
+                        {errors.method1 && (
+                          <p className="text-red-600 text-sm">
+                            {errors.method1}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -487,8 +662,6 @@ function BannerSection() {
                           </option>
                         ))}
                       </select>
-
-                      {error && <p className="text-red-500 mt-2">{error}</p>}
                       <select
                         className="w-full border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
                         name="method2"
@@ -497,7 +670,9 @@ function BannerSection() {
                       >
                         <option value="">Phương thức dự tuyển</option>
                         <option value="grade_score">Điểm học bạ</option>
-                        <option value="exam_score">Điểm thi THPT quốc gia</option>
+                        <option value="exam_score">
+                          Điểm thi THPT quốc gia
+                        </option>
                       </select>
                     </div>
                   </div>
@@ -513,39 +688,65 @@ function BannerSection() {
                       value={formData.year}
                       onChange={handleChange}
                     />
+                    {errors.year && (
+                      <p className="text-red-600 text-sm">{errors.year}</p>
+                    )}
                   </div>
                   <div>
                     <label className="block mb-2 font-semibold text-sm text-gray-700">
                       Nơi tốt nghiệp
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <select
-                        className="w-full border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
-                        name="graduationProvince"
-                        value={formData.graduationProvince}
-                        onChange={handleChange}
-                      >
-                        <option value="">Chọn Tỉnh/Thành phố</option>
-                        <option value="Vĩnh Long">Vĩnh Long</option>
-                      </select>
-                      <select
-                        className="w-full border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
-                        name="graduationDistrict"
-                        value={formData.graduationDistrict}
-                        onChange={handleChange}
-                      >
-                        <option value="">Chọn Quận/Huyện</option>
-                        <option value="Long Hồ">Long Hồ</option>
-                      </select>
-                      <select
-                        className="w-full border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
-                        name="graduationWard"
-                        value={formData.graduationWard}
-                        onChange={handleChange}
-                      >
-                        <option value="">Chọn Xã/Phường/Thị Trấn</option>
-                        <option value="Đồng Phú">Đồng Phú</option>
-                      </select>
+                      <div>
+                        <select
+                          className="w-full border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
+                          name="graduationProvince"
+                          value={formData.graduationProvince}
+                          onChange={handleChange}
+                        >
+                          <option value="">Chọn Tỉnh/Thành phố</option>
+                          <option value="Vĩnh Long">Vĩnh Long</option>
+                        </select>
+                        {errors.graduationProvince && (
+                          <p className="text-red-600 text-sm">
+                            {errors.graduationProvince}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <select
+                          className="w-full border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
+                          name="graduationDistrict"
+                          value={formData.graduationDistrict}
+                          onChange={handleChange}
+                        >
+                          <option value="">Chọn Quận/Huyện</option>
+                          <option value="Long Hồ">Long Hồ</option>
+                        </select>
+                        {errors.graduationDistrict && (
+                          <p className="text-red-600 text-sm">
+                            {errors.graduationDistrict}
+                          </p>
+                        )}
+                      </div>
+
+                      <div>
+                        <select
+                          className="w-full border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 transition-all"
+                          name="graduationWard"
+                          value={formData.graduationWard}
+                          onChange={handleChange}
+                        >
+                          <option value="">Chọn Xã/Phường/Thị Trấn</option>
+                          <option value="Đồng Phú">Đồng Phú</option>
+                        </select>
+                        {errors.graduationWard && (
+                          <p className="text-red-600 text-sm">
+                            {errors.graduationWard}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -585,6 +786,9 @@ function BannerSection() {
                         </span>
                       </label>
                     </div>
+                    {errors.recipient && (
+                      <p className="text-red-600 text-sm mt-2">{errors.recipient}</p>
+                    )}
                   </div>
 
                   <div>
@@ -595,7 +799,7 @@ function BannerSection() {
                       <label className="flex items-center space-x-3 cursor-pointer">
                         <input
                           name="residence_address"
-                          checked={formData.address === "residence_address"} 
+                          checked={formData.address === "residence_address"}
                           onChange={handleCheckboxChange}
                           type="checkbox"
                           className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
@@ -615,6 +819,9 @@ function BannerSection() {
                         <span className="text-gray-700">Tại trường</span>
                       </label>
                     </div>
+                    {errors.address && (
+                      <p className="text-red-600 text-sm mt-2">{errors.address}</p>
+                    )}
                   </div>
                 </div>
               </section>
@@ -642,6 +849,9 @@ function BannerSection() {
                       onChange={handleChange}
                       className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                     />
+                    {errors.idFront && (
+                      <p className="text-red-600 text-sm mt-2">{errors.idFront}</p>
+                    )}
                   </div>
 
                   <div className="space-y-4">
@@ -662,6 +872,9 @@ function BannerSection() {
                       onChange={handleChange}
                       className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                     />
+                    {errors.idBack && (
+                      <p className="text-red-600 text-sm mt-2">{errors.idBack}</p>
+                    )}
                   </div>
 
                   <div className="space-y-4">
@@ -669,7 +882,6 @@ function BannerSection() {
                       Bản sao/Bản chính Bằng TN THPT
                       <span className="text-red-500 ml-1">(bắt buộc)</span>
                     </label>
-
                     <img
                       src={DiplomaTHPT}
                       alt="diploma"
@@ -682,6 +894,9 @@ function BannerSection() {
                       onChange={handleChange}
                       className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                     />
+                    {errors.diploma && (
+                      <p className="text-red-600 text-sm mt-2">{errors.diploma}</p>
+                    )}
                   </div>
                 </div>
 
@@ -723,12 +938,12 @@ function BannerSection() {
                 {isSubmitting ? "Đang gửi..." : "Gửi hồ sơ đăng ký"}
               </button>
               {submitSuccess && (
-                <div className="mt-4 text-green-600 font-semibold">
+                <div className="mt-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg flex items-center">
                   Hồ sơ đã được gửi thành công!
                 </div>
               )}
               {submitError && (
-                <div className="mt-4 text-red-600 font-semibold">
+                <div className="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg flex items-center">
                   Lỗi: {submitError}
                 </div>
               )}

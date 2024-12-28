@@ -22,7 +22,6 @@ function BlogHome() {
     fetchNews();
   }, []);
 
-  
   const truncateDescription = (description) => {
     const words = description.split(" ");
     if (words.length > 20) {
@@ -50,11 +49,13 @@ function BlogHome() {
                 alt="Tin mới nhất"
                 className="w-full h-64 object-cover"
               />
-              <h3 className="text-blue-600 text-lg font-bold mt-4 text-center lg:text-left">
-                {news[0].title
-                  ? truncateDescription(news[0].title)
-                  : "Chi tiết bài viết"}
-              </h3>
+              <a href={`/news/${news[0].id}`}>
+                <h3 className="text-blue-600 text-lg font-bold mt-4 text-center lg:text-left">
+                  {news[0].title
+                    ? truncateDescription(news[0].title)
+                    : "Chi tiết bài viết"}
+                </h3>
+              </a>
               <p className="text-gray-500 text-sm mt-2 text-center lg:text-left">
                 {news[0].created_at
                   ? formatDate(news[0].created_at)

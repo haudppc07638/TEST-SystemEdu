@@ -26,13 +26,15 @@ class NewController extends Controller
         $validated = $request->validated();
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('uploads/news', 'public');
-            $validated['image'] = $imagePath;
+            $imageName = $request->file('image')->getClientOriginalName();
+            $validated['image'] = $imageName;
         }
+
         $news = News::create($validated);
         toastr()->success('Thêm thành công tin tức: ' . $news->title);
         return redirect()->route('admin.news.index');
     }
+
 
     public function edit($id)
     {
@@ -43,16 +45,16 @@ class NewController extends Controller
     {
         $validated = $request->validated();
         $news = News::find($id);
-    
+
         if ($request->hasFile('image')) {
             if ($news->image) {
                 Storage::delete('public/' . $news->image);
             }
-    
+
             $imagePath = $request->file('image')->store('uploads/news', 'public');
             $validated['image'] = $imagePath;
         }
-    
+
         $news->update($validated);
         toastr()->success('Cập nhật thành công tin tức: ' . $news->title);
         return redirect()->route('admin.news.index');

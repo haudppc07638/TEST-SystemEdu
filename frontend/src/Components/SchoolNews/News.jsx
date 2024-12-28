@@ -49,11 +49,14 @@ function News() {
             <h3 className="text-2xl font-semibold text-blue-600 mb-2">
               {news[0].title}
             </h3>
-            <p className="text-gray-600 text-lg font-medium text-justify">
-              {showMore
-                ? news[0].content
-                : truncateDescription(news[0].content)}
-            </p>
+            <p
+              className="text-gray-600 text-lg font-medium text-justify"
+              dangerouslySetInnerHTML={{
+                __html: showMore
+                  ? news[0].content
+                  : truncateDescription(news[0]?.content || ""),
+              }}
+            ></p>
             <p className="text-gray-600 text-justify mt-2">
               Ngày đăng: {formatDate(news[0].created_at)}
             </p>
@@ -67,7 +70,7 @@ function News() {
 
           <div className="md:w-1/2 px-4">
             <img
-              src={`${news[0].image}`} 
+              src={`/images/${news[0].image}`}
               alt={news[0].title}
               className="w-full h-100 shadow-md"
             />
