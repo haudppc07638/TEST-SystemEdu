@@ -6,11 +6,11 @@
 <main id="main" class="main">
 
     <div class="pagetitle">
-        <h1>Quản lý đăng ký tuyển sinh</h1>
+        <h1>Hồ sơ tuyển sinh Online</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
-                <li class="breadcrumb-item active">Đăng ký tuyển sinh</li>
+                <li class="breadcrumb-item active">Hồ sơ tuyển sinh Online</li>
             </ol>
         </nav>
     </div><!-- End Page Title -->
