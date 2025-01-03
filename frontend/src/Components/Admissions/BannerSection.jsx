@@ -53,6 +53,8 @@ function BannerSection() {
     }
     if (!formData.dob) {
       newErrors.dob = "Ngày sinh không được để trống!";
+    } else if (new Date(formData.dob) > new Date()) {
+      newErrors.dob = "Ngày sinh không hợp lệ!";
     }
     if (!formData.gender) {
       newErrors.gender = "Giới tính không được để trống!";
@@ -65,6 +67,8 @@ function BannerSection() {
     }
     if (!formData.issueDate) {
       newErrors.issueDate = "Ngày cấp không được để trống!";
+    } else if (new Date(formData.issueDate) > new Date()) {
+      newErrors.issueDate = "Ngày cấp không hợp lệ!";
     }
     if (!formData.issuePlace) {
       newErrors.issuePlace = "Nơi cấp không được để trống!";
