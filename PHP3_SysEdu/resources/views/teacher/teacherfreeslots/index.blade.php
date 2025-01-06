@@ -5,7 +5,7 @@
 @section('main')
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>Đăng Ký Ca Dạy Rảnh Của Giảng Viên</h1>
+        <h1>Đăng Ký Ca Dạy Của Giảng Viên</h1>
     </div>
 
     <section class="section">

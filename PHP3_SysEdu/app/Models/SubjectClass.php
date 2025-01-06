@@ -32,6 +32,17 @@ class SubjectClass extends Model
         'credit_price',
         'status'
     ];
+
+    public function isStarted()
+    {
+        return now()->greaterThanOrEqualTo($this->start_date);
+    }
+
+    public function isCompleted()
+    {
+        return now()->greaterThanOrEqualTo($this->end_date);
+    }
+
     public function subject(): BelongsTo
     {
         return $this->belongsto(Subject::class, 'subject_id');
@@ -128,16 +139,16 @@ class SubjectClass extends Model
     }
     public function isRegistered($studentId)
     {
-    return $this->studentSubjectClasses()
-                ->where('student_id', $studentId)
-                ->exists();
+        return $this->studentSubjectClasses()
+            ->where('student_id', $studentId)
+            ->exists();
     }
     public function isRetakeEligible($studentId)
     {
-    return SubjectHistory::where('student_id', $studentId)
-                         ->where('subject_id', $this->subject_id)
-                         ->where('type', 'passed')
-                         ->exists();
+        return SubjectHistory::where('student_id', $studentId)
+            ->where('subject_id', $this->subject_id)
+            ->where('type', 'passed')
+            ->exists();
     }
     public function isFull()
     {
@@ -145,44 +156,44 @@ class SubjectClass extends Model
     }
     public function conflictsWith($studentId)
     {
-    $scheduleDates = $this->schedules->pluck('date')->toArray();
-    $timeSlotIds = $this->schedules->pluck('time_slot_id')->toArray();
+        $scheduleDates = $this->schedules->pluck('date')->toArray();
+        $timeSlotIds = $this->schedules->pluck('time_slot_id')->toArray();
 
-    $conflictingSchedules = Schedule::whereHas('subjectClass.studentSubjectClasses', function ($query) use ($studentId) {
-        $query->where('student_id', $studentId);
-    })
-    ->whereIn('date', $scheduleDates)
-    ->whereIn('time_slot_id', $timeSlotIds)
-    ->exists();
+        $conflictingSchedules = Schedule::whereHas('subjectClass.studentSubjectClasses', function ($query) use ($studentId) {
+            $query->where('student_id', $studentId);
+        })
+            ->whereIn('date', $scheduleDates)
+            ->whereIn('time_slot_id', $timeSlotIds)
+            ->exists();
 
-    return $conflictingSchedules;
+        return $conflictingSchedules;
     }
     public function checkPrerequisites($studentId)
     {
         $prerequisites = PrerequisiteSubject::where('subject_id', $this->subject_id)->pluck('prerequisite_id');
 
-    if ($prerequisites->isEmpty()) {
+        if ($prerequisites->isEmpty()) {
+            return null;
+        }
+
+        $completedPrerequisites = SubjectHistory::where('type', 'passed')
+            ->whereHas('studentSubjectClass', function ($query) use ($studentId, $prerequisites) {
+                $query->where('student_id', $studentId)
+                    ->whereHas('subjectClass', function ($query) use ($prerequisites) {
+                        $query->whereIn('subject_id', $prerequisites);
+                    });
+            })
+            ->get()
+            ->pluck('studentSubjectClass.subjectClass.subject_id');
+
+        $missingPrerequisites = $prerequisites->diff($completedPrerequisites);
+
+        if ($missingPrerequisites->isNotEmpty()) {
+            $missingSubjectCodes = Subject::whereIn('id', $missingPrerequisites)->pluck('code')->toArray();
+            return $missingSubjectCodes;
+        }
+
         return null;
-    }
-
-    $completedPrerequisites = SubjectHistory::where('type', 'passed')
-        ->whereHas('studentSubjectClass', function ($query) use ($studentId, $prerequisites) {
-            $query->where('student_id', $studentId)
-                ->whereHas('subjectClass', function ($query) use ($prerequisites) {
-                    $query->whereIn('subject_id', $prerequisites);
-                });
-        })
-        ->get()
-        ->pluck('studentSubjectClass.subjectClass.subject_id');
-
-    $missingPrerequisites = $prerequisites->diff($completedPrerequisites);
-
-    if ($missingPrerequisites->isNotEmpty()) {
-        $missingSubjectCodes = Subject::whereIn('id', $missingPrerequisites)->pluck('code')->toArray();
-        return $missingSubjectCodes;
-    }
-
-    return null;
     }
 
     public function studentsCountText()
@@ -192,17 +203,17 @@ class SubjectClass extends Model
     }
 
     public static function getAvailableClassesForMajor($majorId, $currentDate, $subject_id)
-{
-    return self::where('registration_deadline', '>=', $currentDate)
-        ->where('subject_id', $subject_id)
-        ->whereHas('subject', function ($query) use ($majorId) {
-            $query->where(function ($query) use ($majorId) {
-                $query->where('major_id', $majorId)
-                      ->orWhereNull('major_id');
-            });
-        })
-        ->get();
-}
+    {
+        return self::where('registration_deadline', '>=', $currentDate)
+            ->where('subject_id', $subject_id)
+            ->whereHas('subject', function ($query) use ($majorId) {
+                $query->where(function ($query) use ($majorId) {
+                    $query->where('major_id', $majorId)
+                        ->orWhereNull('major_id');
+                });
+            })
+            ->get();
+    }
 
     public static function getAllSubjectClass()
     {
@@ -211,23 +222,23 @@ class SubjectClass extends Model
 
     public function getPriceAttribute()
     {
-        $subjectCredits = $this->subject->credit;  
+        $subjectCredits = $this->subject->credit;
         $creditPrice = $this->attributes['credit_price'] ?? 0;
-     
+
         Log::info("Số tín chỉ: $subjectCredits, Giá tín chỉ: $creditPrice");
 
         return $subjectCredits * $creditPrice;
     }
     protected static function boot()
     {
-    parent::boot();
+        parent::boot();
 
-    static::saving(function (SubjectClass $subjectClass) {
-        $subjectCredits = $subjectClass->subject->credit ?? 0;
-        $creditPrice = $subjectClass->credit_price ?? 0;
+        static::saving(function (SubjectClass $subjectClass) {
+            $subjectCredits = $subjectClass->subject->credit ?? 0;
+            $creditPrice = $subjectClass->credit_price ?? 0;
 
-        $subjectClass->price = $subjectCredits * $creditPrice;
-    });
+            $subjectClass->price = $subjectCredits * $creditPrice;
+        });
     }
 
     public function addStudents($majorClassId)

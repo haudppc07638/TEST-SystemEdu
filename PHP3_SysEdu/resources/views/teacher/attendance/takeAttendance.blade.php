@@ -50,6 +50,7 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $student->student->code }}</td>
                                             <td>{{ $student->student->full_name }}</td>
+                                            
                                             <td class="text-center">
                                                 <div class="checkbox-wrapper-7">
                                                     <input type="hidden" name="attendance[{{ $student->id }}]"
@@ -58,11 +59,11 @@
                                                         id="attendance-{{ $student->id }}"
                                                         name="attendance[{{ $student->id }}]" type="checkbox"
                                                         data-student-id="{{ $student->id }}"
-                                                        {{ $student->attendances ? null : 'checked'}}
-                                                        {{ $student->attendances->first()?->status ? 'checked' : '' }}>
+                                                        {{ !$student->attendances || $student->attendances->isEmpty() || $student->attendances->first()?->status ? 'checked' : '' }}>
                                                     <label class="tgl-btn" for="attendance-{{ $student->id }}"></label>
                                                 </div>
                                             </td>
+
                                         </tr>
                                     @endforeach
                                 </tbody>

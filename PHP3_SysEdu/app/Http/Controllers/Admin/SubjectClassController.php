@@ -15,6 +15,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\Admin\SubjectClassRequest;
 use App\Models\StudentSubjectClass;
+use App\Models\SubjectLecturer;
 use App\Models\Tuition;
 
 class SubjectClassController extends Controller
@@ -29,9 +30,9 @@ class SubjectClassController extends Controller
             'subject_id' => $request->get('subject_id', null),
             'employee_id' => $request->get('employee_id', null),
         ];
-    
+
         $subjectClasses = SubjectClass::filterBySubject($filters)->paginate(10);
-    
+
         return view('admin.subjectclasses.index', [
             'subjectClasses' => $subjectClasses,
             'subjects' => $subjects,
@@ -110,48 +111,57 @@ class SubjectClassController extends Controller
     {
         $subjectClass = SubjectClass::findOrFail($id);
 
-        $subjects = Subject::getCodeSubject();
-        $semesters = Semester::getSemester();
-        $employees = Employee::getNameEmployees();
-        $credits = Credit::getAllCredit();
-        $majorClass = StuClass::getNameClasses();
+        $lecturers = SubjectLecturer::with('employee')
+            ->where('subject_id', $subjectClass->subject_id)
+            ->get()
+            ->pluck('employee');
 
         return view('admin.subjectclasses.edit', [
             'subjectClass' => $subjectClass,
-            'subjects' => $subjects,
-            'semesters' => $semesters,
-            'employees' => $employees,
-            'credits' => $credits,
-            'majorClasses' => $majorClass,
+            'lecturers' => $lecturers,
         ]);
     }
 
-    public function update(SubjectClassRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        $rules = $request->rules();
-        $messages = $request->messages();;
-        $data = $request->only([
-            'quantity',
-            'name',
-            'start_date',
-            'end_date',
-            'registration_deadline',
-            'employee_id',
-            'subject_id',
-            'semester_id',
-            'major_class_id',
-            'credit_id'
-        ]);
-        $validator = Validator::make($data, $rules, $messages);
-        if ($validator->stopOnFirstFailure()->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-        $validatedData = $validator->validated();
+        // Tìm lớp học phần cần chỉnh sửa
         $subjectClass = SubjectClass::findOrFail($id);
+        $studentCount = StudentSubjectClass::where('subject_class_id', $subjectClass->subject_id)->count();
+
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'quantity' => 'required|integer|max:100|min:'.$studentCount,
+            'registration_deadline' => 'required|date|before_or_equal:start_date',
+            'start_date' => 'required|date|before_or_equal:end_date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'employee_id' => 'required',
+        ], [
+            'name.required' => 'Tên lớp học phần là bắt buộc.',
+            'name.string' => 'Tên lớp học phần phải là một chuỗi văn bản.',
+            'name.max' => 'Tên lớp học phần không được vượt quá 255 ký tự.',
+            'quantity.required' => 'Số lượng sinh viên là bắt buộc.',
+            'quantity.integer' => 'Số lượng sinh viên phải là một số nguyên.',
+            'quantity.min' => 'Số lượng sinh viên phải ít nhất '.$studentCount.' so với số sinh viên đã đăng ký hiện tại !',
+            'quantity.max' => 'Số lượng sinh viên tối đa là 100 !',
+            'registration_deadline.required' => 'Ngày đăng ký là bắt buộc.',
+            'registration_deadline.date' => 'Ngày đăng ký không hợp lệ.',
+            'registration_deadline.before_or_equal' => 'Ngày đăng ký phải trước hoặc bằng ngày bắt đầu.',
+            'start_date.required' => 'Ngày bắt đầu là bắt buộc.',
+            'start_date.date' => 'Ngày bắt đầu không hợp lệ.',
+            'start_date.before_or_equal' => 'Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.',
+            'end_date.required' => 'Ngày kết thúc là bắt buộc.',
+            'end_date.date' => 'Ngày kết thúc không hợp lệ.',
+            'end_date.after_or_equal' => 'Ngày kết thúc phải sau hoặc bằng ngày bắt đầu.',
+        ]);
+
+        if ($subjectClass->isStarted()) {
+            unset($validatedData['employee_id']);
+        }
+
         $subjectClass->update($validatedData);
-        toastr()->success('Lớp học được cập nhật thành công.');
+        toastr()->success('Lớp học phần được cập nhật thành công.');
+
+        // Chuyển hướng về trang danh sách lớp học phần
         return redirect()->route('admin.subjectclasses.index');
     }
 
@@ -173,11 +183,11 @@ class SubjectClassController extends Controller
     protected function addStudentsToTuition($subjectClassId)
     {
         $students = StudentSubjectClass::where('subject_class_id', $subjectClassId)->get();
-    
+
         foreach ($students as $student) {
 
             Tuition::create([
-                'student_subject_class_id' => $student->id, 
+                'student_subject_class_id' => $student->id,
             ]);
         }
     }

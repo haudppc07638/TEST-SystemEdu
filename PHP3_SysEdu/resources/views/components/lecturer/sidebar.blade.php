@@ -40,7 +40,7 @@
         <li class="nav-item">
             <a class="nav-link collapsed" href="{{ route('teacher.free_slot.index') }}">
                 <i class="bi bi-clock"></i>
-                <span>Ca dạy rảnh</span>
+                <span>Đăng ký ca dạy</span>
             </a>
         </li>
         {{-- <li class="nav-item">

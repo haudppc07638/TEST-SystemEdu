@@ -199,6 +199,10 @@
                                                                     <i class="bx bx-id-card me-2"></i>
                                                                     Xem chi tiết
                                                                 </a>
+                                                                <button type="button" class="dropdown-item delete-notification"
+                                                                data-id="{{ $notification->id }}">
+                                                                <i class="bx bx-trash me-2"></i> Xóa
+                                                            </button>
                                                             </div>
                                                         </div>
                                                     </td>
@@ -251,12 +255,9 @@
                                                                     <i class="bx bx-id-card me-2"></i>
                                                                     Xem chi tiết
                                                                 </a>
-
-                                                                <a class="dropdown-item"
-                                                                    href="{{ route('admin.notifications.edit', $notification->id) }}">
-                                                                    <i class="bx bx-edit-alt me-2"></i>
-                                                                    Chỉnh sửa
-                                                                </a>
+                                                                <button type="button" class="dropdown-item delete-notification"
+                                                                data-id="{{ $notification->id }}">
+                                                                <i class="bx bx-trash me-2"></i> Xóa
                                                             </div>
                                                         </div>
                                                     </td>
@@ -358,5 +359,36 @@
             .catch(error => {
                 console.error(error);
             });
+    </script>
+    <script>
+        document.querySelectorAll('.delete-notification').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const notificationId = this.getAttribute('data-id');
+    
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn xóa thông báo này ?',
+                    text: "Việc này không thể hoàn tác!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Xóa',
+                    cancelButtonText: 'Hủy'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '{{ route('admin.notifications.destroy', ':id') }}'.replace(
+                            ':id', notificationId);
+                        form.innerHTML = `
+                        @csrf
+                        @method('DELETE')
+                    `;
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            });
+        });
     </script>
 @endpush

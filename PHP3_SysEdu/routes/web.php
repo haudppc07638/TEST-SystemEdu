@@ -220,8 +220,7 @@ Route::middleware(['admin'])->group(function () {
         Route::get('/', [NotificationController::class, 'index'])->name('index');
         Route::post('send', [NotificationController::class, 'send'])->name('send');
         Route::get('detail/{id}', [NotificationController::class, 'detail'])->name('detail');
-        Route::get('/{id}/edit', [NotificationController::class, 'edit'])->name('edit');
-        Route::put('/{id}/edit', [NotificationController::class, 'update'])->name('update');
+        Route::delete('{id}', [NotificationController::class, 'destroy'])->name('destroy');
     });
 
     Route::prefix('timeslots')->name('admin.timeslots.')->group(function () {
@@ -249,6 +248,7 @@ Route::middleware(['admin'])->group(function () {
         Route::put('{id}', [StudentSubjectClassController::class, 'update'])->name('update');
         Route::post('import/{id}', [StudentSubjectClassController::class, 'import'])->name('import');
         Route::get('export/{id}', [StudentSubjectClassController::class, 'export'])->name('export');
+        Route::get('/{id}/export-eligible', [StudentSubjectClassController::class, 'exportEligible'])->name('exportEligible');
     });
 
     Route::prefix('subjectclasses')->name('admin.subjectclasses.')->group(function () {

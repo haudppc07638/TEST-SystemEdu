@@ -11,10 +11,10 @@ use App\Http\Requests\Admin\StudentSubjectClassRequest;
 use App\Models\SubjectClass;
 use App\Exports\StudentSubjectClassExport;
 use App\Models\Score;
-use App\Models\Subject;
 use App\Models\SubjectScoreType;
+use Carbon\Carbon;
+use App\Exports\EligibleStudentsExport;
 use Maatwebsite\Excel\Facades\Excel;
-
 class StudentSubjectClassController extends Controller
 {
     public function index($id)
@@ -23,8 +23,13 @@ class StudentSubjectClassController extends Controller
         foreach ($studentSubjectClasses as $studentSubjectClass) {
             $studentSubjectClass->save();
         }
+
         $subjectClass = SubjectClass::findSubjectClassById($id);
         $scoreTypes = SubjectScoreType::getScoreTypesForSubjectClass($subjectClass->subject_id);
+
+        $students = StudentSubjectClass::where('subject_class_id', $subjectClass->id)->with('student')->get();
+        $attendanceStats = $this->getAttendanceStats($subjectClass);
+        $attendanceHistory = $this->getAttendanceHistory($subjectClass);
 
         $today = now();
         $isBeforeStart = $subjectClass->start_date > $today;
@@ -32,9 +37,11 @@ class StudentSubjectClassController extends Controller
         return view('admin.studentsubjectclass.index', [
             'studentSubjectClasses' => $studentSubjectClasses,
             'subjectClass' => $subjectClass,
-
             'isBeforeStart' => $isBeforeStart,
-            'scoreTypes' => $scoreTypes
+            'scoreTypes' => $scoreTypes,
+            'students' => $students,
+            'attendanceStats' => $attendanceStats,
+            'attendanceHistory' => $attendanceHistory
         ]);
     }
 
@@ -117,5 +124,94 @@ class StudentSubjectClassController extends Controller
 
         toastr()->error('Vui lòng tải lên file Excel');
         return back();
+    }
+
+    private function getAttendanceStats(SubjectClass $subjectClass)
+    {
+        $totalSessions = $subjectClass->schedules()
+            ->distinct()
+            ->count('date');
+
+        $totalSessionsHeld = $subjectClass->schedules()
+            ->where('date', '<=', Carbon::today())
+            ->count();
+
+        $studentStats = $subjectClass->studentSubjectClasses()
+            ->with(['student', 'attendances'])
+            ->get()
+            ->map(function ($student) use ($totalSessions) {
+                $presentCount = $student->attendances->where('status', 1)->count();
+                $absentCount = $student->attendances->where('status', 0)->count();
+
+                $absenceRate = $totalSessions > 0
+                    ? round(($absentCount / $totalSessions) * 100, 2)
+                    : 0;
+
+                return [
+                    'student_code' => $student->student->code,
+                    'student_name' => $student->student->full_name,
+                    'present_count' => $presentCount,
+                    'absent_count' => $absentCount,
+                    'absence_rate' => $absenceRate,
+                ];
+            });
+
+        $averageAbsenceRate = $studentStats->avg('absence_rate');
+
+        return [
+            'total_sessions' => $totalSessions,
+            'total_sessions_held' => $totalSessionsHeld,
+            'student_stats' => $studentStats,
+            'average_absence_rate' => $averageAbsenceRate,
+        ];
+    }
+
+    private function getAttendanceHistory(SubjectClass $subjectClass)
+    {
+        $schedules = $subjectClass->schedules()->with('attendances')->get();
+
+        $attendanceHistory = [];
+
+        foreach ($schedules as $schedule) {
+            foreach ($schedule->attendances as $attendance) {
+                $attendanceHistory[] = [
+                    'date' => $schedule->date,
+                    'studentSubjectClass' => $attendance->studentSubjectClass,
+                    'status' => $attendance->status
+                ];
+            }
+        }
+
+        return collect($attendanceHistory)->sortByDesc('date');
+    }
+
+    public function exportEligible($id)
+    {
+        $subjectClass = SubjectClass::findOrFail($id);
+
+        $subjectClassName = $subjectClass->name;
+        $day = now()->format('y-m-d');
+        $fileName = 'DSSV_đủ_điều_kiện_thi_lớp_' . $subjectClassName . '_' . $day . '.xlsx';
+
+        // Lấy dữ liệu điểm danh
+        $attendanceStats = $this->getAttendanceStats($subjectClass);
+
+        $lowAttendanceStudents = $attendanceStats['student_stats']->filter(function ($stat) {
+            return $stat['absence_rate'] < 20;
+        });
+
+        // Chuẩn bị dữ liệu cho file Excel
+        $exportData = $lowAttendanceStudents->map(function ($student, $index) {
+            return [
+                'STT' => $index + 1,
+                'Mã sinh viên' => $student['student_code'],
+                'Họ và tên' => $student['student_name'],
+                'Số buổi vắng' => $student['absent_count'],
+                'Tỷ lệ vắng (%)' => $student['absence_rate'],
+            ];
+        })->toArray();
+
+        // Xuất file Excel
+        return Excel::download(new EligibleStudentsExport($exportData, $subjectClassName), $fileName);
     }
 }

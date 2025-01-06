@@ -25,8 +25,8 @@ class NotificationController extends Controller
     public function index()
     {
         $faculties = Faculty::getAllFaculties();
-        $pendingNotifications = Notification::where('status', 'pending')->paginate(10); // Thông báo đang lên lịch gửi
-        $sentNotifications = Notification::where('status', 'sent')->paginate(10); // Thông báo đã gửi
+        $pendingNotifications = Notification::where('status', 'pending')->latest()->paginate(10);
+        $sentNotifications = Notification::where('status', 'sent')->latest()->paginate(10);
 
         foreach ($pendingNotifications as $notification) {
             $notification->formatted_date_sent = Carbon::parse($notification->date_sent)->format('d/m/Y');
@@ -124,10 +124,13 @@ class NotificationController extends Controller
 
     private function dispatchNotification(array $recipients, Notification $notification)
     {
-        $sendAt = Carbon::parse($notification->date_sent);
-        $delay = $sendAt->isFuture() ? $sendAt->diffInSeconds(now()) : 0;
+        $sendAt = Carbon::parse($notification->date_sent)->setTimezone(config('app.timezone'));
+        $now = now()->setTimezone(config('app.timezone'));
 
-        // Lên lịch gửi thông báo qua email hoặc hệ thống
+        // Tính delay (lấy giá trị tối thiểu là 0 nếu delay âm)
+        $delay = max($sendAt->diffInRealSeconds($now, false), 0);
+
+        // Lên lịch gửi thông báo
         if ($notification->type == 'email') {
             foreach ($recipients as $recipient) {
                 SendNotificationJob::dispatch($notification, $recipient)->delay($delay);
@@ -135,24 +138,6 @@ class NotificationController extends Controller
         } else {
             SendSystemNotificationJob::dispatch($notification)->delay($delay);
         }
-    }
-
-    public function edit($id)
-    {
-        $notification = Notification::getNotificationById($id);
-        return view('admin.notifications.edit', [
-            'notification' => $notification,
-        ]);
-    }
-
-    public function update(NotificationRequest $request, $id)
-    {
-        $notification = Notification::findOrFail($id);
-        $validated = $request->validated();
-        $notification->update($validated);
-        
-        toastr()->success('Thông báo đã được cập nhật thành công');
-        return redirect()->route('admin.notifications.index');
     }
 
     public function detail($id)
@@ -173,5 +158,20 @@ class NotificationController extends Controller
         return view('admin.notifications.detail', [
             'notification' => $notification
         ]);
+    }
+
+    public function destroy($id)
+    {
+        $notification = Notification::find($id);
+
+        if (!$notification) {
+            toastr()->error('Thông báo không tồn tại.');
+            return redirect()->route('admin.notifications.index');
+        }
+
+        $notification->delete();
+
+        toastr()->success('Xóa thành công thông báo: ' . $notification->title);
+        return redirect()->route('admin.notifications.index');
     }
 }
