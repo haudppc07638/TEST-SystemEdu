@@ -28,24 +28,25 @@ class ScoreController extends Controller
         return redirect()->back()->with('error', 'Không có kỳ học nào đang diễn ra.');
     }
 
-    // Sử dụng paginate thay vì get
     $studentSubjectClasses = StudentSubjectClass::whereHas('subjectClass', function ($query) use ($currentSemester) {
         $query->where('semester_id', $currentSemester->id);
     })
-    ->with('subjectClass.semester', 'subjectClass.subject', 'scores.subjectScoreType.scoreType') // Eager load cả quan hệ sâu hơn
+    ->with([
+        'subjectClass.semester',
+        'subjectClass.subject',
+        'scores.subjectScoreType'
+    ])
     ->where('student_id', $user->id)
-    ->paginate(10); // Thêm paginate với số lượng item mỗi trang
-    // $subjects = Subject::with('scores')->get();
-   // Lấy loại điểm 'Lab' cho môn học cụ thể
+    ->paginate(10);
+
    $subjectScoreTypes = SubjectScoreType::with('scoreType')
    ->whereIn('subject_id', $studentSubjectClasses->pluck('subjectClass.subject_id')->unique()) // Lọc theo môn học sinh viên đang học
    ->get();
 
-
     return view('client.score', [
         'subjectScoreTypes' => $subjectScoreTypes,
         // 'subjects' => $subjects,
-        'studentSubjectClasses' => $studentSubjectClasses, // Trả về phân trang
+        'studentSubjectClasses' => $studentSubjectClasses,
         'currentSemester' => $currentSemester,
         'major' => $major,
     ]);

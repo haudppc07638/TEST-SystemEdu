@@ -31,27 +31,28 @@
                     </thead>
                     <tbody class="bg-white divide-y">
                         @foreach($subjectClasses as $index => $studentSubjectClass)
-                        <tr class="text-gray-700">
-                            <td class="px-4 py-3">{{ $studentSubjectClasses->firstItem() + $index }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $studentSubjectClass->subjectClass->semester->block }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $studentSubjectClass->subjectClass->subject->name }}</td>
-                            <td class="px-4 py-3 text-sm">{{ $studentSubjectClass->subjectClass->subject->code }}</td>
+<tr class="text-gray-700">
+    <td class="px-4 py-3">{{ $studentSubjectClasses->firstItem() + $index }}</td>
+    <td class="px-4 py-3 text-sm">{{ $studentSubjectClass->subjectClass->semester->block }}</td>
+    <td class="px-4 py-3 text-sm">{{ $studentSubjectClass->subjectClass->subject->name }}</td>
+    <td class="px-4 py-3 text-sm">{{ $studentSubjectClass->subjectClass->subject->code }}</td>
 
-                            @foreach($subjectScoreTypes->where('subject_id', $subjectId) as $subjectScoreType)
-                                <td class="px-4 py-3">
-                                    {{ optional($studentSubjectClass->scores->where('subjectScoreType_id', $subjectScoreType->id)->first())->score ?? 'Chưa có điểm' }}
-                                </td>
-                            @endforeach
+    @foreach($subjectScoreTypes->where('subject_id', $subjectId) as $subjectScoreType)
+        <td class="px-4 py-3">
+            {{ $studentSubjectClass->scores->where('subject_score_type_id', $subjectScoreType->id)->first()->score ?? 'Chưa có điểm' }}
+        </td>
+    @endforeach
 
-                            <td class="px-4 py-3 text-sm">
-                                @if($studentSubjectClass->total_score >= 5)
-                                    <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full">Pass</span>
-                                @else
-                                    <span class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full">Fail</span>
-                                @endif
-                            </td>
-                        </tr>
-                        @endforeach
+    <td class="px-4 py-3 text-sm">
+        @if($studentSubjectClass->total_score >= 5)
+            <span class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full">Pass</span>
+        @else
+            <span class="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-full">Fail</span>
+        @endif
+    </td>
+</tr>
+@endforeach
+
                     </tbody>
                 </table>
             </div>

@@ -19,9 +19,12 @@ class Tuition extends Model
     public function studentSubjectClasses(): BelongsTo{
         return $this->belongsTo(StudentSubjectClass::class,'student_subject_class_id');
     }
-    public static function getSubjectStudentRegister(){
-        return self::all();
-    }
+    public static function getSubjectStudentRegister($studentId){
+        return self::whereHas('studentSubjectClasses', function ($query) use ($studentId) {
+            $query->where('student_id', $studentId);
+        })->with(['studentSubjectClasses.subjectClass.subject', 'studentSubjectClasses.subjectClass.semester'])
+          ->get();
+        }
    public static function insertTuitionJoinClass($id){
     $studentSubjectClass = StudentSubjectClass::findOrFail($id);
     
