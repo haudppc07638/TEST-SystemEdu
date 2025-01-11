@@ -8,7 +8,6 @@ import DiplomaTHPT from "../../Assets/Images/bangtotnghiep.jpg";
 function BannerSection() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [enrollments, setEnrollments] = useState([]);
-  const [error, setError] = useState(null);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
@@ -181,7 +180,7 @@ function BannerSection() {
       );
       setEnrollments(response.data);
     } catch (err) {
-      setError(err.message);
+      setErrors(err.message);
     }
   };
 
