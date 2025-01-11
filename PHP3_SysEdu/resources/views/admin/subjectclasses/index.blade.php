@@ -72,13 +72,13 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $subjectClass->name }}</td>
                                             <td>{{ $subjectClass->quantity }}</td>
-                                            <td>{{ $subjectClass->start_date }}</td>
-                                            <td>{{ $subjectClass->end_date }}</td>
-                                            <td>{{ $subjectClass->registration_deadline }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($subjectClass->start_date)->format('d-m-Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($subjectClass->end_date)->format('d-m-Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($subjectClass->registration_deadline)->format('d-m-Y') }}</td>                                            
                                             <td>{{ $subjectClass->employee->full_name ?? 'Chưa có' }}</td>
                                             <td>{{ $subjectClass->subject->name ?? 'Chưa có' }}</td>
                                             <td>{{ $subjectClass->semester->block ?? 'Chưa có' }}</td>
-                                            <td>{{ $subjectClass->price }}</td>
+                                            <td>{{ number_format($subjectClass->price) }} VND</td>
                                             <td>{{ $subjectClass->majorClass->name ?? 'Chưa có' }}</td>
                                             <td>
                                                 <div class="dropdown">
