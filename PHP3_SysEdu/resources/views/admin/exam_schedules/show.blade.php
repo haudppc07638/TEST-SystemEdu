@@ -9,7 +9,7 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                <li class="breadcrumb-item">Lớp Môn</li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.subjectclasses.index') }}">Lớp môn</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('admin.examschedules.index', ['subject_class_id' => $examSchedule->schedule->subject_class_id]) }}">Danh sách lịch thi</a></li>
                 <li class="breadcrumb-item active">Chi Tiết Lịch Thi</li>
             </ol>

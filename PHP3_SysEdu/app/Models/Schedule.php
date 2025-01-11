@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\DB;
+use InvalidArgumentException;
+
 
 class Schedule extends Model
 {
@@ -149,31 +151,36 @@ class Schedule extends Model
         return $this->subjectClass->semester();
     }
 
-    public static function createSchedule($data, $scheduleType)
-    {
-        $startDate = Carbon::parse($data['start_date']);
-        $endDate = Carbon::parse($data['end_date']);
-        $currentDate = $startDate->copy();
-
-        while ($currentDate->lte($endDate)) {
-            $dayOfWeek = $currentDate->dayOfWeek;
-            $shouldCreateSchedule = ($scheduleType === 'odd')
-                ? in_array($dayOfWeek, [1, 3, 5])
-                : in_array($dayOfWeek, [2, 4, 6]);
-
-            if ($shouldCreateSchedule) {
-                self::create([
-                    'time_slot_id' => $data['time_slot_id'],
-                    'classroom_id' => $data['classroom_id'],
-                    'date' => $currentDate->toDateString(),
-                    'subject_class_id' => $data['subject_class_id'],
-                    'schedule_day' => $currentDate->toDateString(),
-                ]);
+        public static function createSchedule($data)
+        {
+            $startDate = Carbon::parse($data['start_date']);
+            $endDate = Carbon::parse($data['end_date']);
+            $selectedDays = $data['days_of_week'] ?? [];
+        
+            if (empty($selectedDays) || !is_array($selectedDays)) {
+                throw new InvalidArgumentException('Danh sách ngày trong tuần không hợp lệ.');
             }
-
-            $currentDate->addDay();
+        
+            $currentDate = $startDate->copy();
+        
+            while ($currentDate->lte($endDate)) {
+                $dayOfWeek = $currentDate->dayOfWeek;
+        
+                // Kiểm tra nếu ngày hiện tại có trong danh sách các ngày được chọn
+                if (in_array($dayOfWeek, $selectedDays)) {
+                    self::create([
+                        'time_slot_id' => $data['time_slot_id'],
+                        'classroom_id' => $data['classroom_id'],
+                        'date' => $currentDate->toDateString(),
+                        'subject_class_id' => $data['subject_class_id'],
+                        'schedule_day' => $currentDate->toDateString(),
+                    ]);
+                }
+        
+                $currentDate->addDay();
+            }
         }
-    }
+    
 
     public static function getPaginatedSchedules($perPage = 10)
     {

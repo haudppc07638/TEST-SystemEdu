@@ -100,7 +100,7 @@
                                             @endif
                                         </td>
                                         <td class="text-break" style="max-width: 300px;">
-                                            {{ $feedbackResult->expertise ?? 'Sinh viên chưa đánh giá' }}
+                                            {{ $feedbackResult->expertise ?? 'Không có ghi chú' }}
                                         </td>                                                   
                                     </tr>
                                 @empty

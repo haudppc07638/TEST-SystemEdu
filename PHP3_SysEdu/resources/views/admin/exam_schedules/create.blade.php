@@ -8,8 +8,8 @@
         <h1>Tạo Lịch Thi</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                <li class="breadcrumb-item">Quản Lý</li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('admin.subjectclasses.index') }}">Lớp môn</a></li>
                 <li class="breadcrumb-item active">Tạo Lịch Thi</li>
             </ol>
         </nav>
@@ -80,6 +80,12 @@
                 <!-- Sinh Viên -->
                 <div class="col-md-12">
                     <label for="student_ids" class="form-label">Chọn Sinh Viên: <span class="text-danger">*</span></label>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="select_all_students">
+                        <label class="form-check-label" for="select_all_students">
+                            Chọn tất cả sinh viên
+                        </label>
+                    </div>
                     <select name="student_ids[]" id="student_ids" class="form-select @error('student_ids') is-invalid @enderror" multiple required style="width: 100%; min-height: 150px;">
                         @foreach ($students as $student)
                             <option value="{{ $student->id }}" @if(in_array($student->id, old('student_ids', []))) selected @endif>
@@ -90,7 +96,7 @@
                     @error('student_ids')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
-                </div>                
+                </div>                              
 
                 <div class="col-12">
                     <button type="submit" class="btn btn-primary">Tạo Lịch Thi</button>
@@ -105,16 +111,20 @@
 @push('script')
 <script>
     $(document).ready(function() {
-        // Apply Select2 to teacher selects
         $('#teacher_1, #teacher_2').select2({
             placeholder: 'Chọn giáo viên',
             allowClear: true
         });
-
-        // Apply Select2 to student select
         $('#student_ids').select2({
             placeholder: 'Chọn sinh viên',
             allowClear: true
+        });
+        $('#select_all_students').on('change', function() {
+            if ($(this).is(':checked')) {
+                $('#student_ids > option').prop('selected', true).trigger('change');
+            } else {
+                $('#student_ids > option').prop('selected', false).trigger('change');
+            }
         });
     });
 </script>

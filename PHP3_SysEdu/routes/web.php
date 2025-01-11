@@ -352,7 +352,7 @@ Route::middleware(['student'])->group(function () {
     Route::get('/bang-diem-theo-ky', [ScoreController::class, 'index'])->name('scores');
 
     Route::get('feedback', [StudentFeedbackController::class, 'index'])->name('feedback.list');
-    Route::get('feedback/{studentSubjectClassId}/form', [StudentFeedbackController::class, 'showFeedbackForm'])->name('student.feedback.form');
+    Route::get('feedback/{studentSubjectClassId}/form', [StudentFeedbackController::class, 'showFeedbackForm'])->name('feedback.form');
     Route::post('feedback/{studentSubjectClassId}/store', [StudentFeedbackController::class, 'storeFeedback'])->name('feedback.store');
 });
 

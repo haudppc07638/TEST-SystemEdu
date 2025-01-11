@@ -4,9 +4,6 @@
 
 @section('main')
 <main class="h-full pb-16 overflow-y-auto">
-    <div class="container grid px-6 mx-auto">
-        <h2 class="my-6 text-2xl font-semibold text-gray-700">Lịch thi</h2>
-
         <!-- Card for exam schedules -->
         <div class="w-full mb-8 bg-white rounded-lg shadow-lg p-6">
             <div class="w-full overflow-x-auto">

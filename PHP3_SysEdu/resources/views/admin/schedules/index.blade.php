@@ -9,7 +9,7 @@
             <nav>
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
-                    <li class="breadcrumb-item">Lớp môn</li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.subjectclasses.index') }}">Lớp môn</a></li>
                     <li class="breadcrumb-item active">Danh sách lịch học</li>
                 </ol>
             </nav>
@@ -30,15 +30,15 @@
                     <tr>
                         <th>STT</th>
                         <th>Ngày</th>
-                        <th>Phòng Học</th>
-                        <th>Mã Môn</th>
+                        <th>Phòng học</th>
+                        <th>Mã môn</th>
                         <th>Môn học</th>
                         <th>Lớp</th>
                         <th>Giảng viên</th>
                         <th>Giảng viên dạy thế</th>
                         <th>Ca</th>
-                        <th>Trang Thái</th>
-                        <th>Thao Tác</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>

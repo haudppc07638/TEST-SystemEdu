@@ -27,7 +27,6 @@ class FeedbackResult extends Model
         'expertise',
         'feedback_question_id',
         'student_subject_class_id',
-        'student_id',
         'employee_id',
     ];
 

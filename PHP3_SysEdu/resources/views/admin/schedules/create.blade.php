@@ -63,15 +63,20 @@
                 </div>
 
                 <div class="col-md-6">
-                    <label for="schedule_type" class="form-label">Kiểu Lịch: <span class="text-danger">*</span></label>
-                    <select name="schedule_type" id="schedule_type" class="form-select @error('schedule_type') is-invalid @enderror" required>
-                        <option value="odd" @if(old('schedule_type') == 'odd') selected @endif>Ngày Chẵn (Thứ Hai, Thứ Tư, Thứ Sáu)</option>
-                        <option value="even" @if(old('schedule_type') == 'even') selected @endif>Ngày Lẻ (Thứ Ba, Thứ Năm, Thứ Bảy)</option>
+                    <label>Chọn ngày học: <span class="text-danger">*</span></label>
+                    <select name="days_of_week[]" id="days_of_week" multiple class="form-select @error('days_of_week') is-invalid @enderror">
+                        <option value="0" @if(in_array(0, old('days_of_week', []))) selected @endif>Chủ Nhật</option>
+                        <option value="1" @if(in_array(1, old('days_of_week', []))) selected @endif>Thứ Hai</option>
+                        <option value="2" @if(in_array(2, old('days_of_week', []))) selected @endif>Thứ Ba</option>
+                        <option value="3" @if(in_array(3, old('days_of_week', []))) selected @endif>Thứ Tư</option>
+                        <option value="4" @if(in_array(4, old('days_of_week', []))) selected @endif>Thứ Năm</option>
+                        <option value="5" @if(in_array(5, old('days_of_week', []))) selected @endif>Thứ Sáu</option>
+                        <option value="6" @if(in_array(6, old('days_of_week', []))) selected @endif>Thứ Bảy</option>
                     </select>
-                    @error('schedule_type')
+                    @error('days_of_week')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
-                </div>
+                </div>                             
 
                 <!-- Ngày Bắt Đầu - Chỉ Đọc -->
                 <div class="col-md-6">
@@ -103,4 +108,16 @@
 
 </main><!-- End #main -->
 
-@endsection
+@endsection 
+@push('script')
+    <script>
+        $(document).ready(function() {
+            $('#days_of_week').select2({
+                placeholder: "Chọn ngày học",
+                allowClear: true
+            });
+        });
+    </script>
+@endpush
+
+

@@ -8,8 +8,8 @@
             <h1>Danh Sách Lịch Thi Của Lớp: {{ $subjectClass->name }}</h1>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang Chủ</a></li>
-                    <li class="breadcrumb-item">Lớp Môn</li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('admin.subjectclasses.index') }}">Lớp môn</a></li>
                     <li class="breadcrumb-item active">Danh sách lịch thi</li>
                 </ol>
             </nav>

@@ -17,22 +17,22 @@ class ScheduleRequest extends FormRequest
     public function rules(): array
     {
         $scheduleId = $this->route('id');
-        $scheduleType = $this->input('schedule_type');
         $classroomId = $this->input('classroom_id');
         $subjectClassId = $this->input('subject_class_id');
         $timeSlotId = $this->input('time_slot_id');
-
+    
         $requestStartDate = Carbon::parse($this->input('start_date'));
         $requestEndDate = Carbon::parse($this->input('end_date'));
-
+    
         return [
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after:start_date',
-            'schedule_type' => 'required|in:odd,even',
+            'days_of_week' => 'required|array|min:1|max:7',
+            'days_of_week.*' => 'integer|between:0,6', // 0: Chủ Nhật, 6: Thứ Bảy
             'time_slot_id' => [
                 'required',
                 'exists:time_slots,id',
-                function ($attribute, $value, $fail) use ($scheduleId, $scheduleType, $classroomId, $requestStartDate, $requestEndDate, $subjectClassId) {
+                function ($attribute, $value, $fail) use ($scheduleId, $classroomId, $requestStartDate, $requestEndDate, $subjectClassId) {
                     $errors = [];
                     $this->checkStudentScheduleConflict($value, $scheduleId, $subjectClassId, $requestStartDate, $requestEndDate, function ($message) use (&$errors) {
                         $errors[] = $message;
@@ -40,7 +40,7 @@ class ScheduleRequest extends FormRequest
                     $this->checkTeacherScheduleConflict($value, $classroomId, $scheduleId, $requestStartDate, $requestEndDate, function ($message) use (&$errors) {
                         $errors[] = $message;
                     });
-                    $this->checkScheduleConflict($value, $classroomId, $scheduleId, $scheduleType, $requestStartDate, $requestEndDate, function ($message) use (&$errors) {
+                    $this->checkScheduleConflict($value, $classroomId, $scheduleId, $requestStartDate, $requestEndDate, function ($message) use (&$errors) {
                         $errors[] = $message;
                     });
                     if (!empty($errors)) {
@@ -51,8 +51,9 @@ class ScheduleRequest extends FormRequest
             'classroom_id' => [
                 'required',
                 'exists:classrooms,id',
-                function ($attribute, $value, $fail) use ($scheduleId, $timeSlotId, $scheduleType, $requestStartDate, $requestEndDate) {
-                    $this->checkClassroomConflict($value, $timeSlotId, $scheduleId, $scheduleType, $requestStartDate, $requestEndDate, $fail);
+                function ($attribute, $value, $fail) use ($scheduleId, $timeSlotId, $requestStartDate, $requestEndDate) {
+                    $daysOfWeek = $this->input('days_of_week');
+                    $this->checkClassroomConflict($value, $timeSlotId, $scheduleId, $daysOfWeek, $requestStartDate, $requestEndDate, $fail);
                 },
             ],
             'subject_class_id' => [
@@ -64,16 +65,19 @@ class ScheduleRequest extends FormRequest
             ],
         ];
     }
+    
 
-    protected function checkScheduleConflict($timeSlotId, $classroomId, $scheduleId, $scheduleType, $startDate, $endDate, $fail)
+    protected function checkScheduleConflict($timeSlotId, $classroomId, $scheduleId, $startDate, $endDate, $fail)
     {
+        $daysOfWeek = $this->input('days_of_week', []);
         $currentDate = $startDate->copy();
+    
         while ($currentDate->lessThanOrEqualTo($endDate)) {
-            if ($this->isScheduleTypeMismatch($currentDate, $scheduleType)) {
+            if (!in_array($currentDate->dayOfWeek, $daysOfWeek)) {
                 $currentDate->addDay();
                 continue;
             }
-
+    
             $existingSchedule = DB::table('schedules')
                 ->where('classroom_id', $classroomId)
                 ->where('time_slot_id', $timeSlotId)
@@ -84,26 +88,28 @@ class ScheduleRequest extends FormRequest
                     }
                 })
                 ->exists();
-
+    
             if ($existingSchedule) {
                 return $fail('Ca học này đã được đặt cho phòng học vào ngày ' . $currentDate->toDateString() . ' vào khung giờ này.');
             }
-
+    
             $currentDate->addDay();
         }
-    }
+    }    
 
-    protected function checkClassroomConflict($classroomId, $timeSlotId, $scheduleId, $scheduleType, $startDate, $endDate, $fail)
+    protected function checkClassroomConflict($classroomId, $timeSlotId, $scheduleId, $daysOfWeek, $startDate, $endDate, $fail)
     {
+        $daysOfWeek = $daysOfWeek ?? [];
+    
         $currentDate = $startDate->copy();
         while ($currentDate->lessThanOrEqualTo($endDate)) {
-            if ($this->isScheduleTypeMismatch($currentDate, $scheduleType)) {
+            if (!in_array($currentDate->dayOfWeek, $daysOfWeek)) {
                 $currentDate->addDay();
                 continue;
             }
-
-            Log::info("Checking classroom conflict for date: {$currentDate->toDateString()} with classroom_id: $classroomId and time_slot_id: $timeSlotId");
-
+    
+            // Log::info("Checking classroom conflict for date: {$currentDate->toDateString()} with classroom_id: $classroomId and time_slot_id: $timeSlotId");
+    
             $existingSchedule = DB::table('schedules')
                 ->where('classroom_id', $classroomId)
                 ->where('time_slot_id', $timeSlotId)
@@ -114,33 +120,37 @@ class ScheduleRequest extends FormRequest
                     }
                 })
                 ->exists();
-
+    
             if ($existingSchedule) {
                 return $fail('Phòng học này đã có lịch vào ngày ' . $currentDate->toDateString() . ' vào khung giờ này.');
             }
-
+    
             $currentDate->addDay();
         }
-    }
+    }    
 
     protected function checkTeacherScheduleConflict($timeSlotId, $classroomId, $scheduleId, $requestStartDate, $requestEndDate, $fail)
     {
         $subjectClassId = $this->input('subject_class_id');
         $subjectClass = DB::table('subject_classes')->where('id', $subjectClassId)->first();
-
+    
         if (!$subjectClass) {
             return $fail('Lớp môn học không hợp lệ.');
         }
 
-        $scheduleType = $this->input('schedule_type');
-
+        $selectedDays = $this->input('days_of_week', []);
+    
+        if (empty($selectedDays) || !is_array($selectedDays)) {
+            return $fail('Bạn phải chọn ít nhất một ngày trong tuần.');
+        }
+    
         $currentDate = $requestStartDate->copy();
         while ($currentDate->lessThanOrEqualTo($requestEndDate)) {
-            if ($this->isScheduleTypeMismatch($currentDate, $scheduleType)) {
+            if (!in_array($currentDate->dayOfWeek, $selectedDays)) {
                 $currentDate->addDay();
                 continue;
             }
-
+            
             $existingSchedule = DB::table('schedules')
                 ->where('time_slot_id', $timeSlotId)
                 ->whereDate('date', $currentDate->toDateString())
@@ -151,11 +161,11 @@ class ScheduleRequest extends FormRequest
                     }
                 })
                 ->exists();
-
+    
             if ($existingSchedule) {
                 return $fail('Giáo viên đã có lịch vào ngày ' . $currentDate->toDateString() . ' trong khung giờ này.');
             }
-
+    
             $currentDate->addDay();
         }
     }
@@ -248,6 +258,11 @@ class ScheduleRequest extends FormRequest
             'end_date.required' => 'Ngày kết thúc không được để trống',
             'end_date.date' => 'Ngày kết thúc không hợp lệ',
             'end_date.after' => 'Ngày kết thúc phải sau ngày bắt đầu',
+
+            'days_of_week.required' => 'Vui lòng chọn ít nhất một ngày trong tuần.',
+            'days_of_week.array' => 'Dữ liệu ngày trong tuần không hợp lệ.',
+            'days_of_week.*.integer' => 'Dữ liệu ngày trong tuần không hợp lệ.',
+            'days_of_week.*.between' => 'Ngày trong tuần phải nằm trong khoảng từ 0 đến 6.',
         ];
     }
 }

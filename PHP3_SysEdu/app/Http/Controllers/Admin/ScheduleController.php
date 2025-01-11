@@ -40,6 +40,8 @@ class ScheduleController extends Controller
 
     public function store(ScheduleRequest $request)
     {
+        // dd($request->days);
+        $daysOfWeek = $request->input('days_of_week', []);
         $validator = Validator::make(
             $request->only([
                 'time_slot_id',
@@ -47,27 +49,27 @@ class ScheduleController extends Controller
                 'subject_class_id',
                 'start_date',
                 'end_date',
-                'schedule_type',
+                'days_of_week',
             ]),
             $request->rules(),
             $request->messages()
         );
-
+        Log::info('Data from request: ', $request->all());
         if ($validator->stopOnFirstFailure()->fails()) {
-            return redirect()->back()
+            return redirect()->back()   
                 ->withErrors($validator)
                 ->withInput();
         }
 
         Log::info('Data from request: ', $request->all());
 
-        Schedule::createSchedule($request->all(), $request->schedule_type);
+        Schedule::createSchedule($request->all(), $daysOfWeek);
 
         toastr()->success('Tạo lịch tự động thành công.');
         $subjectClassId = $request->subject_class_id;
 
         return redirect()->route('admin.schedules.view-schedule', ['subject_class_id' => $subjectClassId]);
-    }
+    }   
 
     public function edit($id)
     {
