@@ -48,7 +48,7 @@ function NewsDetail() {
 
       <div className="flex flex-col md:flex-row items-start border-t pt-6 space-y-4 md:space-y-0">
         <div className="md:w-1/2 px-4 mt-4">
-          <h3 className="text-2xl font-semibold text-blue-600 mb-2">
+          <h3 className="text-3xl font-semibold text-blue-600 mb-2">
             {news.title}
           </h3>
           <p className="text-gray-600 text-justify mt-2">
@@ -62,7 +62,7 @@ function NewsDetail() {
 
         <div className="md:w-1/2 px-4">
           <img
-            src={`/images/${news.image}`}
+            src={`http://localhost:8000/storage/${news.image}`}
             alt={news.title}
             className="w-full h-100 shadow-md"
           />

@@ -64,7 +64,7 @@ function RelatedNews() {
               className="flex flex-col p-4 shadow-md rounded-lg items-start bg-white hover:shadow-lg transition-shadow duration-300"
             >
               <img
-                src={`/images/${post.image}`}
+                src={`http://localhost:8000/storage/${post.image}`}
                 alt={post.title}
                 className="w-full h-60 object-cover mb-4 rounded-md"
               />

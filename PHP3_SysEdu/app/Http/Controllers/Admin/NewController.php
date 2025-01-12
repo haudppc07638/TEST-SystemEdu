@@ -26,10 +26,9 @@ class NewController extends Controller
         $validated = $request->validated();
 
         if ($request->hasFile('image')) {
-            $imageName = $request->file('image')->getClientOriginalName();
-            $validated['image'] = $imageName;
+            $imagePath = $request->file('image')->store('uploads/news', 'public');
+            $validated['image'] = $imagePath;
         }
-
         $news = News::create($validated);
         toastr()->success('Thêm thành công tin tức: ' . $news->title);
         return redirect()->route('admin.news.index');
