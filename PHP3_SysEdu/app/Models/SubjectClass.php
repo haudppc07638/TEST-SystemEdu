@@ -57,7 +57,7 @@ class SubjectClass extends Model
     }
     public function semester(): BelongsTo
     {
-        return $this->belongsto(Semester::class);
+        return $this->belongsto(Semester::class, 'semester_id');
     }
     public function schedules()
     {
@@ -84,7 +84,6 @@ class SubjectClass extends Model
     {
         return $this->hasMany(Feedback::class, 'subject_class_id');
     }
-
     public function scheduleHistories()
     {
         return $this->hasMany(ScheduleHistory::class);

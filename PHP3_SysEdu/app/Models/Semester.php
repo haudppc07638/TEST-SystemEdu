@@ -23,6 +23,11 @@ class Semester extends Model
         $currentDate = \Carbon\Carbon::now();
         return $currentDate->between($this->start_date, $this->end_date);
     }
+    public function scopeCurrent($query)
+    {
+    return $query->where('start_date', '<=', now())
+                 ->where('end_date', '>=', now());
+    }
     public function subjectClasses(): HasMany{
         return $this->hasMany(SubjectClass::class);
     }

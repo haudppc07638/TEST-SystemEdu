@@ -44,6 +44,7 @@ use App\Http\Controllers\Teacher\StudentLookupController;
 use App\Http\Controllers\Admin\TeacherFreeSlotController;
 use App\Http\Controllers\Teacher\AttendanceController;
 use App\Http\Controllers\Api\NewsController;
+use App\Http\Controllers\Client\HistoryPaymentController;
 use App\Http\Controllers\Admin\ExamScheduleController;
 
 use App\Http\Controllers\Client\HomeController;
@@ -348,6 +349,7 @@ Route::middleware(['student'])->group(function () {
     Route::post('/lop-mon/huy-dang-ky/{id}', [RegisterSubjectController::class, 'cancelClass'])->name('cancelClass');
 
     Route::get('lich-su-hoc', [EducationalHistoryController::class, 'index'])->name('educational-history');
+    Route::get('/history-payment', [HistoryPaymentController::class, 'index'])->name('history.payment');
 
     Route::get('/bang-diem-theo-ky', [ScoreController::class, 'index'])->name('scores');
 

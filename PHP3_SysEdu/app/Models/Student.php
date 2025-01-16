@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Carbon\Carbon;
 
@@ -44,6 +45,10 @@ class Student extends Authenticatable
     {
         return true;
     }
+    public function semesters()
+{
+    return $this->belongsToMany(Semester::class, 'student_subject_classes', 'student_id', 'semester_id');
+}
 
     public function major(): BelongsTo
     {
@@ -59,9 +64,9 @@ class Student extends Authenticatable
     {
         return $this->belongsTo(SubjectClass::class);
     }
-    public function totalTuition(): HasMany
+    public function totalTuition(): HasOne
     {
-        return $this->hasMany(TotalTuition::class);
+        return $this->hasOne(TotalTuition::class, 'student_id');
     }
     public function studentSubjectClasses(): HasMany
     {

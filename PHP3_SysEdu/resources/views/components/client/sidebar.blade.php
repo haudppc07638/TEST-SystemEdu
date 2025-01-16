@@ -78,6 +78,19 @@
             </li>
             <li class="relative px-6 py-3">
                 <span
+                    class="{{ request()->routeIs('history.payment') ? 'absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg' : '' }}"
+                    aria-hidden="true"></span>
+                <a class="{{ request()->routeIs('history.payment') ? 'inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-800 active' : 'inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-800' }}"
+                    href="{{ route('history.payment') }}">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-2m0-4h-4m4 0a2 2 0 110 4m-4-4v4" />
+                    </svg>
+                    <span class="ml-4">Lịch sử thanh toán</span>
+                </a>
+            </li>
+            
+            <li class="relative px-6 py-3">
+                <span
                     class="{{ request()->routeIs('grades') || request()->routeIs('educational-history') ? 'absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg' : '' }}"
                     aria-hidden="true"></span>
                 <button

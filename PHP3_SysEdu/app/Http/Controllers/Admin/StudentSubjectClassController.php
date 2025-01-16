@@ -27,7 +27,12 @@ class StudentSubjectClassController extends Controller
         $subjectClass = SubjectClass::findSubjectClassById($id);
         $scoreTypes = SubjectScoreType::getScoreTypesForSubjectClass($subjectClass->subject_id);
 
-        $students = StudentSubjectClass::where('subject_class_id', $subjectClass->id)->with('student')->get();
+        // $students = StudentSubjectClass::where('subject_class_id', $subjectClass->id)->with('student')->get();
+        $students = StudentSubjectClass::where('subject_class_id', $subjectClass->id)
+        ->with(['student', 'student.totalTuition' => function ($query) {
+            $query->latest()->take(1);
+        }])->get();
+
         $attendanceStats = $this->getAttendanceStats($subjectClass);
         $attendanceHistory = $this->getAttendanceHistory($subjectClass);
 

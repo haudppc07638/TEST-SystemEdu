@@ -82,6 +82,7 @@
                                             <th class="fs-6">Tổng điểm</th>
                                             <th class="fs-6">Xếp loại</th>
                                             <th class="fs-6">Trạng thái</th>
+                                            <th class="fs-6">Trạng thái thanh toán</th>
                                             @if (!$isBeforeStart)
                                                 <th>Tác vụ</th>
                                             @endif
@@ -132,6 +133,20 @@
                                                         <span class="badge bg-danger">Fail</span>
                                                     @endif
                                                 </td>
+                                                <td class="fs-6">
+                                                    @php
+                                                        $totalTuition = $studentSubjectClass->student->totalTuition;
+                                                    @endphp
+                                                    @if ($totalTuition)
+                                                        @if ($totalTuition->payment_status === 'paid')
+                                                            <span class="badge bg-success">Đã thanh toán</span>
+                                                        @else
+                                                            <span class="badge bg-danger">Chưa thanh toán</span>
+                                                        @endif
+                                                    @else
+                                                        <span class="badge bg-secondary">Chưa có dữ liệu</span>
+                                                    @endif
+                                                </td>
                                                 @if (!$isBeforeStart)
                                                     <td>
                                                         <div class="dropdown">
@@ -148,7 +163,7 @@
                                                             </div>
                                                         </div>
                                                     </td>
-                                                @endif
+                                                @endif                                    
                                             </tr>
                                         @endforeach
                                     </tbody>
