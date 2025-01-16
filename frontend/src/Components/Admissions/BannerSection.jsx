@@ -902,29 +902,6 @@ function BannerSection() {
                     )}
                   </div>
                 </div>
-
-                <div className="mt-8 space-y-4">
-                  <label className="flex items-center space-x-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                    />
-                    <span className="text-gray-700">
-                      Tôi xin cam đoan những lời khai của tôi trên phiếu đăng ký
-                      này là đúng sự thật.
-                    </span>
-                  </label>
-                  <label className="flex items-center space-x-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                    />
-                    <span className="text-gray-700">
-                      Tôi đã đọc kỹ và cam kết tuân thủ Quy định tài chính của
-                      nhà trường.
-                    </span>
-                  </label>
-                </div>
               </section>
 
               <button
