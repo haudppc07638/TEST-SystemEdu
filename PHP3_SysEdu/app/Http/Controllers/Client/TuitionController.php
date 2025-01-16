@@ -20,7 +20,6 @@ class TuitionController extends Controller
     public function index()
     {
         $student = Auth::guard('student')->user();
-        $studentSubjectClasses = StudentSubjectClass::getIncompleteFeedbackClasses($student->id);
 
         $tuition = Tuition::getSubjectStudentRegister($student->id);
         $totalTuition = TotalTuition::getTotal();
@@ -30,11 +29,6 @@ class TuitionController extends Controller
             return view('client.tuition', [
                 'student' => $student,
                 'message' => 'Bạn đã thanh toán học phí. Không có dữ liệu hiển thị.',
-            ]);
-        }
-        if ($studentSubjectClasses->isNotEmpty()) {
-            return view('client.home-feedback', [
-                'studentSubjectClasses' => $studentSubjectClasses,
             ]);
         }
         return view('client.tuition', [
