@@ -45,7 +45,7 @@ function BlogHome() {
           {news.length > 0 && (
             <div key={news[0].id} className="mb-4">
               <img
-                src={`/images/${news[0].image}`}
+                src={`http://localhost:8000/storage/${news[0].image}`}
                 alt="Tin mới nhất"
                 className="w-full h-64 object-cover"
               />

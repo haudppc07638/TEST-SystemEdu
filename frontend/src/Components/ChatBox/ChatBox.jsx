@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import botchat from "../../Assets/Images/botchat.png";
-import MessangerInput from "./MessangerInput";
+// import MessangerInput from "./MessangerInput";
 
 function ChatBox() {
   const [messages, setMessages] = useState([]);
@@ -147,7 +147,7 @@ function ChatBox() {
               <p className="text-gray-600 text-sm mb-2 font-medium">
                 Gợi ý câu hỏi:
               </p>
-              <div className="flex flex-wrap gap-2 pb-1 max-h-[80px] overflow-y-auto">
+              <div className="flex flex-wrap gap-2 pb-1 max-h-[120px] overflow-y-auto">
                 {options.map((option, index) => (
                   <div
                     key={index}
@@ -162,7 +162,7 @@ function ChatBox() {
             </div>
           )}
 
-          <MessangerInput onSendMessage={handleSendMessage} />
+          {/* <MessangerInput onSendMessage={handleSendMessage} /> */}
         </div>
       )}
     </div>
