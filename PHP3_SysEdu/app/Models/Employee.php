@@ -150,7 +150,7 @@ class Employee extends Authenticatable
     }
     public static function getNameEmployees()
     {
-        return self::select('id', 'full_name')
+        return self::select('id', 'full_name', 'code')
             ->get();
     }
 }

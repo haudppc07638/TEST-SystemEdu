@@ -94,8 +94,8 @@
                                                     <span class="badge bg-success">Đã kết thúc</span>
                                                 @endif
                                             </td>
-                                            <td>{{ $class->start_date }}</td>
-                                            <td>{{ $class->end_date }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($class->start_date)->translatedFormat('d/m/Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($class->end_date)->translatedFormat('d/m/Y') }}</td>
                                             <td>
                                                 <div class="dropdown">
                                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">

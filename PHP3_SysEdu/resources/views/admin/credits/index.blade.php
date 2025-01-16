@@ -21,9 +21,9 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-title d-lg-flex">
+                        {{-- <div class="card-title d-lg-flex">
                             <a href="{{ route('admin.credits.create') }}" type="submit" class="btn btn-cBlue">Thêm</a>
-                        </div>
+                        </div> --}}
                         <!-- Table with stripped rows -->
                         <table id="tableDepartment" class="table datatable" style="width:100%">
                             <thead>
@@ -43,7 +43,7 @@
                                     <td>{{ number_format($credit->price) }} VND</td>
                                     <td>{{ $credit->vat }}</td>
                                     <td>{{ number_format($credit->total_price) }} VND</td>
-                                    <td>{{ $credit->updated_at }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($credit->updated_at)->translatedFormat('d/m/Y') }}</td>
                                     <td>
                                         <div class="dropdown">
                                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">

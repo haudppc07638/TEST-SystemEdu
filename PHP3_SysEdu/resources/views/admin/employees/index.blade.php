@@ -50,6 +50,7 @@
                                 <tr>
                                     <th>STT</th>
                                     <th>Họ và tên</th>
+                                    <th>MSNV</th>
                                     <th>Email</th>
                                     <th>Số điện thoại</th>
                                     <th>Hình ảnh</th>
@@ -64,6 +65,7 @@
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $employee->full_name }}</td>
+                                        <td>{{ $employee->code }}</td>
                                         <td>{{ $employee->email }}</td>
                                         <td>{{ $employee->phone }}</td>
 

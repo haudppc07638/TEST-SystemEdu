@@ -55,7 +55,7 @@ module.exports = {
           directory: path.join(__dirname, 'public'), 
         },
         compress: true, 
-        port: 5500, 
+        port: 3000, 
         open: true, 
         historyApiFallback: true,
         watchFiles: {
@@ -64,6 +64,7 @@ module.exports = {
             usePolling: true, 
           },
         },
+        allowedHosts: 'all',
     },
 
     devtool: 'source-map',

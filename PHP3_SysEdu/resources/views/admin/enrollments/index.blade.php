@@ -40,12 +40,12 @@
                                 <tr>
                                     <td>{{ $index +1 }}</td>
                                     <td>{{ $enrollment->full_name }}</td>
-                                    <td>{{ $enrollment->date_of_birth }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($enrollment->date_of_birth)->translatedFormat('d/m/Y') }}</td>
                                     <td>{{ $enrollment->gender == 0 ? 'Nam' : 'Nữ' }}</td>
                                     <td>{{ $enrollment->nation }}</td>
                                     <td>{{ $enrollment->phone }}</td>
                                     <td>{{ $enrollment->email }}</td>
-                                    <td>{{ $enrollment->created_at }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($enrollment->created_at)->translatedFormat('d/m/Y') }}</td>
                                     <td>
                                         <div class="dropdown">
                                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow"

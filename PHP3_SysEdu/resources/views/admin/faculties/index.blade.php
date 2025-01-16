@@ -60,8 +60,8 @@
                                         <th>STT</th>
                                         <th>Tên khoa</th>
                                         <th>Mã</th>
-                                        <th>Trưởng khoa</th>
-                                        <th>Phó khoa</th>
+                                        {{-- <th>Trưởng khoa</th>
+                                        <th>Phó khoa</th> --}}
                                         <th>Mô tả</th>
                                         <th>Tác vụ</th>
                                     </tr>
@@ -72,8 +72,8 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $faculty->name }}</td>
                                             <td>{{ $faculty->code }}</td>
-                                            <td>{{ $faculty->dean ? $faculty->dean : 'Chưa có' }}</td>
-                                            <td>{{ $faculty->assistant_dean ? $faculty->assistant_dean : 'Chưa có' }}</td>
+                                            {{-- <td>{{ $faculty->dean ? $faculty->dean : 'Chưa có' }}</td>
+                                            <td>{{ $faculty->assistant_dean ? $faculty->assistant_dean : 'Chưa có' }}</td> --}}
                                             <td class="text-limited">{{ $faculty->description }}</td>
                                             <td>
                                                 <div class="dropdown">

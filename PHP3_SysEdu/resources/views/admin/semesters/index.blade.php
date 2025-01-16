@@ -41,8 +41,8 @@
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $semester->block }}</td>
                                             <td>{{ $semester->year }}</td>
-                                            <td>{{ $semester->start_date }}</td>
-                                            <td>{{ $semester->end_date }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($semester->start_date)->translatedFormat('d/m/Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($semester->end_date)->translatedFormat('d/m/Y') }}</td>
                                             <td>
                                                 <div class="dropdown">
                                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
