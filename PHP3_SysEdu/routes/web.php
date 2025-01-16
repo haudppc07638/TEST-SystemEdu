@@ -209,8 +209,8 @@ Route::middleware(['admin'])->group(function () {
     });
     Route::prefix('classrooms')->name('admin.classrooms.')->group(function () {
         Route::get('/', [ClassroomController::class, 'index'])->name('index');
-        Route::get('create', [ClassroomController::class, 'create'])->name('create');
-        Route::post('create', [ClassroomController::class, 'store'])->name('create.post');
+        // Route::get('create', [ClassroomController::class, 'create'])->name('create');
+        // Route::post('create', [ClassroomController::class, 'store'])->name('create.post');
         Route::get('edit/{id}', [ClassroomController::class, 'edit'])->name('edit');
         Route::put('{id}', [ClassroomController::class, 'update'])->name('update');
         Route::delete('{id}', [ClassroomController::class, 'destroy'])->name('destroy');

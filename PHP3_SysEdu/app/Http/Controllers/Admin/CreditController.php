@@ -24,22 +24,22 @@ class CreditController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        return view('admin.credits.create');
-    }
+    // public function create()
+    // {
+    //     return view('admin.credits.create');
+    // }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(CreditRequest $request)
-    {
-        $data = $request->validated();
-        $credit = Credit::createCredit($data);
+    // /**
+    //  * Store a newly created resource in storage.
+    //  */
+    // public function store(CreditRequest $request)
+    // {
+    //     $data = $request->validated();
+    //     $credit = Credit::createCredit($data);
 
-        toastr()->success('Thêm thành công: ' . $credit->totalPrice);
-        return redirect()->route('admin.credits.index');
-    }
+    //     toastr()->success('Thêm thành công: ' . $credit->totalPrice);
+    //     return redirect()->route('admin.credits.index');
+    // }
 
     /**
      * Display the specified resource.
@@ -55,6 +55,7 @@ class CreditController extends Controller
     public function edit(string $id)
     {
         $credit = Credit::getCreditID($id);
+        $credit->price = number_format($credit->price, 0, ',', '.');
         return view('admin.credits.edit', ['credit' => $credit]);
     }
 
@@ -64,6 +65,7 @@ class CreditController extends Controller
     public function update(CreditRequest $request, string $id)
     {
         $data = $request->validated();
+        $data['price'] = str_replace('.', '', $data['price']);
         Credit::updateCredit($id, $data);
         toastr()->success('Cập nhật thành công ');
         return redirect()->route('admin.credits.index');

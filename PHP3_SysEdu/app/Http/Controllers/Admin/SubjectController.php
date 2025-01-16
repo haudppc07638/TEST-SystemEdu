@@ -16,20 +16,20 @@ class SubjectController extends Controller
 {
     public function index(Request $request)
     {
-    $majors = Major::select('id', 'name')->get();
+        $majors = Major::select('id', 'name')->get();
 
-    $majorId = $request->get('major_id', null);
-    $search = $request->get('search', null);
+        $majorId = $request->get('major_id', null);
+        $search = $request->get('search', null);
 
-    $subjects = Subject::getAllSubjects($majorId, $search);
+        $subjects = Subject::getAllSubjects($majorId, $search);
 
-    return view('admin.subjects.index', [
-        'subjectView' => $subjects,
-        'majors' => $majors,
-        'majorId' => $majorId,
-        'search' => $search,
-    ]);
-}
+        return view('admin.subjects.index', [
+            'subjectView' => $subjects,
+            'majors' => $majors,
+            'majorId' => $majorId,
+            'search' => $search,
+        ]);
+    }
 
 
     public function detail(string $id)
@@ -68,7 +68,7 @@ class SubjectController extends Controller
     {
         $subject = Subject::with('prerequisites')->findOrFail($id);
         $majors = Major::all();
-        $subjects = Subject::where('id', '<>' , $subject->id)->get();
+        $subjects = Subject::where('id', '<>', $subject->id)->get();
         $scoreTypes = ScoreType::all();
         $subjectCoreType = SubjectScoreType::where('subject_id', $id)->get();
 
@@ -83,52 +83,58 @@ class SubjectController extends Controller
 
     public function update(SubjectRequest $request, string $id)
     {
-        $validated = $request->validated();
+        try {
+            $validated = $request->validated();
 
-        $isValid = Subject::checkTotalCreditsWhenUpd($validated['major_id'], $validated['credit'], $id);
+            $isValid = Subject::checkTotalCreditsWhenUpd($validated['major_id'], $validated['credit'], $id);
 
-        if (!$isValid) {
-            return redirect()->back()
-                ->withInput()
-                ->withErrors(['credit' => 'Tổng tín chỉ môn học vượt quá giới hạn của chuyên ngành hiện tại hoặc chuyên ngành khác nếu đây là môn cơ bản !']);
-        }
+            if (!$isValid) {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors(['credit' => 'Tổng tín chỉ môn học vượt quá giới hạn của chuyên ngành hiện tại hoặc chuyên ngành khác nếu đây là môn cơ bản !']);
+            }
 
-        $this->validateTotalWeight($request);
+            $this->validateTotalWeight($request);
 
-        $subject = Subject::findOrFail($id);
+            $subject = Subject::findOrFail($id);
 
-        // Cập nhật thông tin môn học
-        $subject->updateSubject($validated);
+            // Cập nhật thông tin môn học
+            $subject->updateSubject($validated);
 
-        // Xử lý cập nhật score types và weights
-        if (isset($validated['score_types'])) {
-            $subject->scoreTypes()->detach(); // Xóa tất cả các liên kết cũ
+            // Xử lý cập nhật score types và weights
+            if (isset($validated['score_types'])) {
+                $subject->scoreTypes()->detach(); // Xóa tất cả các liên kết cũ
 
-            foreach ($validated['score_types'] as $scoreTypeId) {
-                $scoreType = ScoreType::find($scoreTypeId);
-                $weight = $validated['weights'][$scoreTypeId] ?? 0;
+                foreach ($validated['score_types'] as $scoreTypeId) {
+                    $scoreType = ScoreType::find($scoreTypeId);
+                    $weight = $validated['weights'][$scoreTypeId] ?? 0;
 
-                if ($scoreType->type === 'multi' && isset($request->sub_scores[$scoreTypeId])) {
-                    $quantity = $request->sub_scores[$scoreTypeId];
-                    $subWeight = $weight / $quantity;
+                    if ($scoreType->type === 'multi' && isset($request->sub_scores[$scoreTypeId])) {
+                        $quantity = $request->sub_scores[$scoreTypeId];
+                        $subWeight = $weight / $quantity;
 
-                    for ($i = 1; $i <= $quantity; $i++) {
+                        for ($i = 1; $i <= $quantity; $i++) {
+                            $subject->scoreTypes()->attach($scoreTypeId, [
+                                'weight' => $subWeight,
+                                'name' => "{$scoreType->name}{$i}"
+                            ]);
+                        }
+                    } else {
                         $subject->scoreTypes()->attach($scoreTypeId, [
-                            'weight' => $subWeight,
-                            'name' => "{$scoreType->name}{$i}"
+                            'weight' => $weight,
+                            'name' => $scoreType->name
                         ]);
                     }
-                } else {
-                    $subject->scoreTypes()->attach($scoreTypeId, [
-                        'weight' => $weight,
-                        'name' => $scoreType->name
-                    ]);
                 }
             }
-        }
 
-        toastr()->success('Cập nhật thành công môn học: ' . $subject->name);
-        return redirect()->route('admin.subjects.index');
+            toastr()->success('Cập nhật thành công môn học: ' . $subject->name);
+            return redirect()->route('admin.subjects.index');
+        } catch (\Exception $e) {
+
+            toastr()->warning('Có vấn đề khi cập nhập thông tin môn học: ' . $subject->name);
+            return redirect()->route('admin.subjects.index');
+        }
     }
 
 
@@ -143,7 +149,7 @@ class SubjectController extends Controller
             } else {
                 toastr()->warning('Hiện tại môn học đang có dữ liệu phụ thuộc!');
             }
-    
+
             return redirect()->route('admin.subjects.index');
         } catch (QueryException $e) {
             toastr()->warning('Đã xảy ra lỗi khi xóa môn học. Vui lòng thử lại!');

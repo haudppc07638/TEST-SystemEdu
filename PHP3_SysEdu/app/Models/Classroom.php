@@ -14,6 +14,7 @@ class Classroom extends Model
     protected $fillable = [
         'id',
         'code',
+        'location', 
         'capacity',
     ];
     public function Schedule(): BelongsTo{

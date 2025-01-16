@@ -25,7 +25,7 @@
                             <a href="{{ route('admin.credits.create') }}" type="submit" class="btn btn-cBlue">Thêm</a>
                         </div> --}}
                         <!-- Table with stripped rows -->
-                        <table id="tableDepartment" class="table datatable" style="width:100%">
+                        <table id="tableDepartment" class="table datatable mt-3" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>STT</th>

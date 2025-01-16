@@ -38,7 +38,6 @@ class ClassroomController extends Controller
         $validated = $request->validated();
         $classroom = Classroom::findOrFail($id);
         $classroom->update($validated);
-
         toastr()->success('Cập nhật thành công: ' . $classroom->code);
         return redirect()->route('admin.classrooms.index');
     }

@@ -30,6 +30,7 @@
                                     <tr>
                                         <th>STT</th>
                                         <th>Mã phòng học</th>
+                                        <th>Vị trí</th>
                                         <th>Sức chứa</th>
                                         <th>Tác vụ</th>
                                     </tr>
@@ -39,6 +40,7 @@
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $classroom->code }}</td>
+                                            <td>{{ $classroom->location ?? 'Chưa cập nhật' }}</td>
                                             <td>{{ $classroom->capacity }}</td>
                                             </td>
                                             <td>

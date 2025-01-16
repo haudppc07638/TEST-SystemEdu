@@ -29,6 +29,15 @@
                     </div>
                 </div>
                 <div class="row mb-3">
+                    <label for="location" class="col-sm-2 col-form-label">Vị trí</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control @error('location') is-invalid @enderror" id="location" name="location" value="{{ old('location') }}">
+                        @error('location')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="row mb-3">
                     <label for="capacity" class="col-sm-2 col-form-label">Sức chứa</label>
                     <div class="col-sm-10">
                         <input type="number" class="form-control @error('capacity') is-invalid @enderror" id="capacity" name="capacity" value="{{ old('capacity') }}">
