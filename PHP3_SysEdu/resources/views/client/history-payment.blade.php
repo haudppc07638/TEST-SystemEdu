@@ -7,7 +7,7 @@
     <div class="container grid px-6 mx-auto">
         <h2 class="my-6 text-2xl font-semibold text-gray-700">Lịch Sử Thanh Toán Học Phí</h2>
 
-        <form method="GET" action="{{ route('history.payment') }}" class="mb-4">
+        {{-- <form method="GET" action="{{ route('history.payment') }}" class="mb-4">
             <label for="payment_status" class="text-sm font-medium text-gray-700">Lọc theo trạng thái:</label>
             <select name="payment_status" id="payment_status" class="ml-2 rounded">
                 <option value="">Tất cả</option>
@@ -15,7 +15,7 @@
                 <option value="unpaid" {{ request('payment_status') == 'unpaid' ? 'selected' : '' }}>Chưa thanh toán</option>
             </select>
             <button type="submit" class="ml-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Lọc</button>
-        </form>
+        </form> --}}
 
         <div class="w-full overflow-hidden rounded-lg shadow-xs">
             <div class="w-full overflow-x-auto">
