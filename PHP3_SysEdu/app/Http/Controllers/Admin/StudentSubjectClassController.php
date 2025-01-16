@@ -205,14 +205,17 @@ class StudentSubjectClassController extends Controller
             return $stat['absence_rate'] < 20;
         });
 
-        // Chuẩn bị dữ liệu cho file Excel
-        $exportData = $lowAttendanceStudents->map(function ($student, $index) {
+        $exportData = $lowAttendanceStudents->filter(function ($student) {
+            return $student['absence_rate'] < 20;
+        })->map(function ($student, $index) use (&$stt) {
+            $stt = isset($stt) ? $stt + 1 : 1;
+            
             return [
-                'STT' => $index + 1,
+                'STT' => $stt,
                 'Mã sinh viên' => $student['student_code'],
                 'Họ và tên' => $student['student_name'],
-                'Số buổi vắng' => $student['absent_count'],
-                'Tỷ lệ vắng (%)' => $student['absence_rate'],
+                'Điểm' => '',
+                'Ký tên' => '',
             ];
         })->toArray();
 

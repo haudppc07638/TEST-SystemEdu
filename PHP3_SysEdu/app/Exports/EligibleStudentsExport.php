@@ -75,8 +75,8 @@ class EligibleStudentsExport implements FromArray, WithHeadings, WithEvents, Wit
             'STT',
             'Mã sinh viên',
             'Họ và tên',
-            'Số buổi vắng',
-            'Tỷ lệ vắng (%)',
+            'Điểm',
+            'Ký tên',
         ];
     }
 
@@ -120,8 +120,8 @@ class EligibleStudentsExport implements FromArray, WithHeadings, WithEvents, Wit
                 $sheet->getColumnDimension('A')->setWidth(6); // STT
                 $sheet->getColumnDimension('B')->setWidth(15); // Mã sinh viên
                 $sheet->getColumnDimension('C')->setWidth(30); // Họ và tên
-                $sheet->getColumnDimension('D')->setWidth(15); // Số buổi vắng
-                $sheet->getColumnDimension('E')->setWidth(20); // Tỷ lệ vắng
+                $sheet->getColumnDimension('D')->setWidth(10);
+                $sheet->getColumnDimension('E')->setWidth(20);
 
                 $sheet->getStyle('A1:' . $lastColumn . ($sheet->getHighestRow()))->applyFromArray([
                     'borders' => [
