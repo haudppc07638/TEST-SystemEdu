@@ -15,6 +15,7 @@ use App\Models\SubjectScoreType;
 use Carbon\Carbon;
 use App\Exports\EligibleStudentsExport;
 use Maatwebsite\Excel\Facades\Excel;
+
 class StudentSubjectClassController extends Controller
 {
     public function index($id)
@@ -29,9 +30,9 @@ class StudentSubjectClassController extends Controller
 
         // $students = StudentSubjectClass::where('subject_class_id', $subjectClass->id)->with('student')->get();
         $students = StudentSubjectClass::where('subject_class_id', $subjectClass->id)
-        ->with(['student', 'student.totalTuition' => function ($query) {
-            $query->latest()->take(1);
-        }])->get();
+            ->with(['student', 'student.totalTuition' => function ($query) {
+                $query->latest()->take(1);
+            }])->get();
 
         $attendanceStats = $this->getAttendanceStats($subjectClass);
         $attendanceHistory = $this->getAttendanceHistory($subjectClass);
@@ -145,6 +146,11 @@ class StudentSubjectClassController extends Controller
             ->with(['student', 'attendances'])
             ->get()
             ->map(function ($student) use ($totalSessions) {
+                // Kiểm tra nếu total_score > 3
+                if ($student->total_score <= 3) {
+                    return null; // Loại bỏ sinh viên có total_score <= 3
+                }
+
                 $presentCount = $student->attendances->where('status', 1)->count();
                 $absentCount = $student->attendances->where('status', 0)->count();
 
@@ -158,8 +164,11 @@ class StudentSubjectClassController extends Controller
                     'present_count' => $presentCount,
                     'absent_count' => $absentCount,
                     'absence_rate' => $absenceRate,
+                    'score' => $student->total_score
                 ];
-            });
+            })
+            ->filter()
+            ->values();
 
         $averageAbsenceRate = $studentStats->avg('absence_rate');
 
@@ -170,6 +179,7 @@ class StudentSubjectClassController extends Controller
             'average_absence_rate' => $averageAbsenceRate,
         ];
     }
+
 
     private function getAttendanceHistory(SubjectClass $subjectClass)
     {
@@ -193,21 +203,20 @@ class StudentSubjectClassController extends Controller
     public function exportEligible($id)
     {
         $subjectClass = SubjectClass::findOrFail($id);
-
+    
         $subjectClassName = $subjectClass->name;
         $day = now()->format('y-m-d');
         $fileName = 'DSSV_đủ_điều_kiện_thi_lớp_' . $subjectClassName . '_' . $day . '.xlsx';
-
+    
         // Lấy dữ liệu điểm danh
         $attendanceStats = $this->getAttendanceStats($subjectClass);
-
-        $lowAttendanceStudents = $attendanceStats['student_stats']->filter(function ($stat) {
-            return $stat['absence_rate'] < 20;
+    
+        // Lọc sinh viên đủ điều kiện
+        $eligibleStudents = $attendanceStats['student_stats']->filter(function ($stat) {
+            return $stat['absence_rate'] < 20 && $stat['score'] > 3;  // Thêm điều kiện total_score > 3
         });
-
-        $exportData = $lowAttendanceStudents->filter(function ($student) {
-            return $student['absence_rate'] < 20;
-        })->map(function ($student, $index) use (&$stt) {
+    
+        $exportData = $eligibleStudents->map(function ($student, $index) use (&$stt) {
             $stt = isset($stt) ? $stt + 1 : 1;
             
             return [
@@ -218,8 +227,9 @@ class StudentSubjectClassController extends Controller
                 'Ký tên' => '',
             ];
         })->toArray();
-
+    
         // Xuất file Excel
         return Excel::download(new EligibleStudentsExport($exportData, $subjectClassName), $fileName);
     }
+    
 }

@@ -224,7 +224,7 @@ class StudentSubjectClassExport implements FromCollection, WithHeadings, WithEve
                     $validation = $sheet->getCell($columnLetter . '3')->getDataValidation();
                     $validation->setType(DataValidation::TYPE_DECIMAL)
                         ->setOperator(DataValidation::OPERATOR_BETWEEN)
-                        ->setFormula1('1')
+                        ->setFormula1('0')
                         ->setFormula2('10')
                         ->setShowErrorMessage(true)
                         ->setErrorTitle('Dữ liệu không hợp lệ')
