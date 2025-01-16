@@ -110,7 +110,7 @@ function ChatBox() {
       {isOpen && (
         <div className="w-full max-w-md mx-auto mt-10 flex flex-col h-[500px] bg-white rounded-lg shadow-md">
           <div className="bg-blue-600 text-white text-center py-3 font-bold rounded-t-lg relative">
-            Chatbot Sysedu
+            Hỏi đáp nhanh Sysedu
             <button
               onClick={() => setIsOpen(false)}
               className="absolute top-2 right-5 text-white text-xl"
